@@ -3,7 +3,13 @@ import React from 'react';
 class SignUpForm extends React.Component {
   state = {
     username: '',
-    password: ''
+    password: '',
+    email: '',
+    first_name: '',
+    last_name: '',
+    phone: '',
+    picture: 'default',
+    theme: 'lightMode'
   };
 
   handle_change = e => {
@@ -32,6 +38,34 @@ class SignUpForm extends React.Component {
           type="password"
           name="password"
           value={this.state.password}
+          onChange={this.handle_change}
+        />
+        <label htmlFor="username">Email</label>
+        <input
+          type="email"
+          name="email"
+          value={this.state.email}
+          onChange={this.handle_change}
+        />
+        <label htmlFor="first_name">First Name</label>
+        <input
+          type="text"
+          name="first_name"
+          value={this.state.first_name}
+          onChange={this.handle_change}
+        />
+        <label htmlFor="last_name">Last Name</label>
+        <input
+          type="text"
+          name="last_name"
+          value={this.state.last_name}
+          onChange={this.handle_change}
+        />
+        <label htmlFor="phone">Phone Number</label>
+        <input
+          type="number"
+          name="phone"
+          value={this.state.phone}
           onChange={this.handle_change}
         />
         <input type="submit" />

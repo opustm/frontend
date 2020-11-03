@@ -11,7 +11,13 @@ class App extends Component {
     this.state = {
       displayed_form: '',
       logged_in: localStorage.getItem('token') ? true : false,
-      username: ''
+      username: '',
+      email: '',
+      first_name: '',
+      last_name: '',
+      phone: '',
+      picture: '',
+      theme: ''
     };
   }
 
@@ -40,11 +46,13 @@ class App extends Component {
     })
       .then(res => res.json())
       .then(json => {
+        console.log(json);
         localStorage.setItem('token', json.token);
         this.setState({
           logged_in: true,
           displayed_form: '',
-          username: json.user.username
+          username: json.user.username,
+          first_name: json.user.first_name
         });
       });
   };
@@ -64,7 +72,8 @@ class App extends Component {
         this.setState({
           logged_in: true,
           displayed_form: '',
-          username: json.username
+          username: json.username,
+          first_name: json.first_name
         });
       });
   };
@@ -103,7 +112,7 @@ class App extends Component {
         {form}
         <h3>
           {this.state.logged_in
-            ? `Hello, ${this.state.username}`
+            ? `Hello, ${this.state.username}. Your first name is ${this.state.first_name}.`
             : 'Please Log In'}
         </h3>
       </div>
