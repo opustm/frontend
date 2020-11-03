@@ -6,8 +6,8 @@ import SignUpForm from './components/SignUpForm';
 import './App.css';
 
 // Comment Out Local API Host Before Deployment
-const API_HOST = 'http://localhost:8000/'
-// const API_HOST = 'https://sp-backend-api.herokuapp.com/';
+// const API_HOST = 'http://localhost:8000/'
+const API_HOST = 'https://sp-backend-api.herokuapp.com/';
 
 let _csrfToken = null;
 
