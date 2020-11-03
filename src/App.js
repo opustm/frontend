@@ -5,7 +5,9 @@ import LoginForm from './components/LoginForm';
 import SignUpForm from './components/SignUpForm';
 import './App.css';
 
-const API_HOST = 'https://opus-tm-api-server.herokuapp.com/';
+// Comment Out Local API Host Before Deployment
+const API_HOST = 'http://localhost:8000/'
+// const API_HOST = 'https://sp-backend-api.herokuapp.com/';
 
 let _csrfToken = null;
 
@@ -52,7 +54,7 @@ class App extends Component {
 
   componentDidMount() {
     if (this.state.logged_in) {
-      fetch('https://opus-tm-api-server.herokuapp.com/main/current_user/', {
+      fetch(API_HOST+'main/current_user/', {
         headers: {
           Authorization: `JWT ${localStorage.getItem('token')}`
         }
@@ -66,7 +68,7 @@ class App extends Component {
 
   handle_login = (e, data) => {
     e.preventDefault();
-    fetch('https://opus-tm-api-server.herokuapp.com/token-auth/', {
+    fetch(API_HOST+'token-auth/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -88,7 +90,7 @@ class App extends Component {
 
   handle_signup = (e, data) => {
     e.preventDefault();
-    fetch('https://opus-tm-api-server.herokuapp.com/main/users/', {
+    fetch(API_HOST+'main/users/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
