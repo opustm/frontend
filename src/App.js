@@ -5,6 +5,35 @@ import LoginForm from './components/LoginForm';
 import SignUpForm from './components/SignUpForm';
 import './App.css';
 
+const API_HOST = 'https://opus-tm-api-server.herokuapp.com/';
+
+let _csrfToken = null;
+
+async function getCsrfToken() {
+  if (_csrfToken === null) {
+    const response = await fetch(`${API_HOST}/csrf/`, {
+      credentials: 'include',
+    });
+    const data = await response.json();
+    _csrfToken = data.csrfToken;
+  }
+  return _csrfToken;
+}
+
+async function testRequest(method) {
+  const response = await fetch(`${API_HOST}/ping/`, {
+    method: method,
+    headers: (
+      method === 'POST'
+        ? {'X-CSRFToken': await getCsrfToken()}
+        : {}
+    ),
+    credentials: 'include',
+  });
+  const data = await response.json();
+  return data.result;
+}
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -23,7 +52,7 @@ class App extends Component {
 
   componentDidMount() {
     if (this.state.logged_in) {
-      fetch('https://sp-backend-api.herokuapp.com/main/current_user/', {
+      fetch('https://opus-tm-api-server.herokuapp.com/main/current_user/', {
         headers: {
           Authorization: `JWT ${localStorage.getItem('token')}`
         }
@@ -37,7 +66,7 @@ class App extends Component {
 
   handle_login = (e, data) => {
     e.preventDefault();
-    fetch('https://sp-backend-api.herokuapp.com/token-auth/', {
+    fetch('https://opus-tm-api-server.herokuapp.com/token-auth/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -59,7 +88,7 @@ class App extends Component {
 
   handle_signup = (e, data) => {
     e.preventDefault();
-    fetch('https://sp-backend-api.herokuapp.com/main/users/', {
+    fetch('https://opus-tm-api-server.herokuapp.com/main/users/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
