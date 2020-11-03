@@ -13,7 +13,7 @@ let _csrfToken = null;
 
 async function getCsrfToken() {
   if (_csrfToken === null) {
-    const response = await fetch(`${API_HOST}/csrf/`, {
+    const response = await fetch(`${API_HOST}main/csrf/`, {
       credentials: 'include',
     });
     const data = await response.json();
@@ -23,7 +23,7 @@ async function getCsrfToken() {
 }
 
 async function testRequest(method) {
-  const response = await fetch(`${API_HOST}/ping/`, {
+  const response = await fetch(`${API_HOST}main/ping/`, {
     method: method,
     headers: (
       method === 'POST'
