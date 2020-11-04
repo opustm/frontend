@@ -1,9 +1,11 @@
 .registrationDiv {
   border-radius: 15px;
-  border: solid black;
+  border: solid green;
   width: 40%;
   text-align: center;
   margin: auto;
+  margin-top: 50px;
+  background-color: rgb(224, 224, 224);
 }
 
 label {
@@ -13,4 +15,8 @@ label {
 
 input {
   margin-left: 5px;
+}
+
+body {
+  background-color: grey;
 }
