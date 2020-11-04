@@ -134,18 +134,19 @@ class App extends Component {
     }
 
     return (
-      <div className="App">
+      <div className="registrationDiv">
+        <h1>Welcome to Opus Team Management!</h1>
+        <h3>
+          {this.state.logged_in
+            ? `Hello, ${this.state.username}. Your first name is ${this.state.first_name}.`
+            : 'Please Log In or Sign Up'}
+        </h3>
         <Nav
           logged_in={this.state.logged_in}
           display_form={this.display_form}
           handle_logout={this.handle_logout}
         />
         {form}
-        <h3>
-          {this.state.logged_in
-            ? `Hello, ${this.state.username}. Your first name is ${this.state.first_name}.`
-            : 'Please Log In'}
-        </h3>
       </div>
     );
   }
