@@ -48,7 +48,8 @@ class App extends Component {
       last_name: '',
       phone: '',
       picture: '',
-      theme: ''
+      theme: '',
+      loginError: false
     };
   }
 
@@ -77,13 +78,22 @@ class App extends Component {
     })
       .then(res => res.json())
       .then(json => {
-        localStorage.setItem('token', json.token);
-        this.setState({
-          logged_in: true,
-          displayed_form: '',
-          username: json.user.username,
-          first_name: json.user.first_name
-        });
+        if (json.user) {
+          localStorage.setItem('token', json.token);
+          this.setState({
+            logged_in: true,
+            displayed_form: '',
+            username: json.user.username,
+            first_name: json.user.first_name,
+            loginError: false
+          });
+        } else {
+          this.setState({
+            logged_in: false,
+            displayed_form: 'login',
+            loginError: true
+          });
+        }
       });
   };
 
@@ -103,7 +113,8 @@ class App extends Component {
           logged_in: true,
           displayed_form: '',
           username: json.username,
-          first_name: json.first_name
+          first_name: json.first_name,
+          loginError: false
         });
       });
   };
@@ -140,6 +151,11 @@ class App extends Component {
             ? `Hello, ${this.state.username}. Your first name is ${this.state.first_name}.`
             : 'Please Log In or Sign Up'}
         </h3>
+        <h4>
+            {this.state.loginError
+            ? 'No user exists with those credentials. Please try again.'
+            : ''}
+        </h4>
         <Nav
           logged_in={this.state.logged_in}
           display_form={this.display_form}
