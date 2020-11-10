@@ -9,7 +9,7 @@ import APIHost from '../../services/api/api.service'
 
 const API_HOST = APIHost();
 
-class Login extends Component {
+export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -139,5 +139,3 @@ class Login extends Component {
     );
   }
 }
-
-export default Login;

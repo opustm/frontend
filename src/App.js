@@ -1,26 +1,51 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 
 import Login from './components/login/login.component';
 import Groups from './components/groups/group.component';
 import Home from './components/home/home.component';
 import About from './components/about/about.component';
 
-function App(props) {
-    return (
-        <BrowserRouter>
-            <Switch>
-                {/* <h3>Home</h3> */}
-                <Login/>
-                <Route exact path = "/" component = {Home}>
-                </Route>
-                <Route path = "login" component = {Login}>
-                </Route>
-                <Route path = "about" component = {About}/>
-                <Route path = "groups" component = {Groups}/>
-            </Switch>
-        </BrowserRouter>
-    )
-}
 
-export default App;
+export default function App() {
+    return (
+      <Router>
+        <div>
+          <nav>
+            <ul>
+              <li>
+                <Link to="/">Home</Link>
+              </li>
+              <li>
+                <Link to="/about">About</Link>
+              </li>
+              <li>
+                <Link to="/login">Login</Link>
+              </li>
+              <li>
+                <Link to="/groups">Groups</Link>
+              </li>
+            </ul>
+          </nav>
+  
+          {/* A <Switch> looks through its children <Route>s and
+              renders the first one that matches the current URL. */}
+          <Switch>
+            <Route path="/about">
+              <About />
+            </Route>
+            <Route path="/login">
+              <Login />
+            </Route>
+            <Route path="/groups">
+              <Groups />
+            </Route>
+            <Route path="/">
+              <Home />
+            </Route>
+          </Switch>
+        </div>
+      </Router>
+    );
+  }
+  
