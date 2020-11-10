@@ -10,10 +10,12 @@ function App(props) {
     return (
         <BrowserRouter>
             <Switch>
+                {/* <h3>Home</h3> */}
+                <Login/>
                 <Route exact path = "/" component = {Home}>
-                    <h3>Home</h3>
                 </Route>
-                <Route path = "login" component = {Login}/>
+                <Route path = "login" component = {Login}>
+                </Route>
                 <Route path = "about" component = {About}/>
                 <Route path = "groups" component = {Groups}/>
             </Switch>
