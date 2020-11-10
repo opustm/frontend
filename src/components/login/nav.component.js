@@ -1,5 +1,5 @@
 import React from 'react';
-import '../stylesheets/Nav.css';
+import "../../stylesheets/Nav.css"
 
 function Nav(props) {
   const logged_out_nav = (
