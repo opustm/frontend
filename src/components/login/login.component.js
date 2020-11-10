@@ -3,11 +3,11 @@ import React, { Component } from 'react';
 import Nav from './nav.component';
 import LoginForm from './loginform.component';
 import SignUpForm from './signupform.component';
-import '../../stylesheets/App.css';
 
-// Comment Out Local API Host Before Deployment
-// const API_HOST = 'http://localhost:8000/'
-const API_HOST = 'https://opustm-api-staging.herokuapp.com/';
+import '../../stylesheets/App.css';
+import APIHost from '../../services/api/api.service'
+
+const API_HOST = APIHost();
 
 class Login extends Component {
   constructor(props) {
