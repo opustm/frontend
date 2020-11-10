@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
+import { BrowserRouter as Router, Link } from 'react-router-dom';
 import Login from './components/login/login.component';
 
 function App(props) {
-    return <h1><Login/></h1>
+    return (
+        <Router>
+            <Login/>
+        </Router>
+    )
 }
 
 export default App;
