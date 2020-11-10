@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 import Login from './components/login/login.component';
 import Groups from './components/groups/group.component';
