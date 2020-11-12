@@ -1,7 +1,5 @@
 
 import React, { Component } from 'react';
-import Nav from './nav.component';
-import SignUpForm from './signupform.component';
 import {Container, Row, Col, Form, Button, Modal} from 'react-bootstrap';
 import '../../stylesheets/Login.css';
 // import '../../stylesheets/App.css';
@@ -21,9 +19,9 @@ class Login extends Component {
       first_name: '',
       last_name: '',
       phone: '',
-      picture: '',
-      theme: '',
       password: '',
+      picture: 'default',
+      theme: 'light',
       loginError: false,
       showModal: false
     };
@@ -43,7 +41,7 @@ class Login extends Component {
     }
   }
 
-  handle_change = e => {
+  handleChange = e => {
     const name = e.target.name;
     const value = e.target.value;
     this.setState(prevstate => {
@@ -53,8 +51,7 @@ class Login extends Component {
     });
   };
 
-  handle_login = (e, data) => {
-    console.log('called handle login');
+  handleLogin = (e, data) => {
     e.preventDefault();
     fetch(API_HOST+'token-auth/', {
       method: 'POST',
@@ -65,7 +62,6 @@ class Login extends Component {
     })
       .then(res => res.json())
       .then(json => {
-        console.log(json);
         if (json.user) {
           localStorage.setItem('token', json.token);
           this.setState({
@@ -85,7 +81,8 @@ class Login extends Component {
       });
   };
 
-  handle_signup = (e, data) => {
+  handleSignup = (e, data) => {
+    this.handleClose();
     e.preventDefault();
     fetch(API_HOST+'main/users/', {
       method: 'POST',
@@ -107,12 +104,12 @@ class Login extends Component {
       });
   };
 
-  handle_logout = () => {
+  handleLogout = () => {
     localStorage.removeItem('token');
     this.setState({ logged_in: false, username: '' });
   };
 
-  display_form = form => {
+  displayForm = form => {
     this.setState({
       displayed_form: form
     });
@@ -122,39 +119,6 @@ class Login extends Component {
   handleShow = () => this.setState({showModal: true});
 
   render() {
-    // let form;
-    // switch (this.state.displayed_form) {
-    //   case 'login':
-    //     form = <LoginForm handle_login={this.handle_login} />;
-    //     break;
-    //   case 'signup':
-    //     form = <SignUpForm handle_signup={this.handle_signup} />;
-    //     break;
-    //   default:
-    //     form = null;
-    // }
-
-    // BELOW was in return
-    // <div className="registrationDiv">
-    //     <h1>Welcome to Opus Team Management!</h1>
-    //     <h3>
-    //       {this.state.logged_in
-    //         ? `Hello, ${this.state.username}. Your first name is ${this.state.first_name}.`
-    //         : 'Please Log In or Sign Up'}
-    //     </h3>
-    //     <h4>
-    //         {this.state.loginError
-    //         ? 'No user exists with those credentials. Please try again.'
-    //         : ''}
-    //     </h4>
-    //     <Nav
-    //       logged_in={this.state.logged_in}
-    //       display_form={this.display_form}
-    //       handle_logout={this.handle_logout}
-    //     />
-    //     {form}
-    //   </div>
-
     return (
       <Container fluid>
         <Row>
@@ -174,7 +138,7 @@ class Login extends Component {
                   <Form.Control 
                     type="text"
                     name="username"
-                    onChange={this.handle_change}
+                    onChange={this.handleChange}
                     value={this.state.username}
                   />
                 </Form.Group>
@@ -183,7 +147,7 @@ class Login extends Component {
                   <Form.Control
                     type="password" 
                     name="password"
-                    onChange={this.handle_change}
+                    onChange={this.handleChange}
                     value={this.state.password}
                   />
                   <Form.Text>
@@ -191,7 +155,7 @@ class Login extends Component {
                   </Form.Text>
                 </Form.Group>
                 <Button
-                  onClick={e => this.handle_login(e, this.state)}
+                  onClick={e => this.handleLogin(e, this.state)}
                   id="loginSubmit"
                 >Submit</Button>
               </Form>
@@ -213,19 +177,87 @@ class Login extends Component {
         </Row>
         <Modal show={this.state.showModal} onHide={this.handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
+            <Modal.Title>Register New User</Modal.Title>
           </Modal.Header>
-          <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+          <Modal.Body>
+            <Form>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>First Name</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="first_name"
+                      value={this.state.first_name}
+                      onChange={this.handleChange}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>Last Name</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="last_name"
+                      value={this.state.last_name}
+                      onChange={this.handleChange}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>Phone Number</Form.Label>
+                    <Form.Control
+                      type="number"
+                      name="phone"
+                      value={this.state.phone}
+                      onChange={this.handleChange}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control
+                      type="email"
+                      name="email"
+                      value={this.state.email}
+                      onChange={this.handleChange}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Form.Group>
+                <Form.Label>Username</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="username"
+                  value={this.state.username}
+                  onChange={this.handleChange}
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  name="password"
+                  value={this.state.password}
+                  onChange={this.handleChange}
+                />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={this.handleClose}>
-              Close
+              Cancel
             </Button>
-            <Button variant="primary" onClick={this.handleClose}>
-              Save Changes
+            <Button variant="primary" onClick={e => this.handleSignup(e, this.state)}>
+              Create Account
             </Button>
           </Modal.Footer>
         </Modal>
-    
       </Container>
     );
   }
