@@ -1,14 +1,12 @@
-
 import React, { Component } from 'react';
+
 import {Container, Row, Col, Form, Button, Modal} from 'react-bootstrap';
 import '../../stylesheets/Login.css';
-// import '../../stylesheets/App.css';
+import APIHost from '../../services/api/api.service'
 
-// Comment Out Local API Host Before Deployment
-const API_HOST = 'http://localhost:8000/'
-// const API_HOST = 'https://opustm-api-staging.herokuapp.com/';
+const API_HOST = APIHost();
 
-class Login extends Component {
+export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -262,5 +260,3 @@ class Login extends Component {
     );
   }
 }
-
-export default Login;
