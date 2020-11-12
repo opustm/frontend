@@ -1,3 +1,7 @@
+html, body, #root, .container-fluid, .row {
+  height: 100%;
+}
+
 #leftLogin {
   background-color: #00CFAA;
 }
@@ -20,9 +24,6 @@
   color: rgb(158, 157, 157);
 }
 
-html, body, #root, .container-fluid, .row, #leftLogin, #rightLogin {
-  height: 100%;
-}
 
 button#register {
   background: none!important;
