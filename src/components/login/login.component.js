@@ -1,10 +1,7 @@
-
 import React, { Component } from 'react';
-import Nav from './nav.component';
-import LoginForm from './loginform.component';
-import SignUpForm from './signupform.component';
 
-import '../../stylesheets/App.css';
+import {Container, Row, Col, Form, Button, Modal} from 'react-bootstrap';
+import '../../stylesheets/Login.css';
 import APIHost from '../../services/api/api.service'
 
 const API_HOST = APIHost();
@@ -20,9 +17,11 @@ export default class Login extends Component {
       first_name: '',
       last_name: '',
       phone: '',
-      picture: '',
-      theme: '',
-      loginError: false
+      password: '',
+      picture: 'default',
+      theme: 'light',
+      loginError: false,
+      showModal: false
     };
   }
 
@@ -40,7 +39,17 @@ export default class Login extends Component {
     }
   }
 
-  handle_login = (e, data) => {
+  handleChange = e => {
+    const name = e.target.name;
+    const value = e.target.value;
+    this.setState(prevstate => {
+      const newState = { ...prevstate };
+      newState[name] = value;
+      return newState;
+    });
+  };
+
+  handleLogin = (e, data) => {
     e.preventDefault();
     fetch(API_HOST+'token-auth/', {
       method: 'POST',
@@ -70,7 +79,8 @@ export default class Login extends Component {
       });
   };
 
-  handle_signup = (e, data) => {
+  handleSignup = (e, data) => {
+    this.handleClose();
     e.preventDefault();
     fetch(API_HOST+'main/users/', {
       method: 'POST',
@@ -92,50 +102,161 @@ export default class Login extends Component {
       });
   };
 
-  handle_logout = () => {
+  handleLogout = () => {
     localStorage.removeItem('token');
     this.setState({ logged_in: false, username: '' });
   };
 
-  display_form = form => {
+  displayForm = form => {
     this.setState({
       displayed_form: form
     });
   };
 
-  render() {
-    let form;
-    switch (this.state.displayed_form) {
-      case 'login':
-        form = <LoginForm handle_login={this.handle_login} />;
-        break;
-      case 'signup':
-        form = <SignUpForm handle_signup={this.handle_signup} />;
-        break;
-      default:
-        form = null;
-    }
+  handleClose = () => this.setState({showModal: false});
+  handleShow = () => this.setState({showModal: true});
 
+  render() {
     return (
-      <div className="registrationDiv">
-        <h1>Welcome to Opus Team Management!</h1>
-        <h3>
-          {this.state.logged_in
-            ? `Hello, ${this.state.username}. Your first name is ${this.state.first_name}.`
-            : 'Please Log In or Sign Up'}
-        </h3>
-        <h4>
-            {this.state.loginError
-            ? 'No user exists with those credentials. Please try again.'
-            : ''}
-        </h4>
-        <Nav
-          logged_in={this.state.logged_in}
-          display_form={this.display_form}
-          handle_logout={this.handle_logout}
-        />
-        {form}
-      </div>
+      <Container fluid>
+        <Row>
+          <Col id='leftLogin'>
+            <Row>
+              <Col md={{offset:2}}>
+                <p className='vertShift'>Some BS text about what this project is I guess</p>
+              </Col>
+            </Row>
+          </Col>
+          <Col id='rightLogin'>
+            <Col lg={{span: 9, offset: 1}}>
+              <h1 className='vertShift'>Opus Team Management</h1>
+              <Form>
+                <Form.Group>
+                  <Form.Label>Username</Form.Label>
+                  <Form.Control 
+                    type="text"
+                    name="username"
+                    onChange={this.handleChange}
+                    value={this.state.username}
+                  />
+                </Form.Group>
+                <Form.Group>
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control
+                    type="password" 
+                    name="password"
+                    onChange={this.handleChange}
+                    value={this.state.password}
+                  />
+                  <Form.Text>
+                    <a className='loginLink' href="https://google.com">Forgot your password?</a>
+                  </Form.Text>
+                </Form.Group>
+                <Button
+                  onClick={e => this.handleLogin(e, this.state)}
+                  id="loginSubmit"
+                >Submit</Button>
+              </Form>
+              <hr />
+              <Container fluid>
+                <Row>
+                  <Col md={{offset : 2}}>
+                    <Button className='loginLink' id='register' onClick={this.handleShow}>Don't have an account yet? Click here to register.</Button>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={{offset : 3}}>
+                    <p id='copyright'>&#169; Opus Team Management, 2020</p>
+                  </Col>
+                </Row>
+              </Container>
+            </Col>
+          </Col>
+        </Row>
+        <Modal show={this.state.showModal} onHide={this.handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Register New User</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>First Name</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="first_name"
+                      value={this.state.first_name}
+                      onChange={this.handleChange}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>Last Name</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="last_name"
+                      value={this.state.last_name}
+                      onChange={this.handleChange}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>Phone Number</Form.Label>
+                    <Form.Control
+                      type="number"
+                      name="phone"
+                      value={this.state.phone}
+                      onChange={this.handleChange}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control
+                      type="email"
+                      name="email"
+                      value={this.state.email}
+                      onChange={this.handleChange}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Form.Group>
+                <Form.Label>Username</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="username"
+                  value={this.state.username}
+                  onChange={this.handleChange}
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  name="password"
+                  value={this.state.password}
+                  onChange={this.handleChange}
+                />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.handleClose}>
+              Cancel
+            </Button>
+            <Button variant="primary" onClick={e => this.handleSignup(e, this.state)}>
+              Create Account
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </Container>
     );
   }
 }
