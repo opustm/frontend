@@ -3,14 +3,14 @@ import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Login from './components/login/login.component';
-import Groups from './components/team/team.component';
+import Team from './components/team/team.component';
 import Home from './components/home/home.component';
 import About from './components/about/about.component';
 
 export default function App() {
     return (
       <Router>
-          <nav>
+          {/* <nav>
             <ul>
               <li>
                 <Link to="/">Home</Link>
@@ -25,7 +25,7 @@ export default function App() {
                 <Link to="/groups">Groups</Link>
               </li>
             </ul>
-          </nav>
+          </nav> */}
   
           {/* A <Switch> looks through its children <Route>s and
               renders the first one that matches the current URL. */}
@@ -36,8 +36,8 @@ export default function App() {
             <Route path="/login">
               <Login />
             </Route>
-            <Route path="/groups">
-              <Groups />
+            <Route path="/team">
+              <Team />
             </Route>
             <Route path="/">
               <Home />
