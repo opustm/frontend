@@ -1,4 +1,4 @@
-import { Container, Navbar, Nav, Row, Col} from 'react-bootstrap';
+import { Container, Row, Col} from 'react-bootstrap';
 
 export default function About(props) {
     return (

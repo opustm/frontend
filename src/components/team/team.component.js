@@ -1,16 +1,19 @@
-import { Container, Navbar, Nav, Row, Jumbotron, Button, Col, Form, Card, ListGroup, ListGroupItem} from 'react-bootstrap';
+import { Container, Row, Jumbotron, Button, Col, Form, Card, ListGroup, ListGroupItem} from 'react-bootstrap';
 import * as Icon from 'react-feather';
 import NavigationBar from '../overlay/navbar.component';
 
 // Team
 // Group
 
-export default function Groups(props) {
+export default function Team(props) {
+  let logoutCallback = (navbarData) => {
+    this.props.parentCallback(navbarData);
+  }
     return (
       <Container fluid>
         <Row>
           <Col>
-            <NavigationBar/>
+            <NavigationBar parentCallback={logoutCallback}/>
           </Col>
         </Row>
         <Row>
