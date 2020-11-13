@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 
 import {Container, Row, Col, Form, Button, Modal} from 'react-bootstrap';
 import '../../stylesheets/Login.css';
@@ -10,7 +11,6 @@ export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayed_form: '',
       logged_in: localStorage.getItem('token') ? true : false,
       username: '',
       email: '',
@@ -58,25 +58,26 @@ export default class Login extends Component {
       },
       body: JSON.stringify(data)
     })
-      .then(res => res.json())
-      .then(json => {
-        if (json.user) {
-          localStorage.setItem('token', json.token);
-          this.setState({
-            logged_in: true,
-            displayed_form: '',
-            username: json.user.username,
-            first_name: json.user.first_name,
-            loginError: false
-          });
-        } else {
-          this.setState({
-            logged_in: false,
-            displayed_form: 'login',
-            loginError: true
-          });
-        }
-      });
+    .then(res => res.json())
+    .then(json => {
+      if (json.user) {
+        localStorage.setItem('token', json.token);
+        this.setState({
+          logged_in: true,
+          displayed_form: '',
+          username: json.user.username,
+          first_name: json.user.first_name,
+          loginError: false
+        });
+        this.props.parentCallback(this.state.logged_in);
+      } else {
+        this.setState({
+          logged_in: false,
+          displayed_form: 'login',
+          loginError: true
+        });
+      }
+    });
   };
 
   handleSignup = (e, data) => {
@@ -102,22 +103,14 @@ export default class Login extends Component {
       });
   };
 
-  handleLogout = () => {
-    localStorage.removeItem('token');
-    this.setState({ logged_in: false, username: '' });
-  };
-
-  displayForm = form => {
-    this.setState({
-      displayed_form: form
-    });
-  };
-
   handleClose = () => this.setState({showModal: false});
   handleShow = () => this.setState({showModal: true});
 
   render() {
     return (
+      // this.state.logged_in 
+      // ? <Redirect to='/' /> 
+      // :
       <Container fluid>
         <Row>
           <Col id='leftLogin'>

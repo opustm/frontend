@@ -15,7 +15,7 @@ html, body, #root, .container-fluid, .row {
   margin-bottom: 8px;
 }
 
-.loginLink {
+.loginLink, .loginLink:hover, .loginLink:focus {
   color: #00CFAA;
 }
 
@@ -25,7 +25,8 @@ html, body, #root, .container-fluid, .row {
 }
 
 
-button#register {
+#register {
+  color: #00CFAA;
   background: none!important;
   border: none;
   padding: 0!important;

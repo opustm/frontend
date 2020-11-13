@@ -1,5 +1,19 @@
-import React from 'react';
+import { Container, Row, Col} from 'react-bootstrap';
 
 export default function About(props) {
-    return <h1>About</h1>
+    return (
+        <Container fluid>
+            <Row>
+                <Col>
+                    <div>
+                        <h1>Test</h1>
+                        <p>lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum </p>
+                        <p>lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum </p>
+
+                    </div>
+                </Col>
+            </Row>
+        </Container>
+    )
+    
 }
