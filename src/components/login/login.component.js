@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
 
 import {Container, Row, Col, Form, Button, Modal} from 'react-bootstrap';
 import '../../stylesheets/Login.css';

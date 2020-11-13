@@ -5,7 +5,7 @@ import NavigationBar from '../overlay/navbar.component';
 // Team
 // Group
 
-export default function Groups(props) {
+export default function Team(props) {
   let logoutCallback = (navbarData) => {
     this.props.parentCallback(navbarData);
   }
