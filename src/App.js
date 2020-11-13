@@ -40,7 +40,7 @@ export default function App() {
             <About />
           </Route>
           <Route path="/login">
-            <Login parentCallback={callbackFunction}/>
+            {loggedIn === true ? <Home /> : <Login parentCallback={callbackFunction}/>}
           </Route>
           <Route path="/groups">
             {loggedIn === true ? <Groups parentCallback={callbackFunction}/> : <Redirect to="/login" />}

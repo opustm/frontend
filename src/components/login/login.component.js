@@ -108,9 +108,6 @@ export default class Login extends Component {
 
   render() {
     return (
-      // this.state.logged_in 
-      // ? <Redirect to='/' /> 
-      // :
       <Container fluid>
         <Row>
           <Col id='leftLogin'>
