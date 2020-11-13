@@ -1,61 +1,24 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
+import NavigationBar from '../overlay/navbar.component';
 
 export default function Home(props) {  
     return (
         <div>
-            <nav className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-                <a className="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="https://google.com">Company name</a>
-                <button className="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="https://google.comsidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-                <span className="navbar-toggler-icon"></span>
-                </button>
-                <input className="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" />
-                <ul className="navbar-nav px-3">
-                <li className="nav-item text-nowrap">
-                    <a className="nav-link" href="https://google.com">Sign out</a>
-                </li>
-                </ul>
-            </nav>
-            
+            <NavigationBar></NavigationBar>
             <div className="container-fluid">
                 <div className="row">
                 <nav id="sidebarMenu" className="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
                     <div className="sidebar-sticky pt-3">
                     <ul className="nav flex-column">
-                        <li className="nav-item">
-                        <a className="nav-link active" href="https://google.com">
-                            <span data-feather="home"></span>
-                            Dashboard <span className="sr-only">(current)</span>
-                        </a>
+                        <li className="nav-link">
+                            <Link className="nav-link" to='/'>Dashboard</Link>
                         </li>
-                        <li className="nav-item">
-                        <a className="nav-link" href="https://google.com">
-                            <span data-feather="file"></span>
-                            Orders
-                        </a>
+                        <li className="nav-link">
+                            <Link className="nav-link" to='/teams'>Teams</Link>
                         </li>
-                        <li className="nav-item">
-                        <a className="nav-link" href="https://google.com">
-                            <span data-feather="shopping-cart"></span>
-                            Products
-                        </a>
-                        </li>
-                        <li className="nav-item">
-                        <a className="nav-link" href="https://google.com">
-                            <span data-feather="users"></span>
-                            Customers
-                        </a>
-                        </li>
-                        <li className="nav-item">
-                        <a className="nav-link" href="https://google.com">
-                            <span data-feather="bar-chart-2"></span>
-                            Reports
-                        </a>
-                        </li>
-                        <li className="nav-item">
-                        <a className="nav-link" href="https://google.com">
-                            <span data-feather="layers"></span>
-                            Integrations
-                        </a>
+                        <li className="nav-link">
+                            <Link className="nav-link" to='/about'>About</Link>
                         </li>
                     </ul>
             
