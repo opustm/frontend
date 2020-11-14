@@ -75,7 +75,7 @@ export default class Login extends Component {
           <Col id='leftLogin'>
             <Row>
               <Col md={{offset:2}}>
-                <p className='vertShift'>Some BS text about what this project is I guess</p>
+                <p className='vertShift'>This text will tell the user what our product is!</p>
               </Col>
             </Row>
           </Col>
