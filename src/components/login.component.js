@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 
 import {Container, Row, Col, Form, Button, Modal} from 'react-bootstrap';
-import '../../stylesheets/Login.css';
-import APIHost from '../../services/api/api.service'
+import '../stylesheets/Login.css';
+import APIHost from '../services/api.service';
+import AuthService from '../services/auth.service';
 
 const API_HOST = APIHost();
 
@@ -10,6 +11,7 @@ export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      authService: new AuthService(),
       logged_in: localStorage.getItem('token') ? true : false,
       username: '',
       email: '',
@@ -48,58 +50,19 @@ export default class Login extends Component {
     });
   };
 
-  handleLogin = (e, data) => {
+  async handleLogin(e, data) {
     e.preventDefault();
-    fetch(API_HOST+'token-auth/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    .then(json => {
-      if (json.user) {
-        localStorage.setItem('token', json.token);
-        this.setState({
-          logged_in: true,
-          displayed_form: '',
-          username: json.user.username,
-          first_name: json.user.first_name,
-          loginError: false
-        });
-        this.props.parentCallback(this.state.logged_in);
-      } else {
-        this.setState({
-          logged_in: false,
-          displayed_form: 'login',
-          loginError: true
-        });
-      }
-    });
-  };
+    let state = await this.state.authService.login(data);
+    this.setState(state);
+    this.props.parentCallback(this.state.logged_in);
+  }
 
-  handleSignup = (e, data) => {
+  async handleSignup(e, data) {
+    console.log(data);
     this.handleClose();
     e.preventDefault();
-    fetch(API_HOST+'main/users/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-      .then(res => res.json())
-      .then(json => {
-        localStorage.setItem('token', json.token);
-        this.setState({
-          logged_in: true,
-          displayed_form: '',
-          username: json.username,
-          first_name: json.first_name,
-          loginError: false
-        });
-      });
+    let state = await this.state.authService.signup(data);
+    this.setState(state);
   };
 
   handleClose = () => this.setState({showModal: false});

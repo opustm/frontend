@@ -1,6 +1,6 @@
 import { Container, Row, Jumbotron, Button, Col, Form, Card, ListGroup, ListGroupItem} from 'react-bootstrap';
 import * as Icon from 'react-feather';
-import NavigationBar from '../overlay/navbar.component';
+import NavigationBar from './navbar.component';
 
 // Team
 // Group

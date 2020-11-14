@@ -2,18 +2,16 @@ import React, {useState} from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import Login from './components/login/login.component';
-import Team from './components/team/team.component';
-import Home from './components/home/home.component';
-import About from './components/about/about.component';
+import Login from './components/login.component';
+import Team from './components/team.component';
+import Home from './components/home.component';
+import About from './components/about.component';
 
 export default function App() {
   let [loggedIn, setLoggedIn] = useState(false);
   let callbackFunction = (childData) => {
-    console.log(`Child data = ${childData}`);
     setLoggedIn(childData);
   };
-  console.log(`Logged in = ${loggedIn}`);
     return (
       <Router>
         {/* A <Switch> looks through its children <Route>s and

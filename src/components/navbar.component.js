@@ -1,10 +1,12 @@
 import * as Icon from 'react-feather';
 import { Navbar, Nav } from 'react-bootstrap';
+import AuthService from '../services/auth.service';
 
 export default function NavigationBar(props) {
+  let authService = new AuthService();
 
   let handleLogout = () => {
-    localStorage.removeItem('token');
+    authService.logout();
     this.props.parentCallback(false);
   };
 
