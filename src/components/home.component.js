@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import NavigationBar from '../overlay/navbar.component';
+import NavigationBar from './navbar.component';
 
 export default function Home(props) {  
     return (
