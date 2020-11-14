@@ -1,0 +1,40 @@
+html, body, #root, .container-fluid, .row {
+  height: 100%;
+}
+
+#leftLogin {
+  background-color: #00CFAA;
+}
+
+.vertShift {
+  margin-top: 20%
+}
+
+#loginSubmit {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.loginLink, .loginLink:hover, .loginLink:focus {
+  color: #00CFAA;
+}
+
+#copyright {
+  margin-top: 50px;
+  color: rgb(158, 157, 157);
+}
+
+
+#register {
+  color: #00CFAA;
+  background: none!important;
+  border: none;
+  padding: 0!important;
+  cursor: pointer; 
+}
+
+#register:hover, #register:focus {
+  text-decoration: underline;
+  color: #00CFAA;
+}
+
