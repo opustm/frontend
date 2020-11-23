@@ -58,7 +58,6 @@ export default class Login extends Component {
   }
 
   async handleSignup(e, data) {
-    console.log(data);
     this.handleClose();
     e.preventDefault();
     let state = await this.state.authService.signup(data);

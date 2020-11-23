@@ -6,6 +6,7 @@ import Login from './components/login.component';
 import Team from './components/team.component';
 import Home from './components/home.component';
 import About from './components/about.component';
+import Profile from './components/profile.component'
 
 export default function App() {
   let [loggedIn, setLoggedIn] = useState(false);
@@ -20,6 +21,7 @@ export default function App() {
           <Route path="/about">
             <About />
           </Route>
+          <Route path="/users/:userID" component={Profile}></Route>
           <Route path="/login">
             {loggedIn === true ? <Home /> : <Login parentCallback={callbackFunction}/>}
           </Route>
