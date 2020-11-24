@@ -24,7 +24,7 @@ export default function NavigationBar(props) {
             <NavDropdown.Item><Icon.Settings />Edit User Settings</NavDropdown.Item>
             <NavDropdown.Item href='/users/1'>User X</NavDropdown.Item>
             <NavDropdown.Item href='/users/2'>User Y</NavDropdown.Item>
-            <NavDropdown.Item>User Z</NavDropdown.Item>
+            <NavDropdown.Item href='/users/3'>User Z</NavDropdown.Item>
           </NavDropdown>
           <Nav.Link href="/login" onClick={handleLogout}><Icon.LogOut/> Logout</Nav.Link>
         </Navbar.Collapse>
