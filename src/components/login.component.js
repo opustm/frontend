@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 
 import {Container, Row, Col, Form, Button, Modal} from 'react-bootstrap';
+import * as Icon from 'react-feather';
+import InputColor from 'react-input-color';
+
 import '../stylesheets/Login.css';
-import APIHost from '../services/api.service';
+import API_Host from '../services/api.service';
 import AuthService from '../services/auth.service';
 
-const API_HOST = APIHost();
+const API_HOST = API_Host();
+
 
 export default class Login extends Component {
   constructor(props) {
@@ -19,24 +23,18 @@ export default class Login extends Component {
       last_name: '',
       phone: '',
       password: '',
-      picture: 'default',
+      picture: '#000000',
       theme: 'light',
       loginError: false,
-      showModal: false
+      showModal: false,
     };
   }
 
   componentDidMount() {
     if (this.state.logged_in) {
-      fetch(API_HOST+'main/current_user/', {
-        headers: {
-          Authorization: `JWT ${localStorage.getItem('token')}`
-        }
-      })
-        .then(res => res.json())
-        .then(json => {
-          this.setState({ username: json.username });
-        });
+      let token = localStorage.getItem('token');
+      let newState = this.state.authService.getCurrentUser(token);
+      this.setState(newState);
     }
   }
 
@@ -66,6 +64,12 @@ export default class Login extends Component {
 
   handleClose = () => this.setState({showModal: false});
   handleShow = () => this.setState({showModal: true});
+
+  handleColorChange(e) {
+    this.setState({
+      picture: e.hex
+    });
+  }
 
   render() {
     return (
@@ -196,6 +200,22 @@ export default class Login extends Component {
                   onChange={this.handleChange}
                 />
               </Form.Group>
+              <p id='iconP'>Pick a color for your avatar:</p>
+              <Row>
+                <Col lg={{offset: 4, span: 3}}>
+                  <Icon.User size={60} color={this.state.picture} />
+                </Col>
+                <Col>
+                  <InputColor
+                    style={{'margin-top': '15px'}}
+                    initialValue="#000000"
+                    onChange={e => this.handleColorChange(e)}
+                    placement="right"
+                  />
+                  <p>Click Me!</p>
+                </Col>
+              </Row>
+              
             </Form>
           </Modal.Body>
           <Modal.Footer>
