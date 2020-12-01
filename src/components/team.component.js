@@ -6,41 +6,22 @@ import NavigationBar from './navbar.component';
 // Group
 
 export default function Team(props) {
-  let logoutCallback = (navbarData) => {
-    this.props.parentCallback(navbarData);
-  }
     return (
       <Container fluid>
-        <Row>
-          <Col>
-            <NavigationBar parentCallback={logoutCallback}/>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
+            <NavigationBar loggedIn={props.loggedIn} onLoggedInChange={props.onLoggedInChange}/>
             <Jumbotron>
               <h1>Create or Join a Team</h1>
               <p>
                 Instructions erspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, tium doloremque laudantium, tot
               </p>
                 <Form.Row>
-                <Col>
                   <p>
                     <Button variant="success"><Icon.Plus/> New Team</Button>
                   </p>
-                </Col>
-                <Col>
                   <Form.Control type="text" placeholder="Enter a code or link"/>
-                </Col>
-                <Col>
                   <Button variant="primary" type="submit">Join</Button>
-                </Col>
                 </Form.Row>
             </Jumbotron>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
           <Card>
           <Card.Header><Card.Title>Your Teams</Card.Title>
           <small>You are a member in the following teams</small>
@@ -53,8 +34,6 @@ export default function Team(props) {
             </ListGroup>
           </Card.Body>
         </Card>
-          </Col>
-        </Row>
       </Container>
     )
 }
