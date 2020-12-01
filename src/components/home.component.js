@@ -5,7 +5,7 @@ import NavigationBar from './navbar.component';
 export default function Home(props) {  
     return (
         <div>
-            <NavigationBar></NavigationBar>
+            <NavigationBar loggedIn={props.loggedIn} onLoggedInChange={props.onLoggedInChange}></NavigationBar>
             <div className="container-fluid">
                 <div className="row">
                 <nav id="sidebarMenu" className="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">

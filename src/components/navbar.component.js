@@ -1,22 +1,19 @@
 import * as Icon from 'react-feather';
 import { Navbar, Nav } from 'react-bootstrap';
-import AuthService from '../services/auth.service';
+import { Link } from 'react-router-dom';
 
 export default function NavigationBar(props) {
-  let authService = new AuthService();
-
-  let handleLogout = () => {
-    authService.logout();
-    this.props.parentCallback(false);
-  };
-
     return (
       <Navbar>
-        <Navbar.Brand href="/">Opus</Navbar.Brand>
+        <Link to='/' className='navbar-brand'>Opus</Link>
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
         <Nav.Link href="#"><Icon.User/> Profile</Nav.Link>
-        <Nav.Link href="/login" onClick={handleLogout}><Icon.LogOut/> Logout</Nav.Link>
+        <div onClick={() => {props.onLoggedInChange(false)}}>
+          <Link to='/login'>
+            <Icon.LogOut/> Logout
+          </Link>
+        </div>
         </Navbar.Collapse>
       </Navbar>
     )

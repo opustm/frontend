@@ -54,7 +54,7 @@ export default class Login extends Component {
     e.preventDefault();
     let state = await this.state.authService.login(data);
     this.setState(state);
-    this.props.parentCallback(this.state.logged_in);
+    this.props.onLoggedInChange(this.state.logged_in);
   }
 
   async handleSignup(e, data) {
