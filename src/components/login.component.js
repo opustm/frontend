@@ -5,10 +5,7 @@ import * as Icon from 'react-feather';
 import InputColor from 'react-input-color';
 
 import '../stylesheets/Login.css';
-import API_Host from '../services/api.service';
 import AuthService from '../services/auth.service';
-
-const API_HOST = API_Host();
 
 
 export default class Login extends Component {
@@ -52,7 +49,8 @@ export default class Login extends Component {
     e.preventDefault();
     let state = await this.state.authService.login(data);
     this.setState(state);
-    this.props.parentCallback(this.state.logged_in);
+    console.log(this.state.logged_in);
+    this.props.onLoggedInChange(this.state.logged_in);
   }
 
   async handleSignup(e, data) {

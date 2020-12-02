@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
 import { Container, Row, Col, Spinner } from 'react-bootstrap';
 import * as Icon from 'react-feather';
-import Navbar from './navbar.component';
+
+import NavigationBar from './navbar.component';
 import APIHost from '../services/api.service';
+import AuthService from '../services/auth.service';
 import '../stylesheets/Profile.css';
 
 const API_HOST = APIHost();
@@ -13,12 +15,21 @@ export default class Profile extends Component {
     super(props);
     this.state = {
       showSpinner: true,
-      profileExists: false
+      profileExists: false,
+      authService: new AuthService(),
+      currentUser: {}
     }
   }
 
   componentDidMount() {
+    let userToken = localStorage.getItem('token');
+    this.awaitCurrentUserData(userToken);
     this.getUserData(this.props.match.params.userID);
+  }
+
+  async awaitCurrentUserData(token) {
+    let currentUserData = await this.state.authService.getCurrentUser(token);
+    this.setState({currentUser: currentUserData});
   }
 
   async getUserData(userID) {
@@ -44,6 +55,7 @@ export default class Profile extends Component {
         showSpinner: false
       });
     }
+    console.log(this.state);
   }
 
   render() {
@@ -51,7 +63,7 @@ export default class Profile extends Component {
     <Container>
       <Row>
         <Col>
-          <Navbar></Navbar>
+          <NavigationBar loggedIn={this.props.loggedIn} onLoggedInChange={this.props.handleLoginChange}></NavigationBar>
         </Col>
       </Row>
       {
@@ -68,23 +80,19 @@ export default class Profile extends Component {
         </Row> :
         <Row>
           <Col>
-            <Row>
-              <Icon.User color={this.state.picture === 'default' ? 'black' : this.state.picture} size={100} stroke-width={1} />
-            </Row>
+              <Icon.User color={this.state.picture === 'default' ? 'black' : this.state.picture} size={100} strokeWidth={1} />
             <Row>
               <h3>{this.state.first_name + ' '+ this.state.last_name}</h3>
               <p>Member since [date here]</p>
+              {this.state.currentUser.username === this.state.username ? <p>Hey! This is your page!</p> : ''}
             </Row>
           </Col>
           <Col>
               <h5 className="reduceHeaderMargin">Username: {this.state.username}</h5>
               <h5>Phone: {this.state.phone}</h5>
               <h5>Email: {this.state.email}</h5>
-              <Row>
-
-                <Icon.MessageSquare />
-                <p>Chat</p>
-              </Row>
+              <Icon.MessageSquare />
+              <p>Chat</p>
               <Icon.Calendar />
               <p>Meet</p>
           </Col>

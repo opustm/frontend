@@ -65,7 +65,7 @@ export default class AuthService {
 
   async getCurrentUser(token) {
     let state;
-    await fetch(API_HOST + '/main/current_user/', {
+    await fetch(API_HOST + 'main/current_user/', {
       headers: {
         Authorization: `JWT ${token}`
       }
