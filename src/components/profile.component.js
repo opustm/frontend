@@ -7,7 +7,7 @@ import APIHost from '../services/api.service';
 import AuthService from '../services/auth.service';
 import '../stylesheets/Profile.css';
 
-const API_HOST = 'http://127.0.0.1:8000/';
+const API_HOST = APIHost();
 const axios = require('axios').default;
 
 export default class Profile extends Component {
@@ -35,7 +35,7 @@ export default class Profile extends Component {
 
   // users/userID or user/username
   async getUserData(userID) {
-    let userRoute = API_HOST + `main/users/${userID}`;
+    let userRoute = API_HOST + `users/${userID}`;
     try {
       let response = await axios.get(userRoute);
       let data = response.data;
