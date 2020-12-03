@@ -11,7 +11,7 @@ import AuthService from './services/auth.service';
 
 export default function App() {
   let authService = new AuthService();
-  let [loggedIn, setLoggedIn] = useState(false);
+  let [loggedIn, setLoggedIn] = useState(localStorage.getItem('token' ? true : false));
   let handleLoginChange = (isLoggedIn) => {
     if (!isLoggedIn) {
       authService.logout();
@@ -27,17 +27,13 @@ export default function App() {
           <Route path="/about">
             <About />
           </Route>
-          <Route path="/login">
-            {loggedIn === true ? <Redirect to='/' /> : <Login loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/>}
+          <Route path="/login" component={() => {return localStorage.getItem('token') ? <Redirect to='/' /> : <Login onLoggedInChange={handleLoginChange}/>}}>
           </Route>
-          <Route path="/users/:userID" component={(props) => <Profile {...props} loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/>}>
-  
+          <Route path="/users/:userID" component={(props) => {return localStorage.getItem('token') ? <Profile {...props} /> : <Redirect to="/login"/>}}>
           </Route>
-          <Route path="/teams">
-            {loggedIn === true ? <Team loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/> : <Redirect to="/login" />}
+          <Route path="/teams" component={() => {return localStorage.getItem('token') ? <Team /> : <Redirect to="/login" />}}>
           </Route>
-          <Route path="/">
-            {loggedIn === true ? <Home loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/> : <Redirect to="/login" />}
+          <Route path="/" component={() => {return localStorage.getItem('token') ? <Home /> : <Redirect to="/login" />}}>
           </Route>
         </Switch>
       </Router>

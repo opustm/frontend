@@ -8,7 +8,7 @@ import NavigationBar from './navbar.component';
 export default function Team(props) {
     return (
       <Container fluid>
-            <NavigationBar loggedIn={props.loggedIn} onLoggedInChange={props.onLoggedInChange}/>
+            <NavigationBar/>
             <Jumbotron>
               <h1>Create or Join a Team</h1>
               <p>

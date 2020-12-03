@@ -2,8 +2,10 @@ import React from 'react';
 import * as Icon from 'react-feather';
 import { Navbar, NavDropdown } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import AuthService from '../services/auth.service';
 
 export default function NavigationBar(props) {
+  let authService = new AuthService();
   return (
     <Navbar>
       <Link to='/' className='navbar-brand'>Opus</Link>
@@ -17,7 +19,7 @@ export default function NavigationBar(props) {
           <NavDropdown.Item href='/users/3'>User Z</NavDropdown.Item>
         </NavDropdown>
       <Link to='/users/7'><Icon.User/> Profile</Link>
-      <div onClick={() => {props.onLoggedInChange(false)}}>
+      <div onClick={() => {authService.logout()}}>
         <Link to='/login'>
           <Icon.LogOut/> Logout
         </Link>

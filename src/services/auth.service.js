@@ -1,6 +1,6 @@
 import APIHost from './api.service';
 
-const API_HOST = APIHost();
+const API_HOST = 'http://127.0.0.1:8000/';
 
 export default class AuthService {
   async login(data) {
@@ -36,9 +36,11 @@ export default class AuthService {
   }
 
   logout() {
+    console.log('removing token');
     localStorage.removeItem('token');
   }
 
+  // Change to users/
   async signup(data) {
     let state;
     await fetch(API_HOST+'main/users/', {
@@ -63,6 +65,7 @@ export default class AuthService {
     return state;
   }
 
+  // Change to current_user/
   async getCurrentUser(token) {
     let state;
     await fetch(API_HOST + 'main/current_user/', {

@@ -7,7 +7,7 @@ import APIHost from '../services/api.service';
 import AuthService from '../services/auth.service';
 import '../stylesheets/Profile.css';
 
-const API_HOST = APIHost();
+const API_HOST = 'http://127.0.0.1:8000/';
 const axios = require('axios').default;
 
 export default class Profile extends Component {
@@ -22,6 +22,7 @@ export default class Profile extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props.loggedIn);
     let userToken = localStorage.getItem('token');
     this.awaitCurrentUserData(userToken);
     this.getUserData(this.props.match.params.userID);
@@ -32,6 +33,7 @@ export default class Profile extends Component {
     this.setState({currentUser: currentUserData});
   }
 
+  // users/userID or user/username
   async getUserData(userID) {
     let userRoute = API_HOST + `main/users/${userID}`;
     try {
@@ -63,7 +65,7 @@ export default class Profile extends Component {
     <Container>
       <Row>
         <Col>
-          <NavigationBar loggedIn={this.props.loggedIn} onLoggedInChange={this.props.handleLoginChange}></NavigationBar>
+          <NavigationBar></NavigationBar>
         </Col>
       </Row>
       {
