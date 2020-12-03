@@ -41,7 +41,7 @@ export default class AuthService {
 
   async signup(data) {
     let state;
-    await fetch(API_HOST+'main/users/', {
+    await fetch(API_HOST+'users/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
