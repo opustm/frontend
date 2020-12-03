@@ -22,10 +22,9 @@ export default class Profile extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.loggedIn);
     let userToken = localStorage.getItem('token');
     this.awaitCurrentUserData(userToken);
-    this.getUserData(this.props.match.params.userID);
+    this.getUserData(this.props.match.params.username);
   }
 
   async awaitCurrentUserData(token) {
@@ -33,9 +32,9 @@ export default class Profile extends Component {
     this.setState({currentUser: currentUserData});
   }
 
-  // users/userID or user/username
-  async getUserData(userID) {
-    let userRoute = API_HOST + `users/${userID}`;
+  // users/{userID} or user/{username}
+  async getUserData(username) {
+    let userRoute = API_HOST + `user/${username}`;
     try {
       let response = await axios.get(userRoute);
       let data = response.data;
@@ -57,50 +56,45 @@ export default class Profile extends Component {
         showSpinner: false
       });
     }
-    console.log(this.state);
   }
 
   render() {
     return (
-    <Container>
-      <Row>
-        <Col>
-          <NavigationBar></NavigationBar>
-        </Col>
-      </Row>
-      {
-        this.state.showSpinner ?
-        <Row>
-          <Spinner animation="border" role="status">
-            <span className="sr-only">Loading...</span>
-          </Spinner>
-        </Row>
-        :
-        !this.state.profileExists ? 
-        <Row>
-          <h4>Oops. This page doesn't match any existing users -- try again.</h4>
-        </Row> :
-        <Row>
-          <Col>
-              <Icon.User color={this.state.picture === 'default' ? 'black' : this.state.picture} size={100} strokeWidth={1} />
-            <Row>
-              <h3>{this.state.first_name + ' '+ this.state.last_name}</h3>
-              <p>Member since [date here]</p>
-              {this.state.currentUser.username === this.state.username ? <p>Hey! This is your page!</p> : ''}
-            </Row>
-          </Col>
-          <Col>
-              <h5 className="reduceHeaderMargin">Username: {this.state.username}</h5>
-              <h5>Phone: {this.state.phone}</h5>
-              <h5>Email: {this.state.email}</h5>
-              <Icon.MessageSquare />
-              <p>Chat</p>
-              <Icon.Calendar />
-              <p>Meet</p>
-          </Col>
-        </Row>
-      }
-    </Container>
+      <Container fluid>
+        <NavigationBar currentUsername={this.state.currentUser.username}></NavigationBar>
+        {
+          this.state.showSpinner ?
+          <Row>
+            <Spinner animation="border" role="status">
+              <span className="sr-only">Loading...</span>
+            </Spinner>
+          </Row>
+          :
+          !this.state.profileExists ? 
+          <Row>
+            <h4>Oops. This page doesn't match any existing users -- try again.</h4>
+          </Row> :
+          <Row>
+            <Col>
+                <Icon.User color={this.state.picture === 'default' ? 'black' : this.state.picture} size={100} strokeWidth={1} />
+              <Row>
+                <h3>{this.state.first_name + ' '+ this.state.last_name}</h3>
+                <p>Member since [date here]</p>
+                {this.state.currentUser.username === this.state.username ? <p>Hey! This is your page!</p> : ''}
+              </Row>
+            </Col>
+            <Col>
+                <h5 className="reduceHeaderMargin">Username: {this.state.username}</h5>
+                <h5>Phone: {this.state.phone}</h5>
+                <h5>Email: {this.state.email}</h5>
+                <Icon.MessageSquare />
+                <p>Chat</p>
+                <Icon.Calendar />
+                <p>Meet</p>
+            </Col>
+          </Row>
+        }
+      </Container>
     )
   }
 }

@@ -49,7 +49,6 @@ export default class Login extends Component {
     e.preventDefault();
     let state = await this.state.authService.login(data);
     this.setState(state);
-    console.log(this.state.logged_in);
     this.props.onLoggedInChange(this.state.logged_in);
   }
 
@@ -72,7 +71,7 @@ export default class Login extends Component {
   render() {
     return (
       <Container fluid>
-        <Row>
+        <Row className='loginRow'>
           <Col id='leftLogin'>
             <Row>
               <Col md={{offset:2}}>
