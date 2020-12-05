@@ -7,6 +7,7 @@ import Team from './components/team.component';
 import Home from './components/home.component';
 import About from './components/about.component';
 import AuthService from './services/auth.service';
+import Navigation from './components/Navigation/navigation.component';
 
 export default function App() {
   let authService = new AuthService();
@@ -20,21 +21,20 @@ export default function App() {
   
     return (
       <Router>
-        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
         <Switch>
           <Route path="/about">
             <About />
           </Route>
-            <Route path="/login">
-              {loggedIn === true ? <Redirect to='/' /> : <Login loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/>}
-            </Route>
+          <Route path="/login">
+            {loggedIn === true ? <Redirect to='/' /> : <Login loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/>}
+          </Route>
           <div className="navbar-enabled">
-            <Route path="/teams">
-              {loggedIn === true ? <Team loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/> : <Redirect to="/login" />}
-            </Route>
+            {loggedIn === true ? <Navigation/> : <Redirect to="/login"/>}
             <Route path="/">
-              {loggedIn === true ? <Home loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/> : <Redirect to="/login" />}
+              <Home/>
+            </Route>
+            <Route path="/teams">
+              <Team/>
             </Route>
           </div>
         </Switch>
