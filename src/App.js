@@ -26,15 +26,17 @@ export default function App() {
           <Route path="/about">
             <About />
           </Route>
-          <Route path="/login">
-            {loggedIn === true ? <Redirect to='/' /> : <Login loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/>}
-          </Route>
-          <Route path="/teams">
-            {loggedIn === true ? <Team loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/> : <Redirect to="/login" />}
-          </Route>
-          <Route path="/">
-            {loggedIn === true ? <Home loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/> : <Redirect to="/login" />}
-          </Route>
+            <Route path="/login">
+              {loggedIn === true ? <Redirect to='/' /> : <Login loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/>}
+            </Route>
+          <div className="navbar-enabled">
+            <Route path="/teams">
+              {loggedIn === true ? <Team loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/> : <Redirect to="/login" />}
+            </Route>
+            <Route path="/">
+              {loggedIn === true ? <Home loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/> : <Redirect to="/login" />}
+            </Route>
+          </div>
         </Switch>
       </Router>
     );
