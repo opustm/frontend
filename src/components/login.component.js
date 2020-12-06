@@ -28,7 +28,7 @@ export default class Login extends Component {
 
   componentDidMount() {
     if (this.state.logged_in) {
-      fetch(API_HOST+'main/current_user/', {
+      fetch(API_HOST+'current_user/', {
         headers: {
           Authorization: `JWT ${localStorage.getItem('token')}`
         }
