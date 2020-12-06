@@ -4,6 +4,11 @@ const API_HOST = APIHost();
 
 export default class AuthService {
   async login(data) {
+    data = {
+      username: data.username,
+      password: data.password
+    }
+    console.log(data);
     let state;
     await fetch(API_HOST+'token-auth/', {
       method: 'POST',
@@ -39,6 +44,7 @@ export default class AuthService {
     localStorage.removeItem('token');
   }
 
+  // should be addUsers/
   async signup(data) {
     let state;
     await fetch(API_HOST+'users/', {

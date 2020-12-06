@@ -34,7 +34,7 @@ export default class Profile extends Component {
 
   // users/{userID} or user/{username}
   async getUserData(username) {
-    let userRoute = API_HOST + `user/${username}`;
+    let userRoute = API_HOST + `userDetails/${username}`;
     try {
       let response = await axios.get(userRoute);
       let data = response.data;

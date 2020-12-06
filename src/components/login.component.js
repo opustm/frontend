@@ -22,6 +22,8 @@ export default class Login extends Component {
       password: '',
       picture: '#000000',
       theme: 'light',
+      teams: [1],
+      cliques: [1],
       loginError: false,
       showModal: false,
     };
