@@ -1,13 +1,24 @@
 import React, {useState} from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import './stylesheets/App.css'
 
-import Login from './components/login.component';
-import Team from './components/team.component';
-import Home from './components/home.component';
-import About from './components/about.component';
+// Services
 import AuthService from './services/auth.service';
+
+// Components
 import Navigation from './components/Navigation/navigation.component';
+
+// Pages
+import Login from './components/login.component';
+import About from './components/about.component';
+import Dashboard from './components/home.component';
+
+// Apps
+import Teams from './components/apps/Teams/Teams';
+import Calendar from './components/apps/Calendar/Calendar';
+import Chat from './components/apps/Chat/Chat';
+import Contacts from './components/apps/Contacts/Contacts';
+import Announcements from './components/apps/Announcements/Announcements';
 
 export default function App() {
   let authService = new AuthService();
@@ -18,25 +29,21 @@ export default function App() {
     }
     setLoggedIn(isLoggedIn);
   }
-  
+
     return (
       <Router>
+        <Navigation onLoggedInChange={handleLoginChange}/>
         <Switch>
-          <Route path="/about">
-            <About />
-          </Route>
           <Route path="/login">
-            {loggedIn === true ? <Redirect to='/' /> : <Login loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/>}
+            {loggedIn ? <Redirect to='/' /> : <Login loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/>}
           </Route>
-          <div className="navbar-enabled">
-            {loggedIn === true ? <Navigation onLoggedInChange={handleLoginChange}/> : <Redirect to="/login"/>}
-            <Route path="/">
-              <Home/>
-            </Route>
-            <Route path="/teams">
-              <Team/>
-            </Route>
-          </div>
+          <Route path="about" exact component={About}/>
+          <Route path="/" exact component={Dashboard}/>
+          <Route path="/calendar" exact component={Calendar}/>
+          <Route path="/teams" exact component={Teams}/>
+          <Route path="/chat" exact component={Chat}/>
+          <Route path="/contacts" exact component={Contacts}/>
+          <Route path="/announcements" exact component={Announcements}/>
         </Switch>
       </Router>
     );
