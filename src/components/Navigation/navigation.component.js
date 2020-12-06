@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import * as Icon from 'react-icons/fi';
 import {Link} from 'react-router-dom';
-import {SidebarApps} from './navigation.data';
-import * as BS from 'react-bootstrap';
+import {SidebarApps,SidebarTeams} from './navigation.data';
+import {IconContext} from 'react-icons';
 import './navigation.css';
 
 function Navigation(props){
@@ -10,29 +10,10 @@ function Navigation(props){
     const showSidebar = () => setSidebar(!sidebar)
     return (
         <>
-            <div className="navbar">
-                <BS.Navbar>
-                    <Link to="#" className="menu-bars">
-                        <Icon.FiMenu onClick={showSidebar}/>
-                    </Link>
-                    <BS.Navbar.Toggle/>
-                    <BS.Navbar.Collapse className="justify-content-end">
-                    <BS.Nav.Link href="#"><Icon.FiUser/>Profile</BS.Nav.Link>
-                    <div onClick={() => {props.onLoggedInChange(false)}}>
-                    <Link to='/login'>
-                        <Icon.FiLogOut/> Logout
-                    </Link>
-                    </div>
-                    </BS.Navbar.Collapse>
-                </BS.Navbar>
-            </div>
+            <IconContext.Provider value={{"color":"#000000"}}>
             <nav className={sidebar ? "nav-menu active" : 'nav-menu'}>
                 <ul className="nav-menu-items">
-                    <li className="navbar-toggle">
-                        <Link to="#" className="menu-bars">
-                            <Icon.FiX/>
-                        </Link>
-                    </li>
+                    <span className="navbar-toggle"/>
                     {SidebarApps.map((item,index) => {
                        return (
                            <li key={index} className={item.cName}>
@@ -41,10 +22,39 @@ function Navigation(props){
                                    <span>{item.title}</span>
                                </Link>
                            </li>
-                       ) 
+                       );
+                    })}
+                    <li className="nav-section">My Teams</li>
+                    {SidebarTeams.map((item,index) => {
+                        return (
+                            <li key={index} className={item.cName}>
+                                <Link to={item.path}>
+                                    <img src={item.photo} className="avatar nav-menu-photo"/>
+                                    <span>{item.title}</span>
+                                </Link>
+                            </li>
+                        );
                     })}
                 </ul>
             </nav>
+            </IconContext.Provider>
+            <IconContext.Provider value={{"color":"#FFFFFF"}}>
+            <div className="navbar">
+                <Link to="#" className="menu-bars">
+                    <Icon.FiMenu onClick={showSidebar}/>
+                </Link>
+                <Link to="#" className="nav-text nav-title">
+                    Opus Team
+                </Link>
+                <Link to="#" className="menu-photo">
+                    <img 
+                        src="https://via.placeholder.com/40/2D9CDB?text=B" 
+                        className="avatar" 
+                        onClick={() => {props.onLoggedInChange(false)}}
+                    />
+                </Link>
+            </div>
+            </IconContext.Provider>
         </>
     );
 }
