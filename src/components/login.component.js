@@ -206,7 +206,7 @@ export default class Login extends Component {
                 </Col>
                 <Col>
                   <InputColor
-                    style={{'margin-top': '15px'}}
+                    style={{'marginTop': '15px'}}
                     initialValue="#000000"
                     onChange={e => this.handleColorChange(e)}
                     placement="right"

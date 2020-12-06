@@ -9,7 +9,7 @@ export default class AuthService {
       password: data.password
     }
     let state;
-    await fetch(API_HOST+'token-auth/', {
+    await fetch(API_HOST+'tokenAuth/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ export default class AuthService {
   // should be addUsers/
   async signup(data) {
     let state;
-    await fetch(API_HOST+'users/', {
+    await fetch(API_HOST+'addUsers/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -70,7 +70,7 @@ export default class AuthService {
 
   async getCurrentUser(token) {
     let state;
-    await fetch(API_HOST + 'current_user/', {
+    await fetch(API_HOST + 'currentUser/', {
       headers: {
         Authorization: `JWT ${token}`
       }
