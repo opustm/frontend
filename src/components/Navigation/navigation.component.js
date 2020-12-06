@@ -2,8 +2,12 @@ import React from 'react';
 import * as Icon from 'react-icons/fi';
 import {Link} from 'react-router-dom';
 import {SidebarApps,SidebarTeams} from './navigation.data';
+import {Dropdown} from 'react-bootstrap';
 import {IconContext} from 'react-icons';
 import './navigation.css';
+import DropdownToggle from 'react-bootstrap/esm/DropdownToggle';
+import DropdownItem from 'react-bootstrap/esm/DropdownItem';
+import DropdownMenu from 'react-bootstrap/esm/DropdownMenu';
 
 function Navigation(props){
     const showSidebar = () => props.setSidebar(!sidebar)
@@ -29,7 +33,7 @@ function Navigation(props){
                         return (
                             <li key={index} className={item.cName}>
                                 <Link to={item.path}>
-                                    <img src={item.photo} className="avatar nav-menu-photo"/>
+                                    <img alt='Profile Menu' src={item.photo} className="avatar nav-menu-photo"/>
                                     <span>{item.title}</span>
                                 </Link>
                             </li>
@@ -46,13 +50,30 @@ function Navigation(props){
                 <Link to="#" className="nav-text nav-title">
                     Opus Team
                 </Link>
-                <Link to="#" className="menu-photo">
-                    <img 
-                        src="https://via.placeholder.com/40/2D9CDB?text=B" 
-                        className="avatar" 
-                        onClick={() => {props.onLoggedInChange(false)}}
-                    />
-                </Link>
+                <Dropdown>
+                    <DropdownToggle>
+                        <Link to="#" className="menu-photo">
+                            <img 
+                                alt='Profile Menu'
+                                src="https://via.placeholder.com/40/2D9CDB?text=B" 
+                                className="avatar" 
+                                
+                            />
+                        </Link>
+                    </DropdownToggle>
+                    <DropdownMenu>
+                        <DropdownItem><Icon.FiUser color='#7b8a8b' className='dropdownIcon'/>View Profile</DropdownItem>
+                        <DropdownItem 
+                            onClick={() => {
+                                localStorage.removeItem('token');
+                                props.onLoggedInChange(false);
+                            }}
+                        >
+                            <Icon.FiLogOut color='#7b8a8b' className='dropdownIcon'/>
+                            Logout
+                        </DropdownItem>
+                    </DropdownMenu>
+                </Dropdown>
             </div>
             </IconContext.Provider>
         </>

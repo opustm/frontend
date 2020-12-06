@@ -37,7 +37,6 @@ export default class Profile extends Component {
     console.log(this.state);
   }
 
-  // users/{userID} or user/{username}
   async getUserData(username) {
     let userRoute = API_HOST + `userDetails/${username}`;
     try {
@@ -83,7 +82,6 @@ export default class Profile extends Component {
                 <Icon.User color={this.state.picture === 'default' ? 'black' : this.state.picture} size={100} strokeWidth={1} />
               <Row>
                 <h3>{this.state.first_name + ' '+ this.state.last_name}</h3>
-                <p>Member since [date here]</p>
                 {this.state.currentUser.username === this.state.username ? 
                 <p>
                   Hey! This is your page!
