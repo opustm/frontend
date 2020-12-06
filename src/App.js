@@ -29,7 +29,7 @@ export default function App() {
             {loggedIn === true ? <Redirect to='/' /> : <Login loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/>}
           </Route>
           <div className="navbar-enabled">
-            {loggedIn === true ? <Navigation/> : <Redirect to="/login"/>}
+            {loggedIn === true ? <Navigation onLoggedInChange={handleLoginChange}/> : <Redirect to="/login"/>}
             <Route path="/">
               <Home/>
             </Route>
