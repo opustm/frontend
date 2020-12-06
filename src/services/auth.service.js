@@ -5,7 +5,7 @@ const API_HOST = APIHost();
 export default class AuthService {
   async login(data) {
     let state;
-    await fetch(API_HOST+'token-auth/', {
+    await fetch(API_HOST+'tokenAuth/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -41,7 +41,7 @@ export default class AuthService {
 
   async signup(data) {
     let state;
-    await fetch(API_HOST+'users/', {
+    await fetch(API_HOST+'addUsers/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
