@@ -1,6 +1,5 @@
 import {Container, Jumbotron, Button, Form, Card, ListGroup, ListGroupItem} from 'react-bootstrap';
 import * as Icon from 'react-feather';
-// import NavigationBar from './navbar.component';
 
 // Team
 // Group
@@ -8,7 +7,6 @@ import * as Icon from 'react-feather';
 export default function Team(props) {
     return (
       <Container fluid>
-            {/* <NavigationBar/> */}
             <Jumbotron>
               <h1>Create or Join a Team</h1>
               <p>

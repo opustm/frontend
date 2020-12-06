@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import { Container, Row, Col, Spinner } from 'react-bootstrap';
 import * as Icon from 'react-feather';
 
-import NavigationBar from './navbar.component';
 import APIHost from '../services/api.service';
 import AuthService from '../services/auth.service';
 import '../stylesheets/Profile.css';
@@ -67,7 +66,6 @@ export default class Profile extends Component {
   render() {
     return (
       <Container fluid>
-        <NavigationBar currentUsername={this.state.currentUser.username}></NavigationBar>
         {
           this.state.showSpinner ?
           <Row>
