@@ -17,11 +17,13 @@ img.avatar {
     height: 90vh;
     align-items: center;
     justify-content: center;
-    font-size: 3rem;
+    transition: 500ms;
+    margin-top: 1rem;
 }
 
 .page.sidebar-toggled{
-    position: absolute;
+    position: relative;
     width: calc(100% - 250px);
     margin-left: 250px;
+    transition: 500ms;
 }

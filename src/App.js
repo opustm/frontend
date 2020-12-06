@@ -23,6 +23,8 @@ import Announcements from './components/apps/Announcements/Announcements';
 export default function App() {
   let authService = new AuthService();
   let [loggedIn, setLoggedIn] = useState(false);
+  let [sidebarToggled,setSidebar] = useState(false)
+  
   let handleLoginChange = (isLoggedIn) => {
     if (!isLoggedIn) {
       authService.logout();
@@ -32,18 +34,23 @@ export default function App() {
 
     return (
       <Router>
-        <Navigation onLoggedInChange={handleLoginChange}/>
+        <Navigation 
+          sidebar={sidebarToggled}
+          setSidebar={setSidebar}
+          onLoggedInChange={handleLoginChange}/>
         <Switch>
           <Route path="/login">
             {loggedIn ? <Redirect to='/' /> : <Login loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/>}
           </Route>
-          <Route path="about" exact component={About}/>
-          <Route path="/" exact component={Dashboard}/>
-          <Route path="/calendar" exact component={Calendar}/>
-          <Route path="/teams" exact component={Teams}/>
-          <Route path="/chat" exact component={Chat}/>
-          <Route path="/contacts" exact component={Contacts}/>
-          <Route path="/announcements" exact component={Announcements}/>
+          <div class={sidebarToggled? "page sidebar-toggled":"page"}>
+            <Route path="about" exact component={About}/>
+            <Route path="/" exact component={Dashboard}/>
+            <Route path="/calendar" exact component={Calendar}/>
+            <Route path="/teams" exact component={Teams}/>
+            <Route path="/chat" exact component={Chat}/>
+            <Route path="/contacts" exact component={Contacts}/>
+            <Route path="/announcements" exact component={Announcements}/>
+          </div>
         </Switch>
       </Router>
     );

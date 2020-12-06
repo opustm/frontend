@@ -6,8 +6,8 @@ import {IconContext} from 'react-icons';
 import './navigation.css';
 
 function Navigation(props){
-    const [sidebar, setSidebar]= useState(false)
-    const showSidebar = () => setSidebar(!sidebar)
+    const showSidebar = () => props.setSidebar(!sidebar)
+    let sidebar = props.sidebar;
     return (
         <>
             <IconContext.Provider value={{"color":"#000000"}}>
