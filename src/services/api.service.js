@@ -15,7 +15,7 @@ function locationType() {
 
 function APIHost() {
     return (locationType() < 2) ? 
-    'http://localhost:8000/': 'http://localhost:8000/';
+    'http://localhost:8000/': 'http://opustm-api-staging.herokuapp.com/';
 }
 
 export default APIHost;
