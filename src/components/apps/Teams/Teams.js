@@ -1,14 +1,12 @@
-import {Container, Jumbotron, Button, Form, Card, ListGroup, ListGroupItem} from 'react-bootstrap';
+import {Container, Jumbotron, Button, Col, Form, Card, ListGroup, ListGroupItem} from 'react-bootstrap';
 import * as Icon from 'react-feather';
-// import NavigationBar from './navbar.component';
 
 // Team
 // Group
 
-export default function Team(props) {
+export default function Teams(props) {
     return (
       <Container fluid>
-            {/* <NavigationBar/> */}
             <Jumbotron>
               <h1>Create or Join a Team</h1>
               <p>
