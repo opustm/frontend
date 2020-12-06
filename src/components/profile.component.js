@@ -17,7 +17,8 @@ export default class Profile extends Component {
       showSpinner: true,
       profileExists: false,
       authService: new AuthService(),
-      currentUser: {}
+      currentUser: {},
+      editingInfo: false
     }
   }
 
@@ -30,6 +31,11 @@ export default class Profile extends Component {
   async awaitCurrentUserData(token) {
     let currentUserData = await this.state.authService.getCurrentUser(token);
     this.setState({currentUser: currentUserData});
+  }
+
+  handleEdit() {
+    this.setState({editingInfo: true});
+    console.log(this.state);
   }
 
   // users/{userID} or user/{username}
@@ -80,7 +86,11 @@ export default class Profile extends Component {
               <Row>
                 <h3>{this.state.first_name + ' '+ this.state.last_name}</h3>
                 <p>Member since [date here]</p>
-                {this.state.currentUser.username === this.state.username ? <p>Hey! This is your page!</p> : ''}
+                {this.state.currentUser.username === this.state.username ? 
+                <p>
+                  Hey! This is your page!
+                  <Icon.Settings onClick={this.handleEdit()}>Edit your settings</Icon.Settings>
+                </p> : ''}
               </Row>
             </Col>
             <Col>

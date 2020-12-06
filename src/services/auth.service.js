@@ -8,7 +8,6 @@ export default class AuthService {
       username: data.username,
       password: data.password
     }
-    console.log(data);
     let state;
     await fetch(API_HOST+'token-auth/', {
       method: 'POST',
