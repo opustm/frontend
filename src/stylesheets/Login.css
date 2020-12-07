@@ -41,3 +41,7 @@ html, body, #root, .container-fluid, .loginRow {
 #iconP {
   margin-bottom: 0.5rem;
 }
+
+span.css-1vpurlb-InputColor {
+  margin-left: 0px;
+}
