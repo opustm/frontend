@@ -1,3 +1,7 @@
 #reduceHeaderMargin {
   height: 100%;
 }
+
+#editProfile {
+  cursor: pointer;
+}

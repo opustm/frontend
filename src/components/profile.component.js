@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import { Container, Row, Col, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Spinner, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import * as Icon from 'react-feather';
 
 import APIHost from '../services/api.service';
@@ -16,7 +17,8 @@ export default class Profile extends Component {
       showSpinner: true,
       profileExists: false,
       authService: new AuthService(),
-      editingInfo: false
+      editingInfo: false,
+      updateError: false
     }
   }
 
@@ -53,6 +55,26 @@ export default class Profile extends Component {
     }
   }
 
+  async editUserData(userInfo) {
+    let body = {
+      "username": userInfo.username,
+      "cliques": [1],
+      "phone": "1123581321",
+      "picture": "#0EDD12"
+    }
+    console.log(body);
+    let userRoute = API_HOST  + `userDetails/${userInfo.username}/`;
+    try {
+      let response = await axios.put(userRoute, body);
+      console.log(response);
+      this.setState(response.data);
+    }
+    catch (error) {
+      this.setState({updateError: true});
+      console.log(error);
+    }
+  }
+
   render() {
     return (
       <Container fluid>
@@ -71,26 +93,27 @@ export default class Profile extends Component {
           <Row>
             <Col>
                 <Icon.User color={this.state.picture === 'default' ? 'black' : this.state.picture} size={100} strokeWidth={1} />
-              <Row>
                 <h3>{this.state.first_name + ' '+ this.state.last_name}</h3>
-              </Row>
-              <Row>
-                {this.props.currentUsername === this.state.username ? 
-                  <p>
-                  Hey! This is your page!
-                  <Icon.Settings onClick={() => {this.handleEdit()}}>Edit your settings</Icon.Settings>
-                  </p> : ''
-                }
-              </Row>
+                {this.props.userInfo.username === this.state.username ? 
+                  <p id='editProfile' onClick={() => {this.handleEdit()}}>
+                    <Icon.Settings/>
+                    Edit your profile 
+                  </p>
+                    : ''}
+              <Button onClick={() => {this.editUserData(this.props.userInfo)}}>Send PUT to API</Button>
             </Col>
             <Col>
                 <h5 className="reduceHeaderMargin">Username: {this.state.username}</h5>
                 <h5>Phone: {this.state.phone}</h5>
                 <h5>Email: {this.state.email}</h5>
-                <Icon.MessageSquare />
-                <p>Chat</p>
-                <Icon.Calendar />
-                <p>Meet</p>
+                <Link to='/chat' >
+                  <Icon.MessageSquare />
+                  <p>Chat</p>
+                </Link>
+                <Link to='/calendar'>
+                  <Icon.Calendar />
+                  <p>Meet</p>
+                </Link>
             </Col>
           </Row>
         }

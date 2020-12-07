@@ -12,7 +12,6 @@ import DropdownMenu from 'react-bootstrap/esm/DropdownMenu';
 function Navigation(props){
     const showSidebar = () => props.setSidebar(!sidebar)
     let sidebar = props.sidebar;
-    console.log(props);
     return (
         <>
             <IconContext.Provider value={{"color":"#000000"}}>

@@ -54,7 +54,7 @@ export default function App() {
           <Route path="/login">
             {loggedIn ? <Redirect to='/' /> : <Login loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/>}
           </Route>
-          <div class={sidebarToggled? "page sidebar-toggled":"page"}>
+          <div className={sidebarToggled? "page sidebar-toggled":"page"}>
             <Route path="about" exact component={About}/>
             <Route path="/" exact component={Dashboard}/>
             <Route path="/calendar" exact component={Calendar}/>
@@ -62,7 +62,7 @@ export default function App() {
             <Route path="/chat" exact component={Chat}/>
             <Route path="/contacts" exact component={Contacts}/>
             <Route path="/announcements" exact component={Announcements}/>
-            <Route path="/user/:username" component={(props) => {return <Profile {...props} currentUsername={userData.username} />}}/>
+            <Route path="/user/:username" component={(props) => {return <Profile {...props} userInfo={userData} />}}/>
           </div>
         </Switch>
       </Router>
