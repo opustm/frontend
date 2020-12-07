@@ -43,7 +43,6 @@ export default class AuthService {
     localStorage.removeItem('token');
   }
 
-  // should be addUsers/
   async signup(data) {
     let state;
     await fetch(API_HOST+'addUsers/', {

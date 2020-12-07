@@ -12,6 +12,7 @@ import DropdownMenu from 'react-bootstrap/esm/DropdownMenu';
 function Navigation(props){
     const showSidebar = () => props.setSidebar(!sidebar)
     let sidebar = props.sidebar;
+    console.log(props);
     return (
         <>
             <IconContext.Provider value={{"color":"#000000"}}>
@@ -62,12 +63,15 @@ function Navigation(props){
                         </Link>
                     </DropdownToggle>
                     <DropdownMenu>
-                        <DropdownItem><Icon.FiUser color='#7b8a8b' className='dropdownIcon'/>View Profile</DropdownItem>
-                        <DropdownItem 
+                        <Link className='dropdown-item' to={props ? `/user/${props.userInfo.username}` : ''}>
+                            <Icon.FiUser color='#7b8a8b' className='dropdownIcon'/>View Profile
+                        </Link>
+                        <DropdownItem
                             onClick={() => {
                                 localStorage.removeItem('token');
                                 props.onLoggedInChange(false);
                             }}
+                            href='/login'
                         >
                             <Icon.FiLogOut color='#7b8a8b' className='dropdownIcon'/>
                             Logout

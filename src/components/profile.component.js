@@ -16,25 +16,16 @@ export default class Profile extends Component {
       showSpinner: true,
       profileExists: false,
       authService: new AuthService(),
-      currentUser: {},
       editingInfo: false
     }
   }
 
   componentDidMount() {
-    let userToken = localStorage.getItem('token');
-    this.awaitCurrentUserData(userToken);
     this.getUserData(this.props.match.params.username);
-  }
-
-  async awaitCurrentUserData(token) {
-    let currentUserData = await this.state.authService.getCurrentUser(token);
-    this.setState({currentUser: currentUserData});
   }
 
   handleEdit() {
     this.setState({editingInfo: true});
-    console.log(this.state);
   }
 
   async getUserData(username) {
@@ -82,11 +73,14 @@ export default class Profile extends Component {
                 <Icon.User color={this.state.picture === 'default' ? 'black' : this.state.picture} size={100} strokeWidth={1} />
               <Row>
                 <h3>{this.state.first_name + ' '+ this.state.last_name}</h3>
-                {this.state.currentUser.username === this.state.username ? 
-                <p>
+              </Row>
+              <Row>
+                {this.props.currentUsername === this.state.username ? 
+                  <p>
                   Hey! This is your page!
-                  <Icon.Settings onClick={this.handleEdit()}>Edit your settings</Icon.Settings>
-                </p> : ''}
+                  <Icon.Settings onClick={() => {this.handleEdit()}}>Edit your settings</Icon.Settings>
+                  </p> : ''
+                }
               </Row>
             </Col>
             <Col>

@@ -25,12 +25,22 @@ export default function App() {
   let authService = new AuthService();
   let [loggedIn, setLoggedIn] = useState(false);
   let [sidebarToggled,setSidebar] = useState(false)
+  let [userData, setUserData] = useState({noUser: 'notLoggedIn'});
   
-  let handleLoginChange = (isLoggedIn) => {
+  let handleLoginChange = async (isLoggedIn) => {
     if (!isLoggedIn) {
       authService.logout();
     }
+    await getUserData();
     setLoggedIn(isLoggedIn);
+  }
+
+  let getUserData = async () => {
+    let userToken = localStorage.getItem('token');
+    if (userToken) {
+      let data = await authService.getCurrentUser(userToken);
+      setUserData(data);
+    }
   }
 
     return (
@@ -38,7 +48,8 @@ export default function App() {
         <Navigation 
           sidebar={sidebarToggled}
           setSidebar={setSidebar}
-          onLoggedInChange={handleLoginChange}/>
+          onLoggedInChange={handleLoginChange}
+          userInfo={userData}/>
         <Switch>
           <Route path="/login">
             {loggedIn ? <Redirect to='/' /> : <Login loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/>}
@@ -51,8 +62,7 @@ export default function App() {
             <Route path="/chat" exact component={Chat}/>
             <Route path="/contacts" exact component={Contacts}/>
             <Route path="/announcements" exact component={Announcements}/>
-            <Route path="/user/:username" component={(props) => {return <Profile {...props} />}}>
-          </Route>
+            <Route path="/user/:username" component={(props) => {return <Profile {...props} currentUsername={userData.username} />}}/>
           </div>
         </Switch>
       </Router>
