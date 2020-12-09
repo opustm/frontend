@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React from 'react';
+// Add {useState} for login validation
 import * as Icon from 'react-icons/fi';
 import {Link} from 'react-router-dom';
 import {SidebarApps,SidebarTeams} from './navigation.data';
@@ -29,7 +30,9 @@ function Navigation(props){
                         return (
                             <li key={index} className={item.cName}>
                                 <Link to={item.path}>
-                                    <img src={item.photo} className="avatar nav-menu-photo"/>
+                                    <img src={item.photo} 
+                                        alt="Team profile avatar"
+                                        className="avatar nav-menu-photo"/>
                                     <span>{item.title}</span>
                                 </Link>
                             </li>
@@ -49,6 +52,7 @@ function Navigation(props){
                 <Link to="#" className="menu-photo">
                     <img 
                         src="https://via.placeholder.com/40/2D9CDB?text=B" 
+                        alt="User profile avatar"
                         className="avatar" 
                         onClick={() => {props.onLoggedInChange(false)}}
                     />
