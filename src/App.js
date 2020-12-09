@@ -42,7 +42,7 @@ export default function App() {
           <Route path="/login">
             {loggedIn ? <Redirect to='/' /> : <Login loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/>}
           </Route>
-          <div class={sidebarToggled? "page sidebar-toggled":"page"}>
+          <div className={sidebarToggled? "page sidebar-toggled":"page"}>
             <Route path="about" exact component={About}/>
             <Route path="/" exact component={Dashboard}/>
             <Route path="/calendar" exact component={Calendar}/>
