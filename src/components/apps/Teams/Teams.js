@@ -1,4 +1,4 @@
-import {Container, Jumbotron, Button, Col, Form, Card, ListGroup, ListGroupItem} from 'react-bootstrap';
+import {Container, Jumbotron, Button, Form, Card, ListGroup, ListGroupItem} from 'react-bootstrap';
 import * as Icon from 'react-feather';
 
 // Team
