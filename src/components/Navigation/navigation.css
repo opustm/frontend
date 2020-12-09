@@ -109,3 +109,10 @@ span {
 .dropdownIcon {
     margin-right: 20px;
 }
+
+#profileMenuIcon {
+    border: 1px solid white;
+    border-radius: 20px;
+    padding: 2px;
+    margin-right: 8px;
+}

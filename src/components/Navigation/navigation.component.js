@@ -51,15 +51,8 @@ function Navigation(props){
                     Opus Team
                 </Link>
                 <Dropdown>
-                    <DropdownToggle>
-                        <Link to="#" className="menu-photo">
-                            <img 
-                                alt='Profile Menu'
-                                src="https://via.placeholder.com/40/2D9CDB?text=B" 
-                                className="avatar" 
-                                
-                            />
-                        </Link>
+                    <DropdownToggle variant="outline-secondary">
+                        <Icon.FiUser id='profileMenuIcon' size={25} color={props.userInfo.picture}></Icon.FiUser>
                     </DropdownToggle>
                     <DropdownMenu>
                         <Link className='dropdown-item' to={props ? `/user/${props.userInfo.username}` : ''}>

@@ -2,6 +2,25 @@
   height: 100%;
 }
 
-#editProfile {
+#editProfile:hover {
   cursor: pointer;
+  text-decoration: underline;
+}
+
+#profilePicture {
+  border: 2px solid black;
+  padding: 10px;
+  border-radius: 15px;
+}
+
+#settingsIcon {
+  margin-right: 5px;
+}
+
+#saveChangesButton {
+  margin-right: 5px;
+}
+
+#username {
+  margin-bottom: 20px;
 }
