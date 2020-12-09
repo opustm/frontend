@@ -11,6 +11,7 @@ import Navigation from './components/Navigation/navigation.component';
 // Pages
 import Login from './components/login.component';
 import About from './components/about.component';
+import Profile from './components/profile.component';
 import Dashboard from './components/home.component';
 
 // Apps
@@ -24,12 +25,22 @@ export default function App() {
   let authService = new AuthService();
   let [loggedIn, setLoggedIn] = useState(false);
   let [sidebarToggled,setSidebar] = useState(false)
+  let [userData, setUserData] = useState({noUser: 'notLoggedIn'});
   
-  let handleLoginChange = (isLoggedIn) => {
+  let handleLoginChange = async (isLoggedIn) => {
     if (!isLoggedIn) {
       authService.logout();
     }
+    await getUserData();
     setLoggedIn(isLoggedIn);
+  }
+
+  let getUserData = async () => {
+    let userToken = localStorage.getItem('token');
+    if (userToken) {
+      let data = await authService.getCurrentUser(userToken);
+      setUserData(data);
+    }
   }
 
     return (
@@ -37,12 +48,13 @@ export default function App() {
         <Navigation 
           sidebar={sidebarToggled}
           setSidebar={setSidebar}
-          onLoggedInChange={handleLoginChange}/>
+          onLoggedInChange={handleLoginChange}
+          userInfo={userData}/>
         <Switch>
           <Route path="/login">
             {loggedIn ? <Redirect to='/' /> : <Login loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/>}
           </Route>
-          <div class={sidebarToggled? "page sidebar-toggled":"page"}>
+          <div className={sidebarToggled? "page sidebar-toggled":"page"}>
             <Route path="about" exact component={About}/>
             <Route path="/" exact component={Dashboard}/>
             <Route path="/calendar" exact component={Calendar}/>
@@ -50,6 +62,7 @@ export default function App() {
             <Route path="/chat" exact component={Chat}/>
             <Route path="/contacts" exact component={Contacts}/>
             <Route path="/announcements" exact component={Announcements}/>
+            <Route path="/user/:username" component={(props) => {return <Profile {...props} userInfo={userData} />}}/>
           </div>
         </Switch>
       </Router>
