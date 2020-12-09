@@ -48,7 +48,9 @@ export default function Teams(props) {
                 return (
                   <tr key={index}>
                     <td>
-                      <img src={item.picture}
+                      <img 
+                        src="https://via.placeholder.com/40/555555?text=T"
+                        // src={item.picture}
                         className="avatar"
                         alt="Team profile avatar"/>
                     </td>
