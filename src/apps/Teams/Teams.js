@@ -23,15 +23,42 @@ const Teams = () => {
     }
   }, []); // Dependencies need to be included in useEffect
 
+  let teamsView =      
+    <Container className="teams-container">        
+      {teams.map((item,index) => {
+        return (
+          <div key={index} class="team-element">
+          <Row>
+            <Link to="#">
+            <img 
+              className="team-photo avatar"
+              src="https://via.placeholder.com/40/555555?text=T"/>
+              <h4>{item.name}</h4>
+            </Link>
+            <Dropdown>
+              <Dropdown.Toggle variant="outline-primary">
+                <Icon.FiSettings/>
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item href="#">Edit</Dropdown.Item>
+                <Dropdown.Item href="#">Leave</Dropdown.Item>
+                <Dropdown.Item href="#">Delete</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </Row>
+          </div>
+        )
+      })}
+    </Container>
+
   return (
     <Container fluid>
       <Col sm={12} md={{span: 10, offset: 1}}>
         <Jumbotron>
-          <h1>Opus Teams</h1>
+          <h1>Teams</h1>
           <p>
-            View or modify your current teams. Create or join a new team. It's all here. <Link to="/docs">Need more info? Read the docs.</Link>
+            View or modify your current teams. Create or join a new team. <Link to="/docs">Need more info? Read the docs.</Link>
           </p>
-          
           <p>
             <ButtonGroup className="mr-2">
               <Button variant="primary"><Icon.FiUsers/> Create Team</Button>
@@ -41,28 +68,7 @@ const Teams = () => {
             </ButtonGroup>
           </p>
         </Jumbotron>
-        <Container className="teams-container">
-          
-          {teams.map((item,index) => {
-            return (
-              <div key={index} class="team-element border-bottom">
-              <Row>
-                <h4><Link to="#">{item.name}</Link></h4>
-                <Dropdown>
-                  <Dropdown.Toggle variant="outline-primary">
-                    <Icon.FiSettings/>
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item href="#">Edit</Dropdown.Item>
-                    <Dropdown.Item href="#">Leave</Dropdown.Item>
-                    <Dropdown.Item href="#">Delete</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </Row>
-              </div>
-            )
-          })}
-        </Container>
+        {teams? teamsView : <p>It's empty here. You are not a member of any teams yet. Create or Join a team above.</p>}
       </Col>
     </Container>
   )
