@@ -12,6 +12,7 @@ import Navigation from './components/Navigation/navigation.component';
 import Login from './pages/Login';
 import About from './pages/About';
 import Dashboard from './pages/Home';
+import Profile from './pages/Profile';
 
 // Apps
 import Teams from './apps/Teams/Teams';
@@ -24,12 +25,22 @@ export default function App() {
   let authService = new AuthService();
   let [loggedIn, setLoggedIn] = useState(false);
   let [sidebarToggled,setSidebar] = useState(false)
+  let [userData, setUserData] = useState({noUser: 'notLoggedIn'});
   
-  let handleLoginChange = (isLoggedIn) => {
+  let handleLoginChange = async (isLoggedIn) => {
     if (!isLoggedIn) {
       authService.logout();
     }
+    await getUserData();
     setLoggedIn(isLoggedIn);
+  }
+
+  let getUserData = async () => {
+    let userToken = localStorage.getItem('token');
+    if (userToken) {
+      let data = await authService.getCurrentUser(userToken);
+      setUserData(data);
+    }
   }
 
     return (
@@ -37,7 +48,8 @@ export default function App() {
         <Navigation 
           sidebar={sidebarToggled}
           setSidebar={setSidebar}
-          onLoggedInChange={handleLoginChange}/>
+          onLoggedInChange={handleLoginChange}
+          userInfo={userData}/>
         <Switch>
           <Route path="/login">
             {loggedIn ? <Redirect to='/' /> : <Login loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/>}
@@ -50,6 +62,7 @@ export default function App() {
             <Route path="/chat" exact component={Chat}/>
             <Route path="/contacts" exact component={Contacts}/>
             <Route path="/announcements" exact component={Announcements}/>
+            <Route path="/user/:username" component={(props) => {return <Profile {...props} userInfo={userData} />}}/>
           </div>
         </Switch>
       </Router>
