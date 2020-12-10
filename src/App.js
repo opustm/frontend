@@ -9,17 +9,17 @@ import AuthService from './services/auth.service';
 import Navigation from './components/Navigation/navigation.component';
 
 // Pages
-import Login from './components/login.component';
-import About from './components/about.component';
-import Profile from './components/profile.component';
-import Dashboard from './components/home.component';
+import Login from './pages/Login';
+import About from './pages/About';
+import Dashboard from './pages/Home';
+import Profile from './pages/Profile';
 
 // Apps
-import Teams from './components/apps/Teams/Teams';
-import Calendar from './components/apps/Calendar/Calendar';
-import Chat from './components/apps/Chat/Chat';
-import Contacts from './components/apps/Contacts/Contacts';
-import Announcements from './components/apps/Announcements/Announcements';
+import Teams from './apps/Teams/Teams';
+import Calendar from './apps/Calendar/Calendar';
+import Chat from './apps/Chat/Chat';
+import Contacts from './apps/Contacts/Contacts';
+import Announcements from './apps/Announcements/Announcements';
 
 export default function App() {
   let authService = new AuthService();

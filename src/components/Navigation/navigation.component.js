@@ -34,7 +34,9 @@ function Navigation(props){
                         return (
                             <li key={index} className={item.cName}>
                                 <Link to={item.path}>
-                                    <img alt='Profile Menu' src={item.photo} className="avatar nav-menu-photo"/>
+                                    <img src={item.photo} 
+                                        alt="Team's profile avatar"
+                                        className="avatar nav-menu-photo"/>
                                     <span>{item.title}</span>
                                 </Link>
                             </li>
