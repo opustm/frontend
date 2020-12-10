@@ -37,4 +37,4 @@ export const API_ENDPOINTS = {
     todo : {},
 }
 
-export default function APIHost() {return API_CONFIG.baseURL};
+export default function APIHost() {return API_CONFIG.baseURL()};

@@ -18,7 +18,7 @@ img.avatar {
     align-items: center;
     justify-content: center;
     transition: 500ms;
-    margin-top: 1rem;
+    padding-top: 1rem;
 }
 
 .page.sidebar-toggled{

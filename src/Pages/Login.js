@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 
 import {Container, Row, Col, Form, Button, Modal} from 'react-bootstrap';
+import * as Icon from 'react-feather';
+import InputColor from 'react-input-color';
+
 import '../stylesheets/Login.css';
-import APIHost from '../services/api.service';
 import AuthService from '../services/auth.service';
 
-const API_HOST = APIHost();
 
 export default class Login extends Component {
   constructor(props) {
@@ -19,24 +20,20 @@ export default class Login extends Component {
       last_name: '',
       phone: '',
       password: '',
-      picture: 'default',
+      picture: '#000000',
       theme: 'light',
+      teams: [1],
+      cliques: [1],
       loginError: false,
-      showModal: false
+      showModal: false,
     };
   }
 
   componentDidMount() {
     if (this.state.logged_in) {
-      fetch(API_HOST+'current_user/', {
-        headers: {
-          Authorization: `JWT ${localStorage.getItem('token')}`
-        }
-      })
-        .then(res => res.json())
-        .then(json => {
-          this.setState({ username: json.username });
-        });
+      let token = localStorage.getItem('token');
+      let newState = this.state.authService.getCurrentUser(token);
+      this.setState(newState);
     }
   }
 
@@ -58,7 +55,6 @@ export default class Login extends Component {
   }
 
   async handleSignup(e, data) {
-    console.log(data);
     this.handleClose();
     e.preventDefault();
     let state = await this.state.authService.signup(data);
@@ -68,10 +64,16 @@ export default class Login extends Component {
   handleClose = () => this.setState({showModal: false});
   handleShow = () => this.setState({showModal: true});
 
+  handleColorChange(e) {
+    this.setState({
+      picture: e.hex
+    });
+  }
+
   render() {
     return (
       <Container fluid>
-        <Row>
+        <Row className='loginRow'>
           <Col id='leftLogin'>
             <Row>
               <Col md={{offset:2}}>
@@ -197,6 +199,22 @@ export default class Login extends Component {
                   onChange={this.handleChange}
                 />
               </Form.Group>
+              <p id='iconP'>Pick a color for your avatar:</p>
+              <Row>
+                <Col lg={{offset: 4, span: 3}}>
+                  <Icon.User size={60} color={this.state.picture} />
+                </Col>
+                <Col>
+                  <InputColor
+                    style={{'marginTop': '15px'}}
+                    initialValue="#000000"
+                    onChange={e => this.handleColorChange(e)}
+                    placement="right"
+                  />
+                  <p>Click Me!</p>
+                </Col>
+              </Row>
+              
             </Form>
           </Modal.Body>
           <Modal.Footer>
