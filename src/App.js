@@ -12,6 +12,7 @@ import Navigation from './components/Navigation/navigation.component';
 import Login from './pages/Login';
 import About from './pages/About';
 import Dashboard from './pages/Home';
+import Error from './pages/NotFound';
 
 // Apps
 import Teams from './apps/Teams/Teams';
@@ -23,7 +24,7 @@ import Announcements from './apps/Announcements/Announcements';
 export default function App() {
   let authService = new AuthService();
   let [loggedIn, setLoggedIn] = useState(false);
-  let [sidebarToggled,setSidebar] = useState(false)
+  let [sidebarToggled,setSidebar] = useState(true)
   
   let handleLoginChange = (isLoggedIn) => {
     if (!isLoggedIn) {
@@ -43,8 +44,9 @@ export default function App() {
             {loggedIn ? <Redirect to='/' /> : <Login loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/>}
           </Route>
           <div className={sidebarToggled? "page sidebar-toggled":"page"}>
-            <Route path="about" exact component={About}/>
             <Route path="/" exact component={Dashboard}/>
+            <Route path="/about" exact component={About}/>
+            <Route path="/404" exact component={Error}/>
             <Route path="/calendar" exact component={Calendar}/>
             <Route path="/teams" exact component={Teams}/>
             <Route path="/chat" exact component={Chat}/>
