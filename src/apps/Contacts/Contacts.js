@@ -25,9 +25,7 @@ export default class Contacts extends Component {
 
     async getUserContacts() {
         this.props.userInfo.cliques.forEach(async (cliqueId)=> {
-            let response = await axios.get(API_HOST + `cliques/${cliqueId}`);
-            let cliqueName = response.data.name;
-            let memberResponse = await axios.get(API_HOST + `cliqueMembers/${cliqueName}`);
+            let memberResponse = await axios.get(API_HOST + `cliqueidMembers/${cliqueId}`);
             let newContacts = this.state.allContacts.concat(memberResponse.data);
             this.setState({allContacts: newContacts});
         });
@@ -76,7 +74,7 @@ export default class Contacts extends Component {
                         {this.state.allContacts.map((singleContact) => {
                             if (singleContact.username !== this.props.userInfo.username) {
                                 return (
-                                    <tr>
+                                    <tr key={singleContact.id}>
                                         <td>
                                             <Link to='/chat'>
                                                 <Icon.MessageSquare />
