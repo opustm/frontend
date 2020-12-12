@@ -62,7 +62,7 @@ export default function App() {
             <Route path="/calendar" exact component={Calendar}/>
             <Route path="/teams" exact component={Teams}/>
             <Route path="/chat" exact component={Chat}/>
-            <Route path="/contacts" exact component={Contacts}/>
+            <Route path="/contacts" exact component={() => {return <Contacts userInfo={userData}/>}}/>
             <Route path="/announcements" exact component={Announcements}/>
             <Route path="/user/:username" component={(props) => {return <Profile {...props} userInfo={userData} />}}/>
           </div>

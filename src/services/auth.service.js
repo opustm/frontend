@@ -80,6 +80,7 @@ export default class AuthService {
           username: json.username,
           first_name: json.first_name,
           last_name: json.last_name,
+          cliques: json.cliques,
           logged_in: true
         };
       });

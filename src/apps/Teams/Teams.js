@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Container, Dropdown, DropdownButton, Row, Col, Jumbotron, Form, Button, Card, Table, ButtonGroup} from 'react-bootstrap';
+import {Container, Dropdown, Row, Col, Jumbotron, Button, ButtonGroup} from 'react-bootstrap';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 import { Link } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
@@ -31,6 +31,7 @@ const Teams = () => {
           <Row>
             <Link to="#">
             <img 
+              alt='team avatar'
               className="team-photo avatar"
               src="https://via.placeholder.com/40/555555?text=T"/>
               <h4>{item.name}</h4>
