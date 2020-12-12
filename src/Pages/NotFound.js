@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Container, Row, Col } from 'react-bootstrap';
+import React from 'react';
+import { Button, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import '../stylesheets/Error.css';
 
