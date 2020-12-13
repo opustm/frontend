@@ -9,11 +9,11 @@ import AuthService from './services/auth.service';
 import Navigation from './components/Navigation/navigation.component';
 
 // Pages
-import Login from './pages/Login';
-import About from './pages/About';
-import Dashboard from './pages/Home';
-import Error from './pages/NotFound';
-import Profile from './pages/Profile';
+import Login from './Pages/Login';
+import About from './Pages/About';
+import Dashboard from './Pages/Home';
+import Error from './Pages/NotFound';
+import Profile from './Pages/Profile';
 
 // Apps
 import Teams from './apps/Teams/Teams';
