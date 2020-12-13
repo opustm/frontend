@@ -70,16 +70,13 @@ export default class Profile extends Component {
       "last_name": this.state.last_name,
       "picture": this.state.picture
     }
-    console.log(body);
     let userRoute = API_HOST  + `userDetails/${this.state.username}/`;
     try {
       let response = await axios.put(userRoute, body);
-      console.log(response);
       this.setState(response.data);
     }
     catch (error) {
       this.setState({updateError: true});
-      console.log(error);
     }
     this.setState({editingInfo: false});
   }

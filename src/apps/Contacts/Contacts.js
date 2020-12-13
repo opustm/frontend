@@ -106,7 +106,7 @@ export default class Contacts extends Component {
                                     </tr>
                                 )
                             }
-                            return <></>;
+                            return <tr key={0}></tr>;
                         })}
                     </tbody>
                 </Table>

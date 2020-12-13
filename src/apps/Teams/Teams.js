@@ -12,7 +12,6 @@ const Teams = () => {
     async function fetchTeams() {
       const request = await api.get(urls.teams.fetchAll);
       setTeams(request.data);
-      console.log(request.data);
       return request;
     }
     try{
@@ -27,7 +26,7 @@ const Teams = () => {
     <Container className="teams-container">        
       {teams.map((item,index) => {
         return (
-          <div key={index} class="team-element">
+          <div key={index} className="team-element">
           <Row>
             <Link to="#">
             <img 
@@ -60,14 +59,14 @@ const Teams = () => {
           <p>
             View or modify your current teams. Create or join a new team. <Link to="/docs">Need more info? Read the docs.</Link>
           </p>
-          <p>
+          <Row>
             <ButtonGroup className="mr-2">
               <Button variant="primary"><Icon.FiUsers/> Create Team</Button>
             </ButtonGroup>
             <ButtonGroup className='mr-2'>
               <Button variant="success"><Icon.FiPlus/> Join Team</Button>
             </ButtonGroup>
-          </p>
+          </Row>
         </Jumbotron>
         {teams? teamsView : <p>It's empty here. You are not a member of any teams yet. Create or Join a team above.</p>}
       </Col>
