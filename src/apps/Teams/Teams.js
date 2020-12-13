@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import {Container, Dropdown, DropdownButton, Row, Col, Jumbotron, Form, Button, Card, Table, ButtonGroup} from 'react-bootstrap';
+import {Container, Dropdown, Row, Col, Jumbotron, Button, ButtonGroup} from 'react-bootstrap';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
 import './teams.css';
-import { Redirect } from 'react-router-dom';
 
 const Teams = () => {
   const [teams,setTeams] = useState([0]);
@@ -27,11 +26,12 @@ const Teams = () => {
     <Container className="teams-container">        
       {teams.map((item,index) => {
         return (
-          <div key={index} class="team-element">
+          <div key={index} className="team-element">
           <Row>
             <Link to="#">
             <img 
               className="team-photo avatar"
+              alt="Team logo"
               src="https://via.placeholder.com/40/555555?text=T"/>
               <h4>{item.name}</h4>
             </Link>
