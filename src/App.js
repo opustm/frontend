@@ -9,14 +9,15 @@ import AuthService from './services/auth.service';
 import Navigation from './components/Navigation/navigation.component';
 
 // Pages
-import Login from './pages/Login';
-import About from './pages/About';
-import Dashboard from './pages/Home';
-import Error from './pages/NotFound';
-import Profile from './pages/Profile';
+import Login from './Pages/Login';
+import About from './Pages/About';
+import Dashboard from './Pages/Home';
+import Error from './Pages/NotFound';
+import Profile from './Pages/Profile';
 
 // Apps
 import Teams from './apps/Teams/Teams';
+import TeamView from './apps/Teams/TeamView';
 import Calendar from './apps/Calendar/Calendar';
 import Chat from './apps/Chat/Chat';
 import Contacts from './apps/Contacts/Contacts';
@@ -58,13 +59,14 @@ export default function App() {
           <div className={sidebarToggled? "page sidebar-toggled":"page"}>
             <Route path="/" exact component={Dashboard}/>
             <Route path="/about" exact component={About}/>
-            <Route path="/404" exact component={Error}/>
             <Route path="/calendar" exact component={Calendar}/>
-            <Route path="/teams" exact component={Teams}/>
             <Route path="/chat" exact component={Chat}/>
             <Route path="/contacts" exact component={Contacts}/>
             <Route path="/announcements" exact component={Announcements}/>
             <Route path="/user/:username" component={(props) => {return <Profile {...props} userInfo={userData} />}}/>
+            <Route path="/teams" exact component={Teams}/>
+            <Route path="/teams/:teamUsername" component={TeamView}/>
+            <Route path="/404" exact component={Error}/>
           </div>
         </Switch>
       </Router>
