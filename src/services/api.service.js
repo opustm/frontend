@@ -26,6 +26,8 @@ export const API_ENDPOINTS = {
         fetchById : (id) => `/cliques/${id}`,
         fetchDetails : (name) => `/cliqueDetails/${name}/`,
         fetchMembers : (name) => `/cliqueMembers/${name}/`,
+        fetchByUsername: (username) => `/userCliques/${username}`,
+        fetchRelatedTeams: (teamName) => `/relatedCliques/${teamName}`,
     },
     user : {},
     invitation : {},
