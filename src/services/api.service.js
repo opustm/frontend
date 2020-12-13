@@ -1,4 +1,3 @@
-
 import axios from "axios";
 
 // Change APIHost based on whether API Server is remote or local
