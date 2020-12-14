@@ -1,7 +1,6 @@
 .team-element {
     height: 70px;
     justify-content: center;
-    background-color: red;
     border-color: black;
     border: 2px;
 }
