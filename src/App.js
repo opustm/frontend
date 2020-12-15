@@ -47,27 +47,32 @@ export default function App() {
 
     return (
       <Router>
-        <Navigation 
-          sidebar={sidebarToggled}
-          setSidebar={setSidebar}
-          onLoggedInChange={handleLoginChange}
-          userInfo={userData}/>
+        {loggedIn ? 
+          <Navigation 
+            sidebar={sidebarToggled}
+            setSidebar={setSidebar}
+            onLoggedInChange={handleLoginChange}
+            userInfo={userData}/> : <></>
+          }
         <Switch>
-          <Route path="/login">
-            {loggedIn ? <Redirect to='/' /> : <Login loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/>}
-          </Route>
-          <div className={sidebarToggled? "page sidebar-toggled":"page"}>
-            <Route path="/" exact component={Dashboard}/>
+            <Route path="/login">
+              {loggedIn ? <Redirect to='/' /> : <Login loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/>}
+            </Route>
             <Route path="/about" exact component={About}/>
-            <Route path="/calendar" exact component={Calendar}/>
-            <Route path="/chat" exact component={Chat}/>
-            <Route path="/contacts" exact component={Contacts}/>
-            <Route path="/announcements" exact component={Announcements}/>
-            <Route path="/user/:username" component={(props) => {return <Profile {...props} userInfo={userData} />}}/>
-            <Route path="/teams" exact component={Teams}/>
-            <Route path="/teams/:teamUsername" component={TeamView}/>
             <Route path="/404" exact component={Error}/>
-          </div>
+          {loggedIn ? 
+            <div className={sidebarToggled? "page sidebar-toggled":"page"}>
+              <Route path="/" exact component={Dashboard}/>
+              <Route path="/calendar" exact component={Calendar}/>
+              <Route path="/teams" exact component={Teams}/>
+              <Route path="/chat" exact component={Chat}/>
+              <Route path="/contacts" exact component={() => {return <Contacts userInfo={userData}/>}}/>
+              <Route path="/announcements" exact component={Announcements}/>
+              <Route path="/user/:username" component={(props) => {return <Profile {...props} userInfo={userData} />}}/>
+              <Route path="/teams/:teamUsername" component={TeamView}/>
+            </div>
+            : <Redirect to='/login' />
+          }
         </Switch>
       </Router>
     );
