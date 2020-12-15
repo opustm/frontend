@@ -1,12 +1,51 @@
 import React, { useState, useEffect } from 'react';
-import {Container, Dropdown, Row, Col, Jumbotron, Button, ButtonGroup} from 'react-bootstrap';
+import {Container, Dropdown, Row, Col, Jumbotron, Button, ButtonGroup, Modal, Form} from 'react-bootstrap';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 import { Link, Redirect } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
 import './teams.css';
 
+let newTeamFormData = {
+  name:null,
+  cliqueType: "sub",
+  picture: "https://via.placeholder.com/40/5555555?text=T",
+  permissions: null,
+  relatedCliques: null,
+}
+
+let joinFormData = {
+  name:null,
+}
+
+async function deleteTeam(teamID) {
+  // await api.delete(
+  //   urls.teams.fetchAll, {
+  //     headers: {},
+  //     data: {
+  //       id:teamID
+  //     }
+  //   }
+  // )
+  // .then(function (response) {
+  //   console.log(response)
+  // })
+  // .them(
+  //   // <Redirect to="/teams"/>
+  // )
+  console.log(`Deleting ${teamID}`)
+}
+
+async function createTeam(id) {
+  await api.post(
+    urls.teams.fetchAll, newTeamFormData
+  )
+}
+
 const Teams = () => {
   const [teams,setTeams] = useState([0]);
+  const [showCreateModal, setShowCreateModal]= useState(false);
+  const [showJoinModal, setShowJoinModal] = useState(false);
+
   useEffect(() => {
     async function fetchTeams() {
       const request = await api.get(urls.teams.fetchAll);
@@ -20,6 +59,36 @@ const Teams = () => {
       <Redirect to="/404"/>
     }
   }, []); // Dependencies need to be included in useEffect
+
+  // let createTeamModal =
+  //   <Modal show={showCreateModal} onHide={setShowCreateModal(false)}>
+  //     <Modal.Header closeButton>
+  //       <Modal.Title>Create a New Team</Modal.Title>
+  //     </Modal.Header>
+  //     <Modal.Body>
+  //       <Form>
+  //         <Row>
+  //           <Col>
+  //             <Form.Group>
+  //               <Form.Label>Team Name</Form.Label>
+  //               <Form.Control
+  //                 type="text"
+  //                 name="teamName"
+  //                 value={newTeamFormData.name}
+  //               />
+  //             </Form.Group>
+  //             <Button>
+  //               onClick={createTeam(newTeamFormData)}
+  //             </Button>
+  //           </Col>
+  //         </Row>
+  //       </Form>
+  //     </Modal.Body>
+  //   </Modal>
+
+  // let joinTeamModal = 
+  //   <Modal show={showJoinModal} onHide={setShowJoinModal(false)}>
+  //   </Modal>
 
   let teamsView =      
     <Container className="teams-container">        
@@ -59,7 +128,7 @@ const Teams = () => {
                     <Dropdown.Menu>
                       <Dropdown.Item href="#">Edit</Dropdown.Item>
                       <Dropdown.Item href="#">Leave</Dropdown.Item>
-                      <Dropdown.Item href="#">Delete</Dropdown.Item>
+                      <Dropdown.Item onClick={deleteTeam(`${item.id}`)}>Delete</Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
                   </div>
