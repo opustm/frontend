@@ -4,8 +4,12 @@ const API_HOST = APIHost();
 
 export default class AuthService {
   async login(data) {
+    data = {
+      username: data.username,
+      password: data.password
+    }
     let state;
-    await fetch(API_HOST+'token-auth/', {
+    await fetch(API_HOST+'tokenAuth/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -41,7 +45,7 @@ export default class AuthService {
 
   async signup(data) {
     let state;
-    await fetch(API_HOST+'main/users/', {
+    await fetch(API_HOST+'addUsers/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -59,6 +63,27 @@ export default class AuthService {
         loginError: false
       };
     });
+
+    return state;
+  }
+
+  async getCurrentUser(token) {
+    let state;
+    await fetch(API_HOST + 'currentUser/', {
+      headers: {
+        Authorization: `JWT ${token}`
+      }
+    })
+      .then(res => res.json())
+      .then(json => {
+        state = {
+          username: json.username,
+          first_name: json.first_name,
+          last_name: json.last_name,
+          cliques: json.cliques,
+          logged_in: true
+        };
+      });
 
     return state;
   }

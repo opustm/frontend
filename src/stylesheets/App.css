@@ -1,0 +1,29 @@
+img.avatar {
+    border-radius: 50%;
+    height: 30px;
+    width:30px;
+    border: 1px;
+    border-color: #303030;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.page {
+    display: flex;
+    height: 90vh;
+    align-items: center;
+    justify-content: center;
+    transition: 500ms;
+    padding-top: 1rem;
+}
+
+.page.sidebar-toggled{
+    position: relative;
+    width: calc(100% - 250px);
+    margin-left: 250px;
+    transition: 500ms;
+}

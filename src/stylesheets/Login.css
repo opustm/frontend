@@ -1,4 +1,4 @@
-html, body, #root, .container-fluid, .row {
+html, body, #root, .container-fluid, .loginRow {
   height: 100%;
 }
 
@@ -38,3 +38,10 @@ html, body, #root, .container-fluid, .row {
   color: #00CFAA;
 }
 
+#iconP {
+  margin-bottom: 0.5rem;
+}
+
+span.css-1vpurlb-InputColor {
+  margin-left: 0px;
+}
