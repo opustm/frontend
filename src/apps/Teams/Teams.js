@@ -6,11 +6,11 @@ import * as Icon from 'react-icons/fi';
 import './teams.css';
 
 let newTeamFormData = {
-  name:null,
+  name: "New Team Name",
   cliqueType: "sub",
   picture: "https://via.placeholder.com/40/5555555?text=T",
-  permissions: null,
-  relatedCliques: null,
+  permissions: [],
+  relatedCliques: [],
 }
 
 let joinFormData = {
@@ -18,24 +18,17 @@ let joinFormData = {
 }
 
 async function deleteTeam(teamID) {
-  // await api.delete(
-  //   urls.teams.fetchAll, {
-  //     headers: {},
-  //     data: {
-  //       id:teamID
-  //     }
-  //   }
-  // )
-  // .then(function (response) {
-  //   console.log(response)
-  // })
-  // .them(
-  //   // <Redirect to="/teams"/>
-  // )
+  await api.delete(
+    urls.teams.fetchById(teamID)
+  )
+  .then(function (response) {
+    console.log(response)
+  })
   console.log(`Deleting ${teamID}`)
 }
 
 async function createTeam(id) {
+  console.log(newTeamFormData)
   await api.post(
     urls.teams.fetchAll, newTeamFormData
   )
@@ -60,31 +53,31 @@ const Teams = () => {
     }
   }, []); // Dependencies need to be included in useEffect
 
-  // let createTeamModal =
-  //   <Modal show={showCreateModal} onHide={setShowCreateModal(false)}>
-  //     <Modal.Header closeButton>
-  //       <Modal.Title>Create a New Team</Modal.Title>
-  //     </Modal.Header>
-  //     <Modal.Body>
-  //       <Form>
-  //         <Row>
-  //           <Col>
-  //             <Form.Group>
-  //               <Form.Label>Team Name</Form.Label>
-  //               <Form.Control
-  //                 type="text"
-  //                 name="teamName"
-  //                 value={newTeamFormData.name}
-  //               />
-  //             </Form.Group>
-  //             <Button>
-  //               onClick={createTeam(newTeamFormData)}
-  //             </Button>
-  //           </Col>
-  //         </Row>
-  //       </Form>
-  //     </Modal.Body>
-  //   </Modal>
+  let createTeamModal =
+    <Modal show={showCreateModal} onHide={() => {setShowCreateModal(false)}}>
+      <Modal.Header closeButton>
+        <Modal.Title>Create a New Team</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form>
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>Team Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="teamName"
+                  value={newTeamFormData.name}
+                />
+              </Form.Group>
+              <Button onClick={() => {createTeam(newTeamFormData)}}>
+                Create Team
+              </Button>
+            </Col>
+          </Row>
+        </Form>
+      </Modal.Body>
+    </Modal>
 
   // let joinTeamModal = 
   //   <Modal show={showJoinModal} onHide={setShowJoinModal(false)}>
@@ -128,7 +121,7 @@ const Teams = () => {
                     <Dropdown.Menu>
                       <Dropdown.Item href="#">Edit</Dropdown.Item>
                       <Dropdown.Item href="#">Leave</Dropdown.Item>
-                      <Dropdown.Item onClick={deleteTeam(`${item.id}`)}>Delete</Dropdown.Item>
+                      <Dropdown.Item onClick={() => {deleteTeam(`${item.id}`)}}>Delete</Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
                   </div>
@@ -143,6 +136,7 @@ const Teams = () => {
   return (
     <Container fluid>
       <Col sm={12} md={{span: 10, offset: 1}}>
+        {createTeamModal}
         <Jumbotron>
           <h1>Teams</h1>
           <p>
@@ -150,7 +144,7 @@ const Teams = () => {
           </p>
           <div>
             <ButtonGroup className="mr-2">
-              <Button variant="primary"><Icon.FiUsers/> Create Team</Button>
+              <Button variant="primary" onClick={() => {setShowCreateModal(true)}}><Icon.FiUsers/> Create Team</Button>
             </ButtonGroup>
             <ButtonGroup className='mr-2'>
               <Button variant="success"><Icon.FiPlus/> Join Team</Button>

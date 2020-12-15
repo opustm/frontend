@@ -24,7 +24,7 @@ const TeamView = (props) => {
                 urls.teams.fetchMembers(teamUsername)
             );
             setMembers(request.data);
-            console.log("Members", request.members);
+            console.log("Members", request.data);
         }
         async function fetchGroups() {
             const request = await api.get(
@@ -46,8 +46,6 @@ const TeamView = (props) => {
     let detailsView = 
         <Container>Details</Container>
 
-    let membersView = 
-        <p>This team has members.</p>
 
     let groupsView = 
         <p>This team has groups.</p>
@@ -93,7 +91,19 @@ const TeamView = (props) => {
                         </Row>
                     </Jumbotron>
                     <Container>
-                        {members? membersView: <p>The team does not have any members yet</p>}
+                        {members?        
+                        <div className="members-div">
+                        <ListGroup>
+                            {members.map((item,index) => {
+                                return (
+                                    <ListGroup.Item key={index} className="member-element">
+                                        <p>{item.first_name} {item.last_name}</p>
+                                    </ListGroup.Item>                        
+                                )
+                            })}
+                        </ListGroup>
+                    </div>
+                    : <p>The team does not have any members yet</p>}
                     </Container>
                     <Container>
                         {groups? groupsView: <p>This team does not have any groups.</p>}
