@@ -17,6 +17,7 @@ import Profile from './Pages/Profile';
 
 // Apps
 import Teams from './apps/Teams/Teams';
+import TeamView from './apps/Teams/TeamView';
 import Calendar from './apps/Calendar/Calendar';
 import Chat from './apps/Chat/Chat';
 import Contacts from './apps/Contacts/Contacts';
@@ -54,20 +55,21 @@ export default function App() {
             userInfo={userData}/> : <></>
           }
         <Switch>
-          <Route path="/login">
-            {loggedIn ? <Redirect to='/' /> : <Login loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/>}
-          </Route>
+            <Route path="/login">
+              {loggedIn ? <Redirect to='/' /> : <Login loggedIn={loggedIn} onLoggedInChange={handleLoginChange}/>}
+            </Route>
+            <Route path="/about" exact component={About}/>
+            <Route path="/404" exact component={Error}/>
           {loggedIn ? 
             <div className={sidebarToggled? "page sidebar-toggled":"page"}>
               <Route path="/" exact component={Dashboard}/>
-              <Route path="/about" exact component={About}/>
-              <Route path="/404" exact component={Error}/>
               <Route path="/calendar" exact component={Calendar}/>
               <Route path="/teams" exact component={Teams}/>
               <Route path="/chat" exact component={Chat}/>
               <Route path="/contacts" exact component={() => {return <Contacts userInfo={userData}/>}}/>
               <Route path="/announcements" exact component={Announcements}/>
               <Route path="/user/:username" component={(props) => {return <Profile {...props} userInfo={userData} />}}/>
+              <Route path="/teams/:teamUsername" component={TeamView}/>
             </div>
             : <Redirect to='/login' />
           }

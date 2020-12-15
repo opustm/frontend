@@ -1,4 +1,3 @@
-
 import axios from "axios";
 
 // Change APIHost based on whether API Server is remote or local
@@ -26,6 +25,8 @@ export const API_ENDPOINTS = {
         fetchById : (id) => `/cliques/${id}`,
         fetchDetails : (name) => `/cliqueDetails/${name}/`,
         fetchMembers : (name) => `/cliqueMembers/${name}/`,
+        fetchByUsername: (username) => `/userCliques/${username}`,
+        fetchRelatedTeams: (teamName) => `/relatedCliques/${teamName}`,
     },
     user : {},
     invitation : {},
