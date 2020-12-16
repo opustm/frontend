@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import APIHost from '../../services/api.service';
 import { Container, Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import * as Icon from 'react-feather';
+import * as Icon from 'react-icons/fi';
 
 const API_HOST = APIHost();
 const axios = require('axios').default;
@@ -10,6 +10,7 @@ const axios = require('axios').default;
 export default class Contacts extends Component {
     constructor(props) {
         super(props);
+        document.title = "Opus | Contacts"
         this.state = {
             allContacts: [],
             teamDict: {}
@@ -77,10 +78,10 @@ export default class Contacts extends Component {
                                     <tr key={singleContact.id}>
                                         <td>
                                             <Link to='/chat'>
-                                                <Icon.MessageSquare />
+                                                <Icon.FiMessageSquare />
                                             </Link>
                                             <Link to='/calendar'>
-                                                <Icon.Calendar />
+                                                <Icon.FiCalendar />
                                             </Link>
                                         </td>
                                         <td>

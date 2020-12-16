@@ -26,7 +26,7 @@ import Announcements from './apps/Announcements/Announcements';
 export default function App() {
   let authService = new AuthService();
   let [loggedIn, setLoggedIn] = useState(false);
-  let [sidebarToggled,setSidebar] = useState(false)
+  let [sidebarToggled,setSidebar] = useState(true)
   let [userData, setUserData] = useState({noUser: 'notLoggedIn'});
   
   let handleLoginChange = async (isLoggedIn) => {

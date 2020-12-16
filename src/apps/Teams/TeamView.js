@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
-import { Container, ListGroup, Dropdown, ButtonGroup, Button, Row, Col, Jumbotron, Image } from 'react-bootstrap';
+import { Container, Card, ListGroup, Dropdown, Button, Row, Col, Jumbotron, Image } from 'react-bootstrap';
 import { Link, Redirect, useParams } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
 import './teams.css';
@@ -17,21 +17,18 @@ const TeamView = (props) => {
                 urls.teams.fetchDetails(teamUsername)
                 );
             setDetails(request.data);
-            console.log("Details", request.data);
         }
         async function fetchMembers() {
             const request = await api.get(
                 urls.teams.fetchMembers(teamUsername)
             );
             setMembers(request.data);
-            console.log("Members", request.data);
         }
         async function fetchGroups() {
             const request = await api.get(
                 urls.teams.fetchRelatedTeams(teamUsername)
             );
-            setGroups(request.data);
-            console.log("Groups", request.data);
+            if (request.data) setGroups(request.data);
         }
         try {
             fetchDetails();
@@ -43,14 +40,7 @@ const TeamView = (props) => {
         }
     }, [teamUsername]);
     
-    let detailsView = 
-        <Container>Details</Container>
-
-
-    let groupsView = 
-        <p>This team has groups.</p>
   
-    
     return (
             <Container fluid>
                 <Col sm={12} md={{span: 10, offset: 1}}>
@@ -90,23 +80,68 @@ const TeamView = (props) => {
                         </Col>
                         </Row>
                     </Jumbotron>
+                    
                     <Container>
-                        {members?        
-                        <div className="members-div">
-                        <ListGroup>
-                            {members.map((item,index) => {
-                                return (
-                                    <ListGroup.Item key={index} className="member-element">
-                                        <p>{item.first_name} {item.last_name}</p>
-                                    </ListGroup.Item>                        
-                                )
-                            })}
-                        </ListGroup>
-                    </div>
-                    : <p>The team does not have any members yet</p>}
-                    </Container>
-                    <Container>
-                        {groups? groupsView: <p>This team does not have any groups.</p>}
+                        <Row>
+                            <Col md={8} lg={8} sm={12}>
+                                <Card>
+                                    <Card.Header>
+                                        Members
+                                    </Card.Header>
+                                    <Card.Body>
+                                    {members?        
+                                        <div className="members-div">
+                                        <ListGroup>
+                                            {members.map((item,index) => {
+                                                return (
+                                                    <ListGroup.Item key={index} className="member-element">
+                                                        <Row>
+                                                            <Col className="text-center" sm={4} md={4}>
+                                                                <Link to={`/user/${item.username}`}>
+                                                                <Image roundedCircle
+                                                                    src="https://via.placeholder.com/40/AF34BB?text=U"
+                                                                    alt="user profile"/>
+                                                                </Link>
+                                                            </Col>
+                                                            <Col sm={6} md={6}>
+                                                                <Link to={`/user/${item.username}`}>
+                                                                    <p>{item.first_name} {item.last_name}</p>
+                                                                </Link>
+                                                            </Col>
+                                                            <Col sm={2} md={2}>
+                                                                <Dropdown>
+                                                                    <Dropdown.Toggle variant="small">
+                                                                        <Icon.FiSettings/>
+                                                                        </Dropdown.Toggle>
+                                                                        <Dropdown.Menu>
+                                                                        <Dropdown.Item href="#">Permissions</Dropdown.Item>
+                                                                        <Dropdown.Item href="#">Remove</Dropdown.Item>
+                                                                    </Dropdown.Menu>
+                                                                </Dropdown>
+                                                            </Col>
+                                                        </Row>
+                                                    </ListGroup.Item>                        
+                                                )
+                                            })}
+                                        </ListGroup>
+                                        </div>
+                                    : <p>The team does not have any members yet</p>}
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                            <Col md={4} lg={4} sm={12}>
+                            <Card>
+                                <Card.Header>
+                                    Groups
+                                </Card.Header>
+                                <Card.Body className="text-center">
+                                {groups?        
+                                  <p>This team has {groups.length} group(s).</p>
+                                : <p>The team does not have any groups yet</p>}
+                                </Card.Body>
+                            </Card>
+                            </Col>
+                        </Row>
                     </Container>
                 </Col>
             </Container>
