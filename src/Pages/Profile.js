@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { Container, Row, Col, Spinner, Button, Form } from 'react-bootstrap';
 import InputColor from 'react-input-color';
 import { Link } from 'react-router-dom';
-import * as Icon from 'react-feather';
+import * as Icon from 'react-icons/fi';
 
 import APIHost from '../services/api.service';
 import AuthService from '../services/auth.service';
@@ -135,26 +135,26 @@ export default class Profile extends Component {
           </Row> :
           <Row>
             <Col md={{offset: 1, span: 4}}>
-              <Icon.User id='profilePicture' color={this.state.picture === 'default' ? 'black' : this.state.picture} size={350} strokeWidth={1} />
+              <Icon.FiUser id='profilePicture' color={this.state.picture === 'default' ? 'black' : this.state.picture} size={350} strokeWidth={1} />
               <h3 id='username'>{this.state.first_name + ' '+ this.state.last_name}</h3>
               <Container>
                 <Row>
                   <Col md={{span: 3}}>
                     <Link to='/chat' >
-                      <Icon.MessageSquare size={30} strokeWidth={1.5}/>
+                      <Icon.FiMessageSquare size={30} strokeWidth={1.5}/>
                       <p>Chat</p>
                     </Link>
                   </Col>
                   <Col md={{span: 3}}>
                     <Link to='/calendar'>
-                      <Icon.Calendar size={30} strokeWidth={1.5}/>
+                      <Icon.FiCalendar size={30} strokeWidth={1.5}/>
                       <p>Meet</p>
                     </Link>
                   </Col>
                   <Col md={{span: 4}}>
                     {this.props.userInfo.username === this.state.username ? 
                       <div id='editProfile' onClick={() => {this.beginEditing()}}>
-                        <Icon.Settings id='settingsIcon' size={30} strokeWidth={1.5}/>
+                        <Icon.FiSettings id='settingsIcon' size={30} strokeWidth={1.5}/>
                         <p>
                           Edit your profile 
                         </p> 
