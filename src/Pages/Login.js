@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import {Container, Row, Col, Form, Button, Modal} from 'react-bootstrap';
-import * as Icon from 'react-feather';
+import * as Icon from 'react-icons/fi';
 import InputColor from 'react-input-color';
 
 import '../stylesheets/Login.css';
@@ -84,6 +84,7 @@ export default class Login extends Component {
           <Col id='rightLogin'>
             <Col lg={{span: 9, offset: 1}}>
               <h1 className='vertShift'>Opus Team Management</h1>
+              <br/>
               <Form>
                 <Form.Group>
                   <Form.Label>Username</Form.Label>
@@ -107,9 +108,10 @@ export default class Login extends Component {
                   </Form.Text>
                 </Form.Group>
                 <Button
+                
                   onClick={e => this.handleLogin(e, this.state)}
                   id="loginSubmit"
-                >Submit</Button>
+                >SIGN IN</Button>
               </Form>
               <hr />
               <Container fluid>
@@ -202,7 +204,7 @@ export default class Login extends Component {
               <p id='iconP'>Pick a color for your avatar:</p>
               <Row>
                 <Col lg={{offset: 4, span: 3}}>
-                  <Icon.User size={60} color={this.state.picture} />
+                  <Icon.FiUser size={60} color={this.state.picture} />
                 </Col>
                 <Col>
                   <InputColor
