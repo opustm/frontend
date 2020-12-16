@@ -10,6 +10,7 @@ const axios = require('axios').default;
 export default class Contacts extends Component {
     constructor(props) {
         super(props);
+        document.title = "Opus | Contacts"
         this.state = {
             allContacts: [],
             teamDict: {}
