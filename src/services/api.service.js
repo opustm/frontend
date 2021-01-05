@@ -33,7 +33,9 @@ export const API_ENDPOINTS = {
     request : {},
     event : {},
     schedule : {},
-    announcement : {},
+    announcement : {
+        fetchAll : `/announcements`
+    },
     message : {},
     todo : {},
 }
