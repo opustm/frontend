@@ -12,6 +12,39 @@ function Announcements(props) {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [userTeams, setUserTeams] = useState([0]);
     const [teamFilter, setTeamFilter] = useState('All');
+    const dummyAnnouncements = [
+        {
+            id: 0,
+            announcement: 'Hello Opus',
+            clique: 1,
+            event: 'DummyEvent',
+            priority: 'high',
+            creator: 'God'
+        },
+        {
+            id: 99,
+            announcement: 'Goodbye Opus',
+            clique: 1,
+            event: 'DummyEvent2',
+            priority: 'medium',
+            creator: 'Patrick Mahomes'
+        },
+        {
+            id: 100,
+            announcement: 'No show',
+            clique: 2,
+            event: 'DummyEvent3',
+            priority: 'low',
+            creator: 'Kelly Oubre Jr.'
+        }
+    ]
+    const [announcements, setAnnouncements] = useState(dummyAnnouncements);
+
+    const colorDict = {
+        'high': 'table-danger',
+        'medium': 'table-warning',
+        'low': 'table-success'
+    }
 
     useEffect(() => {
         async function fetchTeams() {
@@ -45,10 +78,9 @@ function Announcements(props) {
                     <Form.Group>
                         <Form.Label>Select Group</Form.Label>
                         <Form.Control as="select">
-                            <option>Test 1</option>
-                            <option>Test 1</option>
-                            <option>Test 1</option>
-                            <option>Test 1</option>
+                            {userTeams.map((team) => {
+                                return <option key={team.id}>{team.name}</option>
+                            })}
                         </Form.Control>
                     </Form.Group>
                     <Form.Group>
@@ -59,6 +91,7 @@ function Announcements(props) {
                 </Form>
             </Modal.Body>
         </Modal>
+
     return (
         <Container fluid>
             {createAnnouncementModal}
@@ -86,8 +119,27 @@ function Announcements(props) {
                         <th>Team</th>
                         <th>Creator</th>
                         <th>Message</th>
+                        <th>Associated Event</th>
                     </tr>
                 </thead>
+                <tbody>
+                    {announcements.map((announcement) => {
+                        if (teamFilter === 'All') {
+                            return (
+                                <tr key={announcement.id} className={colorDict[announcement.priority]}>
+                                    <td>{announcement.priority}</td>
+                                    <td>{announcement.clique}</td>
+                                    <td>{announcement.creator}</td>
+                                    <td>{announcement.announcement}</td>
+                                    <td>{announcement.event}</td>
+                                </tr>
+                            )
+                        }
+                        else {
+                            return '';
+                        }
+                    })}
+                </tbody>
             </Table>
         </Container>
 
