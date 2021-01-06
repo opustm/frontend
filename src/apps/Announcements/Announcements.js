@@ -11,6 +11,7 @@ function Announcements(props) {
     // Once we have them, we'll include a dropdown that allows the user to display only the announcements related to the selected team
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [userTeams, setUserTeams] = useState([0]);
+    const [teamFilter, setTeamFilter] = useState('All');
 
     useEffect(() => {
         async function fetchTeams() {
@@ -31,6 +32,7 @@ function Announcements(props) {
         evt.preventDefault();
         console.log('created!');
         console.log(userTeams);
+        console.log(teamFilter);
     }
 
     let createAnnouncementModal = 
@@ -68,13 +70,13 @@ function Announcements(props) {
                     <Button onClick={() => {setShowCreateModal(true)}}><Icon.FiPlusCircle /> Create Announcement</Button>
                 </Col>
                 <Col>
-                    
-                        <h4>Filter by group: </h4>
-                        <FormControl as="select">
-                            <option>Team 1</option>
-                            <option>Team 2</option>
-                        </FormControl>
-                    
+                    <h4>Filter by group: </h4>
+                    <FormControl as="select" onChange={(e) => {setTeamFilter(e.target.value)}}>
+                        <option>All</option>
+                        {userTeams.map((team) => {
+                            return <option key={team.id}>{team.name}</option>;
+                        })}
+                    </FormControl>
                 </Col>
             </Row>
             <Table striped bordered>

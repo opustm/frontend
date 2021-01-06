@@ -22,19 +22,23 @@ export const Axios = axios.create({
 export const API_ENDPOINTS = {
     teams : {
         fetchAll : `/cliques/`,
-        fetchById : (id) => `/cliques/${id}`,
+        fetchById : (id) => `/cliques/${id}/`,
         fetchDetails : (name) => `/cliqueDetails/${name}/`,
         fetchMembers : (name) => `/cliqueMembers/${name}/`,
-        fetchByUsername: (username) => `/userCliques/${username}`,
-        fetchRelatedTeams: (teamName) => `/relatedCliques/${teamName}`,
+        fetchMembersById: (id) => `/cliqueidMembers/${id}/`,
+        fetchByUsername: (username) => `/userCliques/${username}/`,
+        fetchRelatedTeams: (teamName) => `/relatedCliques/${teamName}/`,
     },
-    user : {},
+    user : {
+        fetchByUsername: (username) => `userDetails/${username}/`
+    },
     invitation : {},
     request : {},
     event : {},
     schedule : {},
     announcement : {
-        fetchAll : `/announcements`
+        fetchAll : `/announcements/`,
+        fetchByTeam : (teamName) => `/cliqueAnnouncements/${teamName}/` 
     },
     message : {},
     todo : {},
