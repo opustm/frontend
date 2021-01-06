@@ -4,7 +4,7 @@ import axios from "axios";
 // Configure API interaction preferences
 const API_CONFIG = {
     useLocal : false, // Change this to true to use API locally
-    urlRemote : "https://opustm-api.herokuapp.com/",
+    urlRemote : "https://opustm-api-staging.herokuapp.com/",
     urlLocal : 'https://localhost:8000/',
     baseURL : () => API_CONFIG.useLocal ? 
         API_CONFIG.urlLocal : API_CONFIG.urlRemote,

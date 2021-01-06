@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Table, Row, Col, Button, Modal, Form, FormControl } from 'react-bootstrap';
+import { useInput } from '../../services/forms.service';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 import { Redirect } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
@@ -39,6 +40,9 @@ function Announcements(props) {
         }
     ]
     const [announcements, setAnnouncements] = useState(dummyAnnouncements);
+    const [teamDict, setTeamDict] = useState({});
+    const { value:announcementTeam, bind:bindAnnouncementTeam, reset:resetAnnouncementTeam} = useInput('');
+    const { value:announcementBody, bind:bindAnnouncementBody, reset:resetAnnouncementBody} = useInput('');
 
     const colorDict = {
         'high': 'table-danger',
@@ -49,23 +53,42 @@ function Announcements(props) {
     useEffect(() => {
         async function fetchTeams() {
           const request = await api.get(urls.teams.fetchByUsername(props.userInfo.username));
+        //   let userAnnouncements = []
+        //   for (let team of userTeams) {
+        //       const request = await api.get(urls.announcement.fetchByTeam(team.name));
+        //       userAnnouncements.concat(request.data);
+        //   }
           setUserTeams(request.data);
           return request;
+        //   setAnnouncements(userAnnouncements);
         }
+
         try{
           fetchTeams();
+          createTeamDict();
         }
         catch (err) {
           <Redirect to="/404"/>
         }
-      }, [userTeams, props.userInfo.username]);
+      }, []);
 
+    let createTeamDict = () => {
+        let newDict = {};
+        for (let team of userTeams) {
+            newDict[team.name] = team.id;
+        }
+        setTeamDict(newDict);
+    }
 
     let handleCreate = (evt) => {
         evt.preventDefault();
-        console.log('created!');
-        console.log(userTeams);
-        console.log(teamFilter);
+        let body = {
+            announcement: announcementBody,
+            clique: 1,
+            event: 'DummyEvent2',
+            priority: 'medium',
+            creator: props.userInfo.id
+        };
     }
 
     let createAnnouncementModal = 
@@ -77,7 +100,7 @@ function Announcements(props) {
                 <Form onSubmit={handleCreate}>
                     <Form.Group>
                         <Form.Label>Select Group</Form.Label>
-                        <Form.Control as="select">
+                        <Form.Control as="select" {...bindAnnouncementTeam}>
                             {userTeams.map((team) => {
                                 return <option key={team.id}>{team.name}</option>
                             })}
@@ -85,7 +108,7 @@ function Announcements(props) {
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Announcement</Form.Label>
-                        <Form.Control as="textarea" placeholder="Type your announcement here..."></Form.Control>
+                        <Form.Control as="textarea" placeholder="Type your announcement here..." {...bindAnnouncementBody}></Form.Control>
                     </Form.Group>
                     <Button type="submit" onClick={() => {setShowCreateModal(false)}}>Submit</Button>
                 </Form>
@@ -103,7 +126,7 @@ function Announcements(props) {
                     <Button onClick={() => {setShowCreateModal(true)}}><Icon.FiPlusCircle /> Create Announcement</Button>
                 </Col>
                 <Col>
-                    <h4>Filter by group: </h4>
+                    <h4>Filter by Team: </h4>
                     <FormControl as="select" onChange={(e) => {setTeamFilter(e.target.value)}}>
                         <option>All</option>
                         {userTeams.map((team) => {
@@ -141,6 +164,9 @@ function Announcements(props) {
                     })}
                 </tbody>
             </Table>
+            <Button onClick={() => {console.log(announcements)}}>Announcements</Button>
+            <Button onClick={() => {console.log(userTeams)}}>Teams</Button>
+            <Button onClick={() => {console.log(teamDict)}}>Team Dict</Button>
         </Container>
 
     )
