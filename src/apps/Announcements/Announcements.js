@@ -1,175 +1,164 @@
-import React, { useState, useEffect } from 'react';
+import React, { Component } from 'react';
 import { Container, Table, Row, Col, Button, Modal, Form, FormControl } from 'react-bootstrap';
-import { useInput } from '../../services/forms.service';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
-import { Redirect } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
 
 
-function Announcements(props) {
-    // For filtering the announcements by team:
-    // Get all of the announcements for a user to begin with and save those, that way we don't have to make API call after API call
-    // Once we have them, we'll include a dropdown that allows the user to display only the announcements related to the selected team
-    const [showCreateModal, setShowCreateModal] = useState(false);
-    const [userTeams, setUserTeams] = useState([0]);
-    const [teamFilter, setTeamFilter] = useState('All');
-    const dummyAnnouncements = [
-        {
-            id: 0,
-            announcement: 'Hello Opus',
-            clique: 1,
-            event: 'DummyEvent',
-            priority: 'high',
-            creator: 'God'
-        },
-        {
-            id: 99,
-            announcement: 'Goodbye Opus',
-            clique: 1,
-            event: 'DummyEvent2',
-            priority: 'medium',
-            creator: 'Patrick Mahomes'
-        },
-        {
-            id: 100,
-            announcement: 'No show',
-            clique: 2,
-            event: 'DummyEvent3',
-            priority: 'low',
-            creator: 'Kelly Oubre Jr.'
+export default class Announcements extends Component {
+    constructor(props) {
+        super(props);
+        document.title = "Opus | Announcements";
+        this.state = {
+            showCreateModal: false,
+            userTeams: [],
+            userAnnouncements: [],
+            teamToIdDict: {},
+            idToTeamDict: {},
+            announcementBody: '',
+            teamFilter: 'All',
+            colorDict: {
+                'high': 'table-danger',
+                'medium': 'table-warning',
+                'low': 'table-success'
+            }, 
         }
-    ]
-    const [announcements, setAnnouncements] = useState(dummyAnnouncements);
-    const [teamDict, setTeamDict] = useState({});
-    const { value:announcementTeam, bind:bindAnnouncementTeam, reset:resetAnnouncementTeam} = useInput('');
-    const { value:announcementBody, bind:bindAnnouncementBody, reset:resetAnnouncementBody} = useInput('');
-
-    const colorDict = {
-        'high': 'table-danger',
-        'medium': 'table-warning',
-        'low': 'table-success'
     }
 
-    useEffect(() => {
-        async function fetchTeams() {
-          const request = await api.get(urls.teams.fetchByUsername(props.userInfo.username));
-        //   let userAnnouncements = []
-        //   for (let team of userTeams) {
-        //       const request = await api.get(urls.announcement.fetchByTeam(team.name));
-        //       userAnnouncements.concat(request.data);
-        //   }
-          setUserTeams(request.data);
-          return request;
-        //   setAnnouncements(userAnnouncements);
+    componentDidMount() {
+        if (this.props.userInfo.username) {
+            this.fetchData();
         }
-
-        try{
-          fetchTeams();
-          createTeamDict();
-        }
-        catch (err) {
-          <Redirect to="/404"/>
-        }
-      }, []);
-
-    let createTeamDict = () => {
-        let newDict = {};
-        for (let team of userTeams) {
-            newDict[team.name] = team.id;
-        }
-        setTeamDict(newDict);
     }
 
-    let handleCreate = (evt) => {
+    async fetchData() {
+        let teamIds = this.props.userInfo.cliques;
+        let teams = []
+        let newTeamDict = {};
+        let newIdDict = {};
+        for (let id of teamIds) {
+            const request = await api.get(urls.teams.fetchById(id));
+            teams.push(request.data);
+            newTeamDict[request.data.name] = id;
+            newIdDict[id] = request.data.name;
+        }
+        this.setState({
+            teamToIdDict: newTeamDict,
+            idToTeamDict: newIdDict,
+            userTeams: teams
+        }, () => {this.fetchAnnouncements()});
+    }
+
+    async fetchAnnouncements() {
+        let announcements = [];
+        for (let team of this.state.userTeams) {
+            const request = await api.get(urls.announcement.fetchByTeam(team.name));
+            announcements = announcements.concat(request.data);   
+        }
+        this.setState({userAnnouncements: announcements});
+    }
+
+    async handleCreate(evt) {
         evt.preventDefault();
         let body = {
-            announcement: announcementBody,
+            announcement: this.state.announcementBody,
             clique: 1,
-            event: 'DummyEvent2',
-            priority: 'medium',
-            creator: props.userInfo.id
+            event: 1,
         };
+        let request = await api.post(urls.announcement.fetchAll, body);
+        if (request.status === 201) {
+            let newAnnouncements = this.state.userAnnouncements;
+            newAnnouncements.push(body);
+            this.setState({userAnnouncements: newAnnouncements});
+        }
+        else {
+            console.warn('Error creating announcement. Please try again.');
+        }
     }
 
-    let createAnnouncementModal = 
-        <Modal show={showCreateModal} onHide={() => {setShowCreateModal(false)}}>
-            <Modal.Header>
-                <Modal.Title>Create an announcement</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Form onSubmit={handleCreate}>
-                    <Form.Group>
-                        <Form.Label>Select Group</Form.Label>
-                        <Form.Control as="select" {...bindAnnouncementTeam}>
-                            {userTeams.map((team) => {
-                                return <option key={team.id}>{team.name}</option>
-                            })}
-                        </Form.Control>
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>Announcement</Form.Label>
-                        <Form.Control as="textarea" placeholder="Type your announcement here..." {...bindAnnouncementBody}></Form.Control>
-                    </Form.Group>
-                    <Button type="submit" onClick={() => {setShowCreateModal(false)}}>Submit</Button>
-                </Form>
-            </Modal.Body>
-        </Modal>
+    render() {
+        return (
+            <Container fluid>
+                <Modal show={this.state.showCreateModal} onHide={() => {this.setState({showCreateModal: false})}}>
+                    <Modal.Header>
+                        <Modal.Title>Create an announcement</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form onSubmit={(e) => {this.handleCreate(e)}}>
+                            <Form.Group>
+                                <Form.Label>Select Group</Form.Label>
+                                <Form.Control as="select">
+                                    {this.state.userTeams.map((team) => {
+                                        return <option key={team.id}>{team.name}</option>
+                                    })}
+                                </Form.Control>
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Label>Announcement</Form.Label>
+                                <Form.Control 
+                                    as="textarea"
+                                    placeholder="Type your announcement here..."
+                                    value={this.state.announcementBody}
+                                    onChange={(e) => {this.setState({announcementBody: e.target.value})}}
+                                >
+                                </Form.Control>
+                            </Form.Group>
+                            <Button type="submit" onClick={() => {this.setState({showCreateModal: false})}}>Submit</Button>
+                        </Form>
+                    </Modal.Body>
+                </Modal>
 
-    return (
-        <Container fluid>
-            {createAnnouncementModal}
-            <Row>
-                <Col>
-                    <h1>Announcements</h1>
-                </Col>
-                <Col>
-                    <Button onClick={() => {setShowCreateModal(true)}}><Icon.FiPlusCircle /> Create Announcement</Button>
-                </Col>
-                <Col>
-                    <h4>Filter by Team: </h4>
-                    <FormControl as="select" onChange={(e) => {setTeamFilter(e.target.value)}}>
-                        <option>All</option>
-                        {userTeams.map((team) => {
-                            return <option key={team.id}>{team.name}</option>;
+                <Row>
+                    <Col>
+                        <h1>Announcements</h1>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={{span: 10}}>
+                        <Button style={{'marginTop': '10px', 'marginBottom': '10px'}} onClick={() => {this.setState({showCreateModal: true})}}><Icon.FiPlusCircle style={{'marginTop' : '-3px'}} /> Create Announcement</Button>
+                    </Col>
+                    <Col>
+                        <Row>
+                            <h6 style={{'marginTop': '15px'}}>Filter by Team: </h6>
+                            <FormControl style={{'marginTop': '10px', 'marginBottom': '10px', 'marginLeft': '10px'}} as="select" onChange={(e) => {this.setState({teamFilter: e.target.value})}}>
+                                <option>All</option>
+                                {this.state.userTeams.map((team) => {
+                                    return <option key={team.id}>{team.name}</option>;
+                                })}
+                            </FormControl>
+                        </Row>
+                    </Col>
+                </Row>
+                <Table bordered>
+                    <thead>
+                        <tr key={-1}>
+                            <th>Priority</th>
+                            <th>Team</th>
+                            <th>Creator</th>
+                            <th>Message</th>
+                            <th>Associated Event</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.state.userAnnouncements.map((announcement) => {
+                            let name = this.state.idToTeamDict[announcement.clique];
+                            if (this.state.teamFilter === 'All' || this.state.teamFilter === name) {
+                                return (
+                                    <tr key={announcement.id} className={this.state.colorDict[announcement.priority]}>
+                                        <td>No priority field yet</td>
+                                        <td>{this.state.idToTeamDict[announcement.clique]}</td>
+                                        <td>No creator field yet</td>
+                                        <td>{announcement.announcement}</td>
+                                        <td>{announcement.event}</td>
+                                    </tr>
+                                )
+                            }
+                            else {
+                                return <tr></tr>;
+                            }
                         })}
-                    </FormControl>
-                </Col>
-            </Row>
-            <Table striped bordered>
-                <thead>
-                    <tr>
-                        <th>Priority</th>
-                        <th>Team</th>
-                        <th>Creator</th>
-                        <th>Message</th>
-                        <th>Associated Event</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {announcements.map((announcement) => {
-                        if (teamFilter === 'All') {
-                            return (
-                                <tr key={announcement.id} className={colorDict[announcement.priority]}>
-                                    <td>{announcement.priority}</td>
-                                    <td>{announcement.clique}</td>
-                                    <td>{announcement.creator}</td>
-                                    <td>{announcement.announcement}</td>
-                                    <td>{announcement.event}</td>
-                                </tr>
-                            )
-                        }
-                        else {
-                            return '';
-                        }
-                    })}
-                </tbody>
-            </Table>
-            <Button onClick={() => {console.log(announcements)}}>Announcements</Button>
-            <Button onClick={() => {console.log(userTeams)}}>Teams</Button>
-            <Button onClick={() => {console.log(teamDict)}}>Team Dict</Button>
-        </Container>
-
-    )
+                    </tbody>
+                </Table>
+            </Container>
+        )
+    }
 }
-
-export default Announcements;
