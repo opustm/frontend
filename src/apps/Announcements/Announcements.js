@@ -16,7 +16,7 @@ export default class Announcements extends Component {
             idToTeamDict: {},
             announcementBody: '',
             announcementTeam: 0,
-            announcementPriority: 3,
+            announcementPriority: 0,
             teamFilter: 'All',
             priorityDict: {
                 1: ['High', 'table-danger'],
@@ -101,6 +101,7 @@ export default class Announcements extends Component {
                             <Form.Group>
                                 <Form.Label>Select Priority</Form.Label>
                                 <Form.Control as="select" onChange={(e) => {this.setState({announcementPriority: parseInt(e.target.value)})}}>
+                                    <option selected disabled hidden>Choose a priority</option>
                                     <option value={1}>High</option>
                                     <option value={2}>Medium</option>
                                     <option value={3}>Low</option>
