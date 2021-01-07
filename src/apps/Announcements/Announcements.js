@@ -15,12 +15,14 @@ export default class Announcements extends Component {
             teamToIdDict: {},
             idToTeamDict: {},
             announcementBody: '',
+            announcementTeam: 0,
+            announcementPriority: 3,
             teamFilter: 'All',
-            colorDict: {
-                'high': 'table-danger',
-                'medium': 'table-warning',
-                'low': 'table-success'
-            }, 
+            priorityDict: {
+                1: ['High', 'table-danger'],
+                2: ['Medium', 'table-warning'],
+                3: ['Low', 'table-success']
+            },
         }
     }
 
@@ -61,9 +63,12 @@ export default class Announcements extends Component {
         evt.preventDefault();
         let body = {
             announcement: this.state.announcementBody,
-            clique: 1,
+            clique: this.state.announcementTeam,
             event: 1,
+            priority: this.state.announcementPriority,
+            creator: this.props.userInfo.id
         };
+        console.log(body);
         let request = await api.post(urls.announcement.fetchAll, body);
         if (request.status === 201) {
             let newAnnouncements = this.state.userAnnouncements;
@@ -85,11 +90,20 @@ export default class Announcements extends Component {
                     <Modal.Body>
                         <Form onSubmit={(e) => {this.handleCreate(e)}}>
                             <Form.Group>
-                                <Form.Label>Select Group</Form.Label>
-                                <Form.Control as="select">
+                                <Form.Label>Select Team</Form.Label>
+                                <Form.Control as="select" onChange={(e) => {this.setState({announcementTeam: e.target.value})}}>
+                                    <option selected disabled hidden>Choose a team</option>
                                     {this.state.userTeams.map((team) => {
-                                        return <option key={team.id}>{team.name}</option>
+                                        return <option key={team.id} value={team.id}>{team.name}</option>
                                     })}
+                                </Form.Control>
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Label>Select Priority</Form.Label>
+                                <Form.Control as="select" onChange={(e) => {this.setState({announcementPriority: parseInt(e.target.value)})}}>
+                                    <option value={1}>High</option>
+                                    <option value={2}>Medium</option>
+                                    <option value={3}>Low</option>
                                 </Form.Control>
                             </Form.Group>
                             <Form.Group>
@@ -143,10 +157,10 @@ export default class Announcements extends Component {
                             let name = this.state.idToTeamDict[announcement.clique];
                             if (this.state.teamFilter === 'All' || this.state.teamFilter === name) {
                                 return (
-                                    <tr key={announcement.id} className={this.state.colorDict[announcement.priority]}>
-                                        <td>No priority field yet</td>
+                                    <tr key={announcement.id} className={this.state.priorityDict[announcement.priority][1]}>
+                                        <td>{this.state.priorityDict[announcement.priority][0]}</td>
                                         <td>{this.state.idToTeamDict[announcement.clique]}</td>
-                                        <td>No creator field yet</td>
+                                        <td>{announcement.creator}</td>
                                         <td>{announcement.announcement}</td>
                                         <td>{announcement.event}</td>
                                     </tr>
