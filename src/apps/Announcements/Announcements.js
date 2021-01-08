@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Container, Table, Row, Col, Button, Modal, Form, FormControl } from 'react-bootstrap';
+import { Container, Table, Row, Col, Button, Modal, Form, FormControl, Toast, Alert } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 import * as Icon from 'react-icons/fi';
 
@@ -17,6 +18,9 @@ export default class Announcements extends Component {
             announcementBody: '',
             announcementTeam: 0,
             announcementPriority: 0,
+            showCreatedToast: false,
+            announcementCreatorDict: {},
+            creationError: false,
             teamFilter: 'All',
             priorityDict: {
                 1: ['High', 'table-danger'],
@@ -52,32 +56,53 @@ export default class Announcements extends Component {
 
     async fetchAnnouncements() {
         let announcements = [];
+        let creatorIdToName = {};
         for (let team of this.state.userTeams) {
             const request = await api.get(urls.announcement.fetchByTeam(team.name));
-            announcements = announcements.concat(request.data);   
+            announcements = announcements.concat(request.data);
+            for (let a of request.data) {
+                if (!creatorIdToName.hasOwnProperty(a.creator)) {
+                    const creatorRequest = await api.get(urls.user.fetchById(a.creator));
+                    creatorIdToName[a.creator] = [`${creatorRequest.data.first_name} ${creatorRequest.data.last_name}`, creatorRequest.data.username];
+                }
+            }
         }
-        this.setState({userAnnouncements: announcements});
+        this.setState({
+            userAnnouncements: announcements,
+            announcementCreatorDict: creatorIdToName
+        });
     }
 
     async handleCreate(evt) {
         evt.preventDefault();
-        let body = {
-            announcement: this.state.announcementBody,
-            clique: this.state.announcementTeam,
-            event: 1,
-            priority: this.state.announcementPriority,
-            creator: this.props.userInfo.id
-        };
-        console.log(body);
-        let request = await api.post(urls.announcement.fetchAll, body);
-        if (request.status === 201) {
+        if (!this.createDataIsInvalid()) {
+            this.setState({showCreateModal: false})
+            let body = {
+                announcement: this.state.announcementBody,
+                clique: this.state.announcementTeam,
+                event: 1,
+                priority: this.state.announcementPriority,
+                creator: this.props.userInfo.id
+            };
+            let request = await api.post(urls.announcement.fetchAll, body);
             let newAnnouncements = this.state.userAnnouncements;
             newAnnouncements.push(body);
-            this.setState({userAnnouncements: newAnnouncements});
+            this.setState({
+                userAnnouncements: newAnnouncements,
+                showCreatedToast: true
+            });
         }
         else {
-            console.warn('Error creating announcement. Please try again.');
+            console.warn('Error creating announcement.');
         }
+    }
+
+    createDataIsInvalid() {
+        if (!this.state.announcementBody || this.state.announcementTeam === 0 || ![1,2,3].includes(this.state.announcementPriority)) {
+            this.setState({creationError: true});
+            return true;
+        }
+        return false;
     }
 
     render() {
@@ -117,7 +142,8 @@ export default class Announcements extends Component {
                                 >
                                 </Form.Control>
                             </Form.Group>
-                            <Button type="submit" onClick={() => {this.setState({showCreateModal: false})}}>Submit</Button>
+                            <Alert variant='danger' hidden={!this.state.creationError}>One or more required fields was missing. Try again!</Alert>
+                            <Button type="submit">Submit</Button>
                         </Form>
                     </Modal.Body>
                 </Modal>
@@ -128,8 +154,22 @@ export default class Announcements extends Component {
                     </Col>
                 </Row>
                 <Row>
-                    <Col md={{span: 10}}>
+                    <Col>
                         <Button style={{'marginTop': '10px', 'marginBottom': '10px'}} onClick={() => {this.setState({showCreateModal: true})}}><Icon.FiPlusCircle style={{'marginTop' : '-3px'}} /> Create Announcement</Button>
+                    </Col>
+                    <Col>
+                        <Toast onClose={() => this.setState({showCreatedToast: false})} show={this.state.showCreatedToast} delay={3000} autohide>
+                            <Toast.Header>
+                                <img
+                                src="holder.js/20x20?text=%20"
+                                className="rounded mr-2"
+                                alt=""
+                                />
+                                <strong className="mr-auto">Opus Announcements</strong>
+                                <small>Just now</small>
+                            </Toast.Header>
+                            <Toast.Body>Announcement for team "{this.state.idToTeamDict[this.state.announcementTeam]}" created successfully</Toast.Body>
+                        </Toast>
                     </Col>
                     <Col>
                         <Row>
@@ -161,7 +201,11 @@ export default class Announcements extends Component {
                                     <tr key={announcement.id} className={this.state.priorityDict[announcement.priority][1]}>
                                         <td>{this.state.priorityDict[announcement.priority][0]}</td>
                                         <td>{this.state.idToTeamDict[announcement.clique]}</td>
-                                        <td>{announcement.creator}</td>
+                                        <td>
+                                            <Link style={{'color':'white'}} to={`/user/${this.state.announcementCreatorDict[announcement.creator][1]}`}>
+                                                {this.state.announcementCreatorDict[announcement.creator][0]}
+                                            </Link>
+                                        </td>
                                         <td>{announcement.announcement}</td>
                                         <td>{announcement.event}</td>
                                     </tr>

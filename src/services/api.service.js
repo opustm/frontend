@@ -27,10 +27,11 @@ export const API_ENDPOINTS = {
         fetchMembers : (name) => `/cliqueMembers/${name}/`,
         fetchMembersById: (id) => `/cliqueidMembers/${id}/`,
         fetchByUsername: (username) => `/userCliques/${username}/`,
-        fetchRelatedTeams: (teamName) => `/relatedCliques/${teamName}/`,
+        fetchRelatedTeams: (teamName) => `/relatedCliques/${teamName}/`
     },
     user : {
-        fetchByUsername: (username) => `userDetails/${username}/`
+        fetchByUsername: (username) => `userDetails/${username}/`,
+        fetchById: (id) => `/users/${id}/`
     },
     invitation : {},
     request : {},
