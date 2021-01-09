@@ -35,7 +35,10 @@ export const API_ENDPOINTS = {
     },
     invitation : {},
     request : {},
-    event : {},
+    event : {
+        fetchAll: `/events/`,
+        fetchTeamEvents: (teamName) => `/cliqueEvents/${teamName}/`
+    },
     schedule : {},
     announcement : {
         fetchAll : `/announcements/`,

@@ -15,8 +15,10 @@ export default class Announcements extends Component {
             userAnnouncements: [],
             teamToIdDict: {},
             idToTeamDict: {},
+            teamEvents: [],
             announcementBody: '',
             announcementTeam: 0,
+            announcementEvent: 0,
             announcementPriority: 0,
             showCreatedToast: false,
             announcementCreatorDict: {},
@@ -41,16 +43,30 @@ export default class Announcements extends Component {
         let teams = []
         let newTeamDict = {};
         let newIdDict = {};
+        let events = []
+
         for (let id of teamIds) {
             const request = await api.get(urls.teams.fetchById(id));
             teams.push(request.data);
             newTeamDict[request.data.name] = id;
             newIdDict[id] = request.data.name;
         }
+
+        for (let id of teamIds) {
+            const request2 = await api.get(urls.event.fetchTeamEvents(newIdDict[id]));
+            let dataarray = request2.data;
+            for (let event of dataarray){
+                events.push(event);
+            }
+        }
+        console.log(events)
+        console.log(teams)
+
         this.setState({
             teamToIdDict: newTeamDict,
             idToTeamDict: newIdDict,
-            userTeams: teams
+            userTeams: teams,
+            teamEvents: events
         }, () => {this.fetchAnnouncements()});
     }
 
@@ -80,7 +96,7 @@ export default class Announcements extends Component {
             let body = {
                 announcement: this.state.announcementBody,
                 clique: this.state.announcementTeam,
-                event: 1,
+                event: this.state.announcementEvent,
                 priority: this.state.announcementPriority,
                 creator: this.props.userInfo.id
             };
@@ -123,6 +139,15 @@ export default class Announcements extends Component {
                                     })}
                                 </Form.Control>
                             </Form.Group>
+                            <Form.Group>
+                                <Form.Label>Select Event</Form.Label>
+                                <Form.Control as="select" onChange={(e) => {this.setState({announcementEvent: e.target.value})}}>
+                                    <option selected disabled hidden>Choose an event</option>
+                                    {this.state.teamEvents.map((event) => {
+                                        return <option key={event.id} value={event.id}>{event.name}</option>
+                                    })}
+                                </Form.Control>
+                            </Form.Group>                            
                             <Form.Group>
                                 <Form.Label>Select Priority</Form.Label>
                                 <Form.Control as="select" onChange={(e) => {this.setState({announcementPriority: parseInt(e.target.value)})}}>
