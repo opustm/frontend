@@ -42,7 +42,8 @@ export const API_ENDPOINTS = {
     schedule : {},
     announcement : {
         fetchAll : `/announcements/`,
-        fetchByTeam : (teamName) => `/cliqueAnnouncements/${teamName}/` 
+        fetchByTeam : (teamName) => `/cliqueAnnouncements/${teamName}/`,
+        fetchById: (announcementId) => `/announcements/${announcementId}/`
     },
     message : {},
     todo : {},

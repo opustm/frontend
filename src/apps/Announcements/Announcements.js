@@ -21,6 +21,7 @@ export default class Announcements extends Component {
             announcementTeam: 0,
             announcementEvent: 0,
             announcementPriority: 0,
+            announcementDuration: 0,
             showCreatedToast: false,
             announcementCreatorDict: {},
             creationError: false,
@@ -63,8 +64,6 @@ export default class Announcements extends Component {
                 idToEvent[eventid]=event;
             }
         }
-        console.log(events)
-        console.log(teams)
 
         this.setState({
             teamToIdDict: newTeamDict,
@@ -98,19 +97,25 @@ export default class Announcements extends Component {
         evt.preventDefault();
         if (!this.createDataIsInvalid()) {
             this.setState({showCreateModal: false})
+            let expirationDate = null;
             let body = {
                 announcement: this.state.announcementBody,
                 clique: this.state.announcementTeam,
                 event: this.state.announcementEvent,
                 priority: this.state.announcementPriority,
-                creator: this.props.userInfo.id
+                creator: this.props.userInfo.id,
+                end: expirationDate,
+                acknowledged: [this.props.userInfo.id]
             };
             let request = await api.post(urls.announcement.fetchAll, body);
+            body.id = request.data.id;
+            console.log(body);
             let newAnnouncements = this.state.userAnnouncements;
             newAnnouncements.push(body);
             this.setState({
                 userAnnouncements: newAnnouncements,
-                showCreatedToast: true
+                showCreatedToast: true,
+                announcementBody: ''
             });
         }
         else {
@@ -126,6 +131,13 @@ export default class Announcements extends Component {
         return false;
     }
 
+    async deleteAnnouncement(announcementToDelete) {
+        const deleteRequest = await api.delete(urls.announcement.fetchById(announcementToDelete.id));
+        let filtered = this.state.userAnnouncements.filter((announcement) => {return announcement !== announcementToDelete;});
+        console.log(filtered);
+        this.setState({userAnnouncements: filtered}, ()=>{console.log(this.state)});
+    }
+
     render() {
         return (
             <Container fluid>
@@ -137,7 +149,7 @@ export default class Announcements extends Component {
                         <Form onSubmit={(e) => {this.handleCreate(e)}}>
                             <Form.Group>
                                 <Form.Label>Select Team</Form.Label>
-                                <Form.Control as="select" onChange={(e) => {this.setState({announcementTeam: e.target.value})}}>
+                                <Form.Control as="select" onChange={(e) => {this.setState({announcementTeam: parseInt(e.target.value)})}}>
                                     <option selected disabled hidden>Choose a team</option>
                                     {this.state.userTeams.map((team) => {
                                         return <option key={team.id} value={team.id}>{team.name}</option>
@@ -146,13 +158,13 @@ export default class Announcements extends Component {
                             </Form.Group>
                             <Form.Group>
                                 <Form.Label>Select Event</Form.Label>
-                                <Form.Control as="select" onChange={(e) => {this.setState({announcementEvent: e.target.value})}}>
+                                <Form.Control as="select" onChange={(e) => {this.setState({announcementEvent: parseInt(e.target.value)})}}>
                                     <option selected disabled hidden>Choose an event</option>
                                     {this.state.teamEvents.map((event) => {
                                         return <option key={event.id} value={event.id}>{event.name}</option>
                                     })}
                                 </Form.Control>
-                            </Form.Group>                            
+                            </Form.Group>
                             <Form.Group>
                                 <Form.Label>Select Priority</Form.Label>
                                 <Form.Control as="select" onChange={(e) => {this.setState({announcementPriority: parseInt(e.target.value)})}}>
@@ -161,6 +173,10 @@ export default class Announcements extends Component {
                                     <option value={2}>Medium</option>
                                     <option value={3}>Low</option>
                                 </Form.Control>
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Label>Announcement Duration (hours)</Form.Label>
+                                <Form.Control type="number" onChange={(e) => {this.setState({announcementDuration: parseInt(e.target.value)})}} />
                             </Form.Group>
                             <Form.Group>
                                 <Form.Label>Announcement</Form.Label>
@@ -186,6 +202,23 @@ export default class Announcements extends Component {
                 <Row>
                     <Col>
                         <Button style={{'marginTop': '10px', 'marginBottom': '10px'}} onClick={() => {this.setState({showCreateModal: true})}}><Icon.FiPlusCircle style={{'marginTop' : '-3px'}} /> Create Announcement</Button>
+                    </Col>
+                    <Col>
+                        <Row>
+                            <h5 style={{'marginTop': '10px'}}>Priority Legend:</h5>
+                        </Row>
+                        <Row>
+                            <Icon.FiSquare style={{'fill': '#e74c3c', 'color': '#e74c3c', 'marginTop': '5px'}}></Icon.FiSquare>
+                            {this.state.priorityDict[1][0]}
+                        </Row>
+                        <Row>
+                            <Icon.FiSquare style={{'fill': '#f39c12', 'color': '#f39c12', 'marginTop': '5px'}}></Icon.FiSquare>
+                            {this.state.priorityDict[2][0]}
+                        </Row>
+                        <Row>
+                            <Icon.FiSquare style={{'fill': '#18bc9c', 'color': '#18bc9c', 'marginTop': '5px'}}></Icon.FiSquare>
+                            {this.state.priorityDict[3][0]}
+                        </Row>
                     </Col>
                     <Col>
                         <Toast onClose={() => this.setState({showCreatedToast: false})} show={this.state.showCreatedToast} delay={3000} autohide>
@@ -216,7 +249,7 @@ export default class Announcements extends Component {
                 <Table bordered>
                     <thead>
                         <tr key={-1}>
-                            <th>Priority</th>
+                            <th></th>
                             <th>Team</th>
                             <th>Creator</th>
                             <th>Message</th>
@@ -229,7 +262,7 @@ export default class Announcements extends Component {
                             if (this.state.teamFilter === 'All' || this.state.teamFilter === name) {
                                 return (
                                     <tr key={announcement.id} className={this.state.priorityDict[announcement.priority][1]}>
-                                        <td>{this.state.priorityDict[announcement.priority][0]}</td>
+                                        <td><Icon.FiXCircle onClick={() => {this.deleteAnnouncement(announcement)}} size={20} style={{'marginRight': '-20px'}}></Icon.FiXCircle></td>
                                         <td>{this.state.idToTeamDict[announcement.clique]}</td>
                                         <td>
                                             <Link style={{'color':'white'}} to={`/user/${this.state.announcementCreatorDict[announcement.creator][1]}`}>
