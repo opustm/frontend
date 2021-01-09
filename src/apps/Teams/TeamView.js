@@ -69,7 +69,7 @@ const TeamView = (props) => {
                                     <Icon.FiSettings/>
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
-                                    <Dropdown.Item href="#">Edit</Dropdown.Item>
+                                    <Dropdown.Item href="settings">Edit</Dropdown.Item>
                                     <Dropdown.Item href="#">Leave</Dropdown.Item>
                                     <Dropdown.Item>Delete</Dropdown.Item>
                                     </Dropdown.Menu>
