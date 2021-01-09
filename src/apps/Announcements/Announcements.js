@@ -16,6 +16,7 @@ export default class Announcements extends Component {
             teamToIdDict: {},
             idToTeamDict: {},
             teamEvents: [],
+            idToEventDict: {},
             announcementBody: '',
             announcementTeam: 0,
             announcementEvent: 0,
@@ -44,6 +45,7 @@ export default class Announcements extends Component {
         let newTeamDict = {};
         let newIdDict = {};
         let events = []
+        let idToEvent = {};
 
         for (let id of teamIds) {
             const request = await api.get(urls.teams.fetchById(id));
@@ -56,7 +58,9 @@ export default class Announcements extends Component {
             const request2 = await api.get(urls.event.fetchTeamEvents(newIdDict[id]));
             let dataarray = request2.data;
             for (let event of dataarray){
+                let eventid=event["id"];
                 events.push(event);
+                idToEvent[eventid]=event;
             }
         }
         console.log(events)
@@ -66,7 +70,8 @@ export default class Announcements extends Component {
             teamToIdDict: newTeamDict,
             idToTeamDict: newIdDict,
             userTeams: teams,
-            teamEvents: events
+            teamEvents: events,
+            idToEventDict: idToEvent
         }, () => {this.fetchAnnouncements()});
     }
 
@@ -232,7 +237,7 @@ export default class Announcements extends Component {
                                             </Link>
                                         </td>
                                         <td>{announcement.announcement}</td>
-                                        <td>{announcement.event}</td>
+                                        <td>{this.state.idToEventDict[announcement.event]["name"]}</td>
                                     </tr>
                                 )
                             }
