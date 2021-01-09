@@ -109,7 +109,6 @@ export default class Announcements extends Component {
             };
             let request = await api.post(urls.announcement.fetchAll, body);
             body.id = request.data.id;
-            console.log(body);
             let newAnnouncements = this.state.userAnnouncements;
             newAnnouncements.push(body);
             this.setState({
@@ -134,8 +133,7 @@ export default class Announcements extends Component {
     async deleteAnnouncement(announcementToDelete) {
         const deleteRequest = await api.delete(urls.announcement.fetchById(announcementToDelete.id));
         let filtered = this.state.userAnnouncements.filter((announcement) => {return announcement !== announcementToDelete;});
-        console.log(filtered);
-        this.setState({userAnnouncements: filtered}, ()=>{console.log(this.state)});
+        this.setState({userAnnouncements: filtered});
     }
 
     render() {
