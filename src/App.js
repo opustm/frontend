@@ -18,7 +18,7 @@ import Profile from './Pages/Profile';
 // Apps
 import Teams from './apps/Teams/Teams';
 import TeamView from './apps/Teams/TeamView';
-import TeamSettings from './apps/Teams/TeamView';
+import TeamSettings from './apps/Teams/TeamSettings';
 import Calendar from './apps/Calendar/Calendar';
 import Chat from './apps/Chat/Chat';
 import Contacts from './apps/Contacts/Contacts';
@@ -70,8 +70,8 @@ export default function App() {
               <Route path="/contacts" exact component={() => {return <Contacts userInfo={userData}/>}}/>
               <Route path="/announcements" exact component={Announcements}/>
               <Route path="/user/:username" component={(props) => {return <Profile {...props} userInfo={userData} />}}/>
-              <Route path="/teams/:teamUsername" component={TeamView}/>
-              <Route path="teams/:teamUsername:/settings" component={TeamSettings}/>
+              <Route path="/teams/:teamUsername/settings" exact component={TeamSettings}/>
+              <Route path="/teams/:teamUsername" exact component={TeamView}/>
             </div>
             : <Redirect to='/login' />
           }

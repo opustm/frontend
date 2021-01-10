@@ -15,7 +15,9 @@ const TeamSettings = (props) => {
     });
 
     return (
-        <h1>This is the Team Settings Page</h1>
+        <div>
+            <p>Hello this is the settings page</p>
+        </div>
     )
 }
 
