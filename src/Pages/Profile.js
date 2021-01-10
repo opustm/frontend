@@ -4,12 +4,10 @@ import InputColor from 'react-input-color';
 import { Link } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
 
-import APIHost from '../services/api.service';
+import { Axios as api, API_ENDPOINTS as urls } from '../services/api.service';
 import AuthService from '../services/auth.service';
 import '../stylesheets/Profile.css';
 
-const API_HOST = APIHost();
-const axios = require('axios').default;
 
 export default class Profile extends Component {
   constructor(props) {
@@ -36,9 +34,8 @@ export default class Profile extends Component {
   }
 
   async getUserData(username) {
-    let userRoute = API_HOST + `userDetails/${username}`;
     try {
-      let response = await axios.get(userRoute);
+      let response = await api.get(urls.user.fetchByUsername(username));
       let data = response.data;
       this.setState({
         username: data.username,
@@ -70,9 +67,8 @@ export default class Profile extends Component {
       "last_name": this.state.last_name,
       "picture": this.state.picture
     }
-    let userRoute = API_HOST  + `userDetails/${this.state.username}/`;
     try {
-      let response = await axios.put(userRoute, body);
+      let response = await api.put(urls.user.fetchByUsername(this.state.username), body);
       this.setState(response.data);
     }
     catch (error) {
