@@ -19,7 +19,7 @@ export default class Announcements extends Component {
             idToEventDict: {},
             announcementBody: '',
             announcementTeam: 0,
-            announcementEvent: 0,
+            announcementEvent: null,
             announcementPriority: 0,
             announcementDuration: 0,
             showCreatedToast: false,
@@ -97,14 +97,17 @@ export default class Announcements extends Component {
         evt.preventDefault();
         if (!this.createDataIsInvalid()) {
             this.setState({showCreateModal: false})
-            let expirationDate = null;
+            // Date.now() gets current time as ms from 1/1/1970, 3600000 * hours = announcement duration in milliseconds
+            // Create new Date object with their sum to get the expiration date in ISO 8601 format
+            let expirationDate = new Date(Date.now() + (3600000 * this.state.announcementDuration));
+            let isoExpiration = expirationDate.toISOString();
             let body = {
                 announcement: this.state.announcementBody,
                 clique: this.state.announcementTeam,
                 event: this.state.announcementEvent,
                 priority: this.state.announcementPriority,
                 creator: this.props.userInfo.id,
-                end: expirationDate,
+                end: isoExpiration,
                 acknowledged: [this.props.userInfo.id]
             };
             let request = await api.post(urls.announcement.fetchAll, body);
@@ -119,11 +122,12 @@ export default class Announcements extends Component {
         }
         else {
             console.warn('Error creating announcement.');
+            this.setState({announcementBody: ''});
         }
     }
 
     createDataIsInvalid() {
-        if (!this.state.announcementBody || this.state.announcementTeam === 0 || ![1,2,3].includes(this.state.announcementPriority)) {
+        if (!this.state.announcementBody || this.state.announcementTeam === 0 || ![1,2,3].includes(this.state.announcementPriority) || this.state.announcementDuration < 1) {
             this.setState({creationError: true});
             return true;
         }
@@ -141,12 +145,15 @@ export default class Announcements extends Component {
             <Container fluid>
                 <Modal show={this.state.showCreateModal} onHide={() => {this.setState({showCreateModal: false})}}>
                     <Modal.Header>
-                        <Modal.Title>Create an announcement</Modal.Title>
+                        <Modal.Title>
+                            Create an announcement
+                        </Modal.Title>
                     </Modal.Header>
+                    <small style={{'paddingLeft': '10px', 'paddingTop': '10px'}}>* indicates required field</small>
                     <Modal.Body>
                         <Form onSubmit={(e) => {this.handleCreate(e)}}>
                             <Form.Group>
-                                <Form.Label>Select Team</Form.Label>
+                                <Form.Label>Select Team *</Form.Label>
                                 <Form.Control as="select" onChange={(e) => {this.setState({announcementTeam: parseInt(e.target.value)})}}>
                                     <option selected disabled hidden>Choose a team</option>
                                     {this.state.userTeams.map((team) => {
@@ -164,7 +171,7 @@ export default class Announcements extends Component {
                                 </Form.Control>
                             </Form.Group>
                             <Form.Group>
-                                <Form.Label>Select Priority</Form.Label>
+                                <Form.Label>Select Priority *</Form.Label>
                                 <Form.Control as="select" onChange={(e) => {this.setState({announcementPriority: parseInt(e.target.value)})}}>
                                     <option selected disabled hidden>Choose a priority</option>
                                     <option value={1}>High</option>
@@ -173,11 +180,11 @@ export default class Announcements extends Component {
                                 </Form.Control>
                             </Form.Group>
                             <Form.Group>
-                                <Form.Label>Announcement Duration (hours)</Form.Label>
+                                <Form.Label>Announcement Duration in Hours (Minimum: 1) *</Form.Label>
                                 <Form.Control type="number" onChange={(e) => {this.setState({announcementDuration: parseInt(e.target.value)})}} />
                             </Form.Group>
                             <Form.Group>
-                                <Form.Label>Announcement</Form.Label>
+                                <Form.Label>Announcement *</Form.Label>
                                 <Form.Control 
                                     as="textarea"
                                     placeholder="Type your announcement here..."
@@ -186,7 +193,7 @@ export default class Announcements extends Component {
                                 >
                                 </Form.Control>
                             </Form.Group>
-                            <Alert variant='danger' hidden={!this.state.creationError}>One or more required fields was missing. Try again!</Alert>
+                            <Alert variant='danger' hidden={!this.state.creationError}>Error: You've entered invalid data or forgotten to fill out one of the fields.</Alert>
                             <Button type="submit">Submit</Button>
                         </Form>
                     </Modal.Body>
@@ -252,25 +259,34 @@ export default class Announcements extends Component {
                             <th>Creator</th>
                             <th>Message</th>
                             <th>Associated Event</th>
+                            <th>Expires</th>
                         </tr>
                     </thead>
                     <tbody>
                         {this.state.userAnnouncements.map((announcement) => {
                             let name = this.state.idToTeamDict[announcement.clique];
                             if (this.state.teamFilter === 'All' || this.state.teamFilter === name) {
-                                return (
-                                    <tr key={announcement.id} className={this.state.priorityDict[announcement.priority][1]}>
-                                        <td><Icon.FiXCircle onClick={() => {this.deleteAnnouncement(announcement)}} size={20} style={{'marginRight': '-20px'}}></Icon.FiXCircle></td>
-                                        <td>{this.state.idToTeamDict[announcement.clique]}</td>
-                                        <td>
-                                            <Link style={{'color':'white'}} to={`/user/${this.state.announcementCreatorDict[announcement.creator][1]}`}>
-                                                {this.state.announcementCreatorDict[announcement.creator][0]}
-                                            </Link>
-                                        </td>
-                                        <td>{announcement.announcement}</td>
-                                        <td>{this.state.idToEventDict[announcement.event]["name"]}</td>
-                                    </tr>
-                                )
+                                let now = new Date(Date.now()).toISOString();
+                                if (now > announcement.end) {
+                                    this.deleteAnnouncement(announcement);
+                                    return <tr></tr>;
+                                }
+                                else {
+                                    return (
+                                        <tr key={announcement.id} className={this.state.priorityDict[announcement.priority][1]}>
+                                            <td><Icon.FiXCircle onClick={() => {this.deleteAnnouncement(announcement)}} size={20} style={{'marginRight': '-20px'}}></Icon.FiXCircle></td>
+                                            <td>{this.state.idToTeamDict[announcement.clique]}</td>
+                                            <td>
+                                                <Link style={{'color':'white'}} to={`/user/${this.state.announcementCreatorDict[announcement.creator][1]}`}>
+                                                    {this.state.announcementCreatorDict[announcement.creator][0]}
+                                                </Link>
+                                            </td>
+                                            <td>{announcement.announcement}</td>
+                                            <td>{announcement.event ? this.state.idToEventDict[announcement.event]["name"] : 'N/A'}</td>
+                                            <td>{announcement.end ? announcement.end : 'Never'}</td>
+                                        </tr>
+                                    )
+                                }
                             }
                             else {
                                 return <tr></tr>;
