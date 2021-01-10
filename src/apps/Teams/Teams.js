@@ -35,7 +35,7 @@ const Teams = () => {
 
   useEffect(() => {
     async function fetchTeams() {
-      const request = await api.get(urls.teams.fetchAll);
+      const request = await api.get(urls.teams.fetchAll());
       setTeams(request.data);
       return request;
     }
