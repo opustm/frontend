@@ -140,6 +140,16 @@ export default class Announcements extends Component {
         this.setState({userAnnouncements: filtered});
     }
 
+    parseEnd(isoDate) {
+        let splitDate = isoDate.split('T');
+        let expirationTime = splitDate[1].split('.')[0];
+        if (expirationTime.includes('Z')) {
+            expirationTime = expirationTime.slice(0, -1);
+        }
+        let toReturn = `${splitDate[0]} ${expirationTime} UTC`;
+        return toReturn;
+    }
+
     render() {
         return (
             <Container fluid>
@@ -283,7 +293,7 @@ export default class Announcements extends Component {
                                             </td>
                                             <td>{announcement.announcement}</td>
                                             <td>{announcement.event ? this.state.idToEventDict[announcement.event]["name"] : 'N/A'}</td>
-                                            <td>{announcement.end ? announcement.end : 'Never'}</td>
+                                            <td>{announcement.end ? this.parseEnd(announcement.end) : 'Never'}</td>
                                         </tr>
                                     )
                                 }
