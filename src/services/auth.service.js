@@ -20,6 +20,7 @@ export default class AuthService {
     .then(json => {
       if (json.user) {
         localStorage.setItem('token', json.token);
+        localStorage.setItem('user', json.user);
         state = {
           logged_in: true,
           displayed_form: '',
@@ -41,6 +42,7 @@ export default class AuthService {
 
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
   }
 
   async signup(data) {
