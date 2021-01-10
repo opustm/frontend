@@ -3,8 +3,8 @@ import axios from "axios";
 // Change APIHost based on whether API Server is remote or local
 // Configure API interaction preferences
 const API_CONFIG = {
-    useLocal : true, // Change this to true to use API locally
-    urlRemote : "https://opustm-api.herokuapp.com/",
+    useLocal : false, // Change this to true to use API locally
+    urlRemote : "https://opustm-api-staging.herokuapp.com/",
     urlLocal : 'http://localhost:8000/',
     baseURL : () => API_CONFIG.useLocal ? 
         API_CONFIG.urlLocal : API_CONFIG.urlRemote,
@@ -25,15 +25,26 @@ export const API_ENDPOINTS = {
         fetchById : (id) => `/cliques/${id}`,
         fetchDetails : (name) => `/cliqueDetails/${name}/`,
         fetchMembers : (name) => `/cliqueMembers/${name}/`,
-        fetchByUsername: (username) => `/userCliques/${username}`,
-        fetchRelatedTeams: (teamName) => `/relatedCliques/${teamName}`,
+        fetchMembersById: (id) => `/cliqueidMembers/${id}/`,
+        fetchByUsername: (username) => `/userCliques/${username}/`,
+        fetchRelatedTeams: (teamName) => `/relatedCliques/${teamName}/`
     },
-    user : {},
+    user : {
+        fetchByUsername: (username) => `userDetails/${username}/`,
+        fetchById: (id) => `/users/${id}/`
+    },
     invitation : {},
     request : {},
-    event : {},
+    event : {
+        fetchAll: `/events/`,
+        fetchTeamEvents: (teamName) => `/cliqueEvents/${teamName}/`
+    },
     schedule : {},
-    announcement : {},
+    announcement : {
+        fetchAll : `/announcements/`,
+        fetchByTeam : (teamName) => `/cliqueAnnouncements/${teamName}/`,
+        fetchById: (announcementId) => `/announcements/${announcementId}/`
+    },
     message : {},
     todo : {},
 }
