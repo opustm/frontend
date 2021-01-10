@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useInput } from './../../services/forms.service.js';
+import { AppData } from '../../services/data.service';
 import {Container, Spinner, Dropdown, Row, Col, Jumbotron, Button, ButtonGroup, Modal, Form} from 'react-bootstrap';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 import { Link, Redirect } from 'react-router-dom';
@@ -35,7 +36,8 @@ const Teams = () => {
 
   useEffect(() => {
     async function fetchTeams() {
-      const request = await api.get(urls.teams.fetchAll);
+      // const request = await api.get(urls.teams.fetchAll());
+      const request = await api.get(urls.teams.fetchByUsername(AppData.user()))
       setTeams(request.data);
       return request;
     }

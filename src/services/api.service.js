@@ -21,8 +21,8 @@ export const Axios = axios.create({
 // Configure and export API Endpoints
 export const API_ENDPOINTS = {
     teams : {
-        fetchAll : `/cliques/`,
-        fetchById : (id) => `/cliques/${id}/`,
+        fetchAll : () => `/cliques/`,
+        fetchById : (id) => `/cliques/${id}`,
         fetchDetails : (name) => `/cliqueDetails/${name}/`,
         fetchMembers : (name) => `/cliqueMembers/${name}/`,
         fetchMembersById: (id) => `/cliqueidMembers/${id}/`,
@@ -49,4 +49,5 @@ export const API_ENDPOINTS = {
     todo : {},
 }
 
+// Legacy: Do not use. Instead, use API_CONFIG.baseURL
 export default function APIHost() {return API_CONFIG.baseURL()};
