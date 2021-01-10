@@ -1,14 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 const TeamSettings = (props) => {
 
-    useEffect(() => {
-
-    });
-
     return (
         <div>
-            <p>Hello this is the settings page</p>
+            <h1>Team Settings Page</h1>
         </div>
     )
 }
