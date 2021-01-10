@@ -1,8 +1,6 @@
 // Default Method for Fetching Application Data 
 // and Interacting with Local Storage
-const DataService = {
+export const AppData = {
     user: () => localStorage.getItem('user'),
     token: () => localStorage.getItem('token'),
 }
-
-export default DataService;
