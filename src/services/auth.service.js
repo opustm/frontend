@@ -79,6 +79,7 @@ export default class AuthService {
       .then(res => res.json())
       .then(json => {
         state = {
+          id: json.id,
           username: json.username,
           first_name: json.first_name,
           last_name: json.last_name,
