@@ -37,7 +37,9 @@ export const API_ENDPOINTS = {
     request : {},
     event : {
         fetchAll: `/events/`,
-        fetchTeamEvents: (teamName) => `/cliqueEvents/${teamName}/`
+        fetchById : (id) => `/events/${id}/`,
+        fetchTeamEvents: (teamName) => `/cliqueEvents/${teamName}/`,
+        fetchUserSoloEvents: (username) => `/userSoloEvents/${username}/`
     },
     schedule : {},
     announcement : {

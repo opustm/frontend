@@ -42,10 +42,10 @@ export default class Announcements extends Component {
 
     async fetchData() {
         let teamIds = this.props.userInfo.cliques;
-        let teams = []
+        let teams = [];
         let newTeamDict = {};
         let newIdDict = {};
-        let events = []
+        let events = [];
         let idToEvent = {};
 
         for (let id of teamIds) {
