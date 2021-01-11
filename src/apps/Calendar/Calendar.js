@@ -1,11 +1,10 @@
 import React from 'react';
 
-function Scheduler() {
-    document.title = "Opus | Scheduler"
+function Calendar() {
+    document.title = "Opus | Calendar"
     return (
-        <h1>Scheduler</h1>
-
+        <h1>Calendar</h1>
     )
 }
 
-export default Scheduler;
+export default Calendar;
