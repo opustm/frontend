@@ -5,7 +5,7 @@ import axios from "axios";
 const API_CONFIG = {
     useLocal : false, // Change this to true to use API locally
     urlRemote : "https://opustm-api-staging.herokuapp.com/",
-    urlLocal : 'https://localhost:8000/',
+    urlLocal : 'http://localhost:8000/',
     baseURL : () => API_CONFIG.useLocal ? 
         API_CONFIG.urlLocal : API_CONFIG.urlRemote,
     responseType : "json",
@@ -42,10 +42,12 @@ export const API_ENDPOINTS = {
     schedule : {},
     announcement : {
         fetchAll : `/announcements/`,
-        fetchByTeam : (teamName) => `/cliqueAnnouncements/${teamName}/` 
+        fetchByTeam : (teamName) => `/cliqueAnnouncements/${teamName}/`,
+        fetchById: (announcementId) => `/announcements/${announcementId}/`
     },
     message : {},
     todo : {},
 }
 
+// Legacy: Do not use. Instead, use API_CONFIG.baseURL
 export default function APIHost() {return API_CONFIG.baseURL()};
