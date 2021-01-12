@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 import * as Icon from 'react-icons/fi';
 
+
 export default class Calendar extends Component{
     constructor(props) {
         super(props);
@@ -13,9 +14,10 @@ export default class Calendar extends Component{
             userTeams: [],
             userTeamEventsDict: {},
             userTeamEvents:[],
+            userUserEvents:[],
             eventName: '',
             eventDetails: '',
-            eventTeam: 0,
+            eventTeam: null,
             eventAnnouncement: 0,
             eventPicture: '',
             eventStart: 0,
@@ -56,7 +58,7 @@ export default class Calendar extends Component{
                 allMembers.push(member);
             }
         }
-
+        
         this.setState({
             userTeams: teams,
             teamIdToMembersDict: membersDict,
@@ -68,13 +70,17 @@ export default class Calendar extends Component{
     async fetchEvents() {
         let teamEventsDict = {};
         let teamEvents = [];
+        let userEvents = [];
         for (let team of this.state.userTeams) {
-            const request2 = await api.get(urls.event.fetchTeamEvents(team.name));
+            const request2 = await api.get(urls.event.fetchByTeam(team.name));
             teamEventsDict[team.id]=request2.data;
             teamEvents=request2.data;
         }
-
+        const request3 = await api.get(urls.event.fetchByUsername(this.props.userInfo.username));
+        userEvents=request3.data;
+        console.log(userEvents);
         this.setState({
+            userUserEvents: userEvents,
             userTeamEventsDict: teamEventsDict,
             userTeamEvents: teamEvents
         });
@@ -89,9 +95,14 @@ export default class Calendar extends Component{
         evt.preventDefault();
         //2021-01-11T12:22
         let s=this.state.eventStart;
-        let start = new Date(s.substring(0,4), s.substring(5,7),s.substring(8,10),s.substring(11,13),s.substring(14), "00")
+        let start = new Date(s.substring(0,4), s.substring(5,7),s.substring(8,10),s.substring(11,13),s.substring(14), "00");
         let e=this.state.eventEnd;
-        let end = new Date(e.substring(0,4), e.substring(5,7),e.substring(8,10),e.substring(11,13),e.substring(14), "00")
+        let end = new Date(e.substring(0,4), e.substring(5,7),e.substring(8,10),e.substring(11,13),e.substring(14), "00");
+        let tem=this.state.eventTeam;
+        if (this.state.eventTeam === 0){
+            tem=null;
+        }
+
 
         
         if (!this.createDataIsInvalid()) {
@@ -100,14 +111,17 @@ export default class Calendar extends Component{
             // console.log(start.toISOString());
             // console.log(this.state.eventDetails);
             // console.log(this.state.eventTeam);
+            // console.log(this.props.userInfo.id);
             // console.log(this.state.eventInvited);
+
             let body = {
                 name: this.state.eventName,
                 start: start.toISOString(),
                 end: end.toISOString(),
                 details: this.state.eventDetails,
                 picture: "event.jpg",
-                clique: this.state.eventTeam,
+                clique: tem,
+                user: this.props.userInfo.id,
                 invited: [],
                 notGoing: [],
             };
@@ -117,6 +131,7 @@ export default class Calendar extends Component{
             let newEvents = this.state.userTeamEventsDict;
             newEvents[this.state.eventTeam]=(body);
             let newEventsList = this.state.userTeamEvents;
+            console.log(body);
             newEventsList.push(body);
             if (this.state.createAnnouncement){
                 let body2 = {
@@ -153,10 +168,16 @@ export default class Calendar extends Component{
         return false;
     }
 
-    async deleteEvent(eventToDelete) {
+    async deleteTeamEvent(eventToDelete) {
         const deleteRequest = await api.delete(urls.event.fetchById(eventToDelete.id));
         let filtered = this.state.userTeamEvents.filter((event) => {return event !== eventToDelete;});
         this.setState({userTeamEvents: filtered});
+    }
+
+    async deleteUserEvent(eventToDelete) {
+        const deleteRequest = await api.delete(urls.event.fetchById(eventToDelete.id));
+        let filtered = this.state.userUserEvents.filter((event) => {return event !== eventToDelete;});
+        this.setState({userUserEvents: filtered});
     }
 
     parseDate(isoDate) {
@@ -169,9 +190,10 @@ export default class Calendar extends Component{
         return toReturn;
     }
 
-    $(document).ready(function() {
-        $('#example').DataTable();
-    } );
+    handleFilter(e){
+        this.setState({eventFilter: e.target.value});
+        this.forceUpdate()//not sure if this is the best way to reload the table event info.
+    }
 
     render(){
         return(
@@ -246,9 +268,10 @@ export default class Calendar extends Component{
                     </Col>
                     <Col>
                         <Row>
-                            <h5 style={{'marginTop': '15px'}}>Filter events by Team: </h5>
-                            <Form.Control style={{'marginTop': '10px', 'marginBottom': '10px', 'marginLeft': '10px'}} as="select" onChange={(e) => {this.setState({teamFilter: e.target.value})}}>
+                            <h5 style={{'marginTop': '15px'}}>Select Calendar: </h5>
+                            <Form.Control style={{'marginTop': '10px', 'marginBottom': '10px', 'marginLeft': '10px'}} as="select" onChange={(e) => {this.handleFilter(e)}}>
                                 <option>All</option>
+                                <option style={{textTransform: 'capitalize'}}>{this.props.userInfo.username}</option>
                                 {this.state.userTeams.map((team) => {
                                     return <option key={team.id}>{team.name}</option>;
                                 })}
@@ -257,7 +280,7 @@ export default class Calendar extends Component{
                     </Col>
                 </Row>
 
-                <Table bordered>
+                <Table bordered id="sort_test">
                     <thead>
                         <tr key={-1}>
                             <th>Date</th>
@@ -269,18 +292,41 @@ export default class Calendar extends Component{
                     <tbody>
                         <tr></tr>
                         {this.state.userTeamEvents.map((event) => {
+                            let st='table-primary';
+                            if (event.start.substring[6]==="2"){
+                                st='table-primary';
+                            }
                             // console.log(event);
                             let teamName=null;
                             if (event.clique != null){
                                 teamName = this.state.idToTeamDict[event.clique];
                             }
 
-                            if (this.state.teamFilter === 'All' || this.state.teamFilter === teamName) {
+                            if (this.state.eventFilter === 'All' || this.state.eventFilter === teamName) {
                                 return (
-                                    <tr key={event.id} className='table-primary'>
+                                    <tr key={event.id} className={st}>
                                         <td>{event.start.substring(5,10)}</td>
                                         <td>{event.name}<br/><p>{event.start.substring(11,16)}-{event.end.substring(11,16)}</p></td>
-                                        <td><Icon.FiXCircle onClick={() => {this.deleteEvent(event)}} size={20}></Icon.FiXCircle></td>
+                                        <td><Icon.FiXCircle onClick={() => {this.deleteTeamEvent(event)}} size={20}></Icon.FiXCircle></td>
+                                    </tr>
+                                )
+                            }
+                            else {
+                                return <tr></tr>;
+                            }
+                        })}
+                        {this.state.userUserEvents.map((userEvent) => {
+                            console.log(userEvent.start);
+                            let st='table-primary';
+                            if (userEvent.start.substring[6]==="2"){
+                                st='table-primary';
+                            }
+                            if (this.state.eventFilter === 'All' || this.state.eventFilter === this.props.userInfo.username) {
+                                return (
+                                    <tr key={userEvent.id} className={st}>
+                                        <td>{userEvent.start.substring(5,10)}</td>
+                                        <td>{userEvent.name}<br/><p>{userEvent.start.substring(11,16)}-{userEvent.end.substring(11,16)}</p></td>
+                                        <td><Icon.FiXCircle onClick={() => {this.deleteUserEvent(userEvent)}} size={20}></Icon.FiXCircle></td>
                                     </tr>
                                 )
                             }
