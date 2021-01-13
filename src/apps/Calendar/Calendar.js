@@ -99,8 +99,10 @@ export default class Calendar extends Component{
         let e=this.state.eventEnd;
         let end = new Date(e.substring(0,4), e.substring(5,7),e.substring(8,10),e.substring(11,13),e.substring(14), "00");
         let tem=this.state.eventTeam;
+        let us = null;
         if (this.state.eventTeam === 0){
             tem=null;
+            us = this.props.userInfo.id;
         }
 
 
@@ -121,7 +123,7 @@ export default class Calendar extends Component{
                 details: this.state.eventDetails,
                 picture: "event.jpg",
                 clique: tem,
-                user: this.props.userInfo.id,
+                user: us,
                 invited: [],
                 notGoing: [],
             };
@@ -271,14 +273,14 @@ export default class Calendar extends Component{
                             <h5 style={{'marginTop': '15px'}}>Select Calendar: </h5>
                             <Form.Control style={{'marginTop': '10px', 'marginBottom': '10px', 'marginLeft': '10px'}} as="select" onChange={(e) => {this.handleFilter(e)}}>
                                 <option>All</option>
-                                <option style={{textTransform: 'capitalize'}}>{this.props.userInfo.username}</option>
+                                <option style={{textTransform: 'capitalize'}} value={this.props.userInfo.id}>{this.props.userInfo.username} User</option>
                                 {this.state.userTeams.map((team) => {
-                                    return <option key={team.id}>{team.name}</option>;
+                                    return <option style={{textTransform: 'capitalize'}} key={team.id} value={team.name}>{team.name} Team</option>;
                                 })}
                             </Form.Control>
                         </Row>
                     </Col>
-                </Row>
+                </Row>              
 
                 <Table bordered id="sort_test">
                     <thead>
@@ -321,7 +323,7 @@ export default class Calendar extends Component{
                             if (userEvent.start.substring[6]==="2"){
                                 st='table-primary';
                             }
-                            if (this.state.eventFilter === 'All' || this.state.eventFilter === this.props.userInfo.username) {
+                            if (this.state.eventFilter === 'All' || this.state.eventFilter === this.props.userInfo.id) {
                                 return (
                                     <tr key={userEvent.id} className={st}>
                                         <td>{userEvent.start.substring(5,10)}</td>
