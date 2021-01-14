@@ -15,7 +15,7 @@ export default class Home extends Component {
             <Container>
                 <Row>
                     <Col>
-                        <Widget appTitle='announcements' userTeams={this.props.userInfo.cliques}></Widget>                       
+                        <Widget appTitle='announcements' userTeams={this.props.userInfo.cliques}></Widget>
                     </Col>
                     <Col>
                         <Widget appTitle='calendar' userTeams={this.props.userInfo.cliques}></Widget>

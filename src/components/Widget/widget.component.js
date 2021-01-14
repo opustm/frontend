@@ -8,7 +8,9 @@ export default class Widget extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      title:  '',
+      description: '',
+      data: []
     }
   }
 
@@ -16,6 +18,7 @@ export default class Widget extends Component {
     let t = this;
     async function getDetails(appTitle, userTeams) {
       let newState = await widgetDetails(appTitle, userTeams);
+      console.log(t.props.appTitle);
       console.log(newState);
       t.setState(newState);
     }
@@ -44,9 +47,9 @@ export default class Widget extends Component {
             <Card.Body>
               {this.state.description}
               <ListGroup>
-                {/* {this.state.data.map((item, idx) => {
+                {this.state.data.map((item, idx) => {
                   return <ListGroup.Item key={idx}>{item}</ListGroup.Item>;
-                })} */}
+                })}
               </ListGroup>
             </Card.Body>
           </Card>
