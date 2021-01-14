@@ -10,7 +10,7 @@
 //  link: Hyperlink to be inserted into an anchor
 //  image: path to an image file
 
-export default descriptions = {
+export const descriptions = {
     pages: {
         About: {
             heading: "",
