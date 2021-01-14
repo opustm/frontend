@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Table, Row, Col, Button, Modal, Form, FormControl, Toast, Alert } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Container, Table, Row, Col, Button, Modal, Form, Alert } from 'react-bootstrap';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 import * as Icon from 'react-icons/fi';
 
@@ -78,7 +77,6 @@ export default class Calendar extends Component{
         }
         const request3 = await api.get(urls.event.fetchByUsername(this.props.userInfo.username));
         userEvents=request3.data;
-        console.log(userEvents);
         this.setState({
             userUserEvents: userEvents,
             userTeamEventsDict: teamEventsDict,
@@ -109,13 +107,6 @@ export default class Calendar extends Component{
         
         if (!this.createDataIsInvalid()) {
             this.setState({showCreateModal: false})
-            // console.log(this.state.eventName);
-            // console.log(start.toISOString());
-            // console.log(this.state.eventDetails);
-            // console.log(this.state.eventTeam);
-            // console.log(this.props.userInfo.id);
-            // console.log(this.state.eventInvited);
-
             let body = {
                 name: this.state.eventName,
                 start: start.toISOString(),
@@ -133,7 +124,6 @@ export default class Calendar extends Component{
             let newEvents = this.state.userTeamEventsDict;
             newEvents[this.state.eventTeam]=(body);
             let newEventsList = this.state.userTeamEvents;
-            console.log(body);
             newEventsList.push(body);
             if (this.state.createAnnouncement){
                 let body2 = {
@@ -298,7 +288,6 @@ export default class Calendar extends Component{
                             if (event.start.substring[6]==="2"){
                                 st='table-primary';
                             }
-                            // console.log(event);
                             let teamName=null;
                             if (event.clique != null){
                                 teamName = this.state.idToTeamDict[event.clique];
@@ -318,7 +307,6 @@ export default class Calendar extends Component{
                             }
                         })}
                         {this.state.userUserEvents.map((userEvent) => {
-                            console.log(userEvent.start);
                             let st='table-primary';
                             if (userEvent.start.substring[6]==="2"){
                                 st='table-primary';
