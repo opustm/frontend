@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Card } from 'react-bootstrap';
+import { Container, Row, Col, Card, ListGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { widgetDetails } from './widget.service';
 import './widget.css';
@@ -13,8 +13,13 @@ export default class Widget extends Component {
   }
 
   componentDidMount() {
-    let newState = widgetDetails(this.props.appTitle);
-    this.setState(newState);
+    let t = this;
+    async function getDetails(appTitle, userTeams) {
+      let newState = await widgetDetails(appTitle, userTeams);
+      console.log(newState);
+      t.setState(newState);
+    }
+    getDetails(this.props.appTitle, this.props.userTeams);
   }
 
   // A generic widget will have the following:
@@ -36,7 +41,14 @@ export default class Widget extends Component {
         <Link to={`${this.props.appTitle}`} className='widgetLink'>
           <Card>
             <Card.Header>{this.state.title}</Card.Header>
-            <Card.Body>{this.state.description}</Card.Body>
+            <Card.Body>
+              {this.state.description}
+              <ListGroup>
+                {/* {this.state.data.map((item, idx) => {
+                  return <ListGroup.Item key={idx}>{item}</ListGroup.Item>;
+                })} */}
+              </ListGroup>
+            </Card.Body>
           </Card>
         </Link>
       </Container>

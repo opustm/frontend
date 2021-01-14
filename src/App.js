@@ -11,7 +11,7 @@ import Navigation from './components/Navigation/navigation.component';
 // Pages
 import Login from './Pages/Login';
 import About from './Pages/About';
-import Dashboard from './Pages/Home';
+import Home from './Pages/Home';
 import Error from './Pages/NotFound';
 import Profile from './Pages/Profile';
 
@@ -63,7 +63,7 @@ export default function App() {
             <Route path="/404" exact component={Error}/>
           {loggedIn ? 
             <div className={sidebarToggled? "page sidebar-toggled":"page"}>
-              <Route path="/" exact component={Dashboard}/>
+              <Route path="/" exact component={() => {return <Home userInfo={userData}/>}}/>
               <Route path="/calendar" exact component={Calendar}/>
               <Route path="/teams" exact component={Teams}/>
               <Route path="/chat" exact component={Chat}/>
