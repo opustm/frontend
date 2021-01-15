@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Card, ListGroup } from 'react-bootstrap';
+import { Container, Card, ListGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { widgetDetails } from './widget.service';
 import './widget.css';
@@ -18,7 +18,6 @@ export default class Widget extends Component {
     let t = this;
     async function getDetails(appTitle, userTeams) {
       let newState = await widgetDetails(appTitle, userTeams);
-      console.log(t.props.appTitle);
       console.log(newState);
       t.setState(newState);
     }
@@ -32,7 +31,7 @@ export default class Widget extends Component {
   //      * Announcements: Three recent announcements
   //      * Contacts: Three contacts (maybe people you've talked w/ recently)
   //      * And so on. Essentially a preview of things you should be aware of
-  // A user passes in a prop, maybe called 'appTitle' (this.props.appTitle)
+  // A user passes in a prop called 'appTitle'
   // We also have a config/service file that contains directions for what to do for each title
   // i.e. makes calls to the correct endpoints and returns the data
   // This way, all the widget has to do is tell the service 'I need an announcements widget', and then we render it here
@@ -47,9 +46,9 @@ export default class Widget extends Component {
             <Card.Body>
               {this.state.description}
               <ListGroup>
-                {this.state.data.map((item, idx) => {
+                {this.state.data.length !== 0 ? this.state.data.map((item, idx) => {
                   return <ListGroup.Item key={idx}>{item}</ListGroup.Item>;
-                })}
+                }): <ListGroup.Item>No data to display</ListGroup.Item>}
               </ListGroup>
             </Card.Body>
           </Card>

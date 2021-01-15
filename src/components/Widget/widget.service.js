@@ -3,7 +3,7 @@ import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service'
 export async function widgetDetails(widgetType, userTeams) {
   switch(widgetType){
     case 'announcements':
-      let announcementData = await getAnnouncements(userTeams);
+      let announcementData = await getData(userTeams, 'announcements');
       return ({
         title: 'Announcements',
         description: 'View your announcements',
@@ -11,7 +11,7 @@ export async function widgetDetails(widgetType, userTeams) {
       });
 
     case 'calendar':
-      let calendarData = await getEvents(userTeams);
+      let calendarData = await getData(userTeams, 'calendar');
       return ({
         title: 'Calendar',
         description: 'View your upcoming events',
@@ -19,7 +19,7 @@ export async function widgetDetails(widgetType, userTeams) {
       });
 
     case 'contacts':
-      let contactData = await getContacts(userTeams);
+      let contactData = await getData(userTeams, 'contacts');
       return ({
         title: 'Contacts',
         description: 'View your contacts',
@@ -27,7 +27,7 @@ export async function widgetDetails(widgetType, userTeams) {
       });
 
     case 'teams':
-      let teamData = await getTeams(userTeams);
+      let teamData = await getData(userTeams, 'teams');
       return ({
         title: 'Teams',
         description: 'View your teams',
@@ -39,65 +39,55 @@ export async function widgetDetails(widgetType, userTeams) {
   }
 }
 
-async function getContacts(userTeams) {
-  let contacts = [];
+async function getData(userTeams, type) {
+  let data = [];
   for (let teamId of userTeams) {
-    let request = await api.get(urls.teams.fetchMembersById(teamId));
-    contacts = contacts.concat(request.data);
+    let teamNameRequest;
+    let teamName;
+    switch(type) {
+      case 'announcements':
+        teamNameRequest = await api.get(urls.teams.fetchById(teamId));
+        teamName = teamNameRequest.data.name;
+        let announcementReq = await api.get(urls.announcement.fetchByTeam(teamName));
+        data = data.concat(announcementReq.data);
+        break;
+      case 'calendar':
+        teamNameRequest = await api.get(urls.teams.fetchById(teamId));
+        teamName = teamNameRequest.data.name;
+        let calendarRequest = await api.get(urls.event.fetchTeamEvents(teamName));
+        data = data.concat(calendarRequest.data);
+        break;
+      case 'contacts':
+        let contactsRequest = await api.get(urls.teams.fetchMembersById(teamId));
+        data = data.concat(contactsRequest.data);
+        break;
+      case 'teams':
+        let teamsRequest = await api.get(urls.teams.fetchById(teamId));
+        data = data.concat(teamsRequest.data);
+        break;
+      default:
+        break;
+    }
   }
-  let truncatedContacts = contacts.slice(0,3);
-  let displayData = []
-  truncatedContacts.forEach((contact) => {
-    displayData.push(`${contact.first_name} ${contact.last_name}`);
+  let truncatedData = data.slice(0,3);
+  let displayData = [];
+  truncatedData.forEach((item) => {
+    switch(type){
+      case 'announcements':
+        displayData.push(`From user ${item.creator}: ${item.announcement}`);
+        break;
+      case 'calendar':
+        displayData.push(`${item.details} happening on ${item.start}`);
+        break;
+      case 'contacts':
+        displayData.push(`${item.first_name} ${item.last_name}`);
+        break;
+      case 'teams':
+        displayData.push(`${item.name}`);
+        break;
+      default:
+        break;
+    }
   });
-  return displayData;
-}
-
-async function getAnnouncements(userTeams) {
-  let announcements = [];
-  for (let teamId of userTeams) {
-    let teamNameRequest = await api.get(urls.teams.fetchById(teamId));
-    let teamName = teamNameRequest.data.name;
-    let request = await api.get(urls.announcement.fetchByTeam(teamName));
-    announcements = announcements.concat(request.data);
-  }
-  console.log(announcements);
-  let truncatedAnnouncements = announcements.slice(0,3);
-  let displayData = [];
-  truncatedAnnouncements.forEach((announcement) => {
-    displayData.push(`From user ${announcement.creator}: ${announcement.announcement}`);
-  })
-  return displayData;
-}
-
-async function getEvents(userTeams) {
-  let events = [];
-  for (let teamId of userTeams) {
-    let teamNameRequest = await api.get(urls.teams.fetchById(teamId));
-    let teamName = teamNameRequest.data.name;
-    let request = await api.get(urls.event.fetchTeamEvents(teamName));
-    events = events.concat(request.data);
-  }
-  
-  let truncatedEvents = events.slice(0,3);
-  let displayData = [];
-  truncatedEvents.forEach((event) => {
-    displayData.push(`${event.details} happening on ${event.start}`);
-  })
-  return displayData;
-}
-
-async function getTeams(userTeams) {
-  let teams = [];
-  for (let teamId of userTeams) {
-    let request = await api.get(urls.teams.fetchById(teamId));
-    teams = teams.concat(request.data);
-  }
-
-  let truncatedTeams = teams.slice(0,3);
-  let displayData = [];
-  truncatedTeams.forEach((team) => {
-    displayData.push(`${team.name}`);
-  })
   return displayData;
 }
