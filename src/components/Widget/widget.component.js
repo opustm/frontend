@@ -16,12 +16,11 @@ export default class Widget extends Component {
 
   componentDidMount() {
     let t = this;
-    async function getDetails(appTitle, userTeams) {
-      let newState = await widgetDetails(appTitle, userTeams);
-      console.log(newState);
+    async function getDetails(appTitle, userInfo) {
+      let newState = await widgetDetails(appTitle, userInfo);
       t.setState(newState);
     }
-    getDetails(this.props.appTitle, this.props.userTeams);
+    getDetails(this.props.appTitle, this.props.userInfo);
   }
 
   // A generic widget will have the following:
@@ -47,7 +46,15 @@ export default class Widget extends Component {
               {this.state.description}
               <ListGroup>
                 {this.state.data.length !== 0 ? this.state.data.map((item, idx) => {
-                  return <ListGroup.Item key={idx}>{item}</ListGroup.Item>;
+                  if (this.props.appTitle === 'teams') {
+                    return (<Link to={`/teams/${item}`}>
+                      <ListGroup.Item key={idx}>{item}</ListGroup.Item>
+                    </Link>
+                    );
+                  }
+                  else{
+                    return (<ListGroup.Item key={idx}>{item}</ListGroup.Item>);
+                  }
                 }): <ListGroup.Item>No data to display</ListGroup.Item>}
               </ListGroup>
             </Card.Body>

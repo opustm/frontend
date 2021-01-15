@@ -15,18 +15,18 @@ export default class Home extends Component {
             <Container>
                 <Row>
                     <Col>
-                        <Widget appTitle='announcements' userTeams={this.props.userInfo.cliques}></Widget>
+                        <Widget appTitle='announcements' userInfo={this.props.userInfo}></Widget>
                     </Col>
                     <Col>
-                        <Widget appTitle='calendar' userTeams={this.props.userInfo.cliques}></Widget>
+                        <Widget appTitle='calendar' userInfo={this.props.userInfo}></Widget>
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <Widget appTitle='contacts' userTeams={this.props.userInfo.cliques}></Widget>
+                        <Widget appTitle='contacts' userInfo={this.props.userInfo}></Widget>
                     </Col>
                     <Col>
-                        <Widget appTitle='teams' userTeams={this.props.userInfo.cliques}></Widget>
+                        <Widget appTitle='teams' userInfo={this.props.userInfo}></Widget>
                     </Col>
                 </Row>
             </Container>

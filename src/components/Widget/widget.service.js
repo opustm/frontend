@@ -1,9 +1,9 @@
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 
-export async function widgetDetails(widgetType, userTeams) {
+export async function widgetDetails(widgetType, userInfo) {
   switch(widgetType){
     case 'announcements':
-      let announcementData = await getData(userTeams, 'announcements');
+      let announcementData = await getData(userInfo, 'announcements');
       return ({
         title: 'Announcements',
         description: 'View your announcements',
@@ -11,7 +11,7 @@ export async function widgetDetails(widgetType, userTeams) {
       });
 
     case 'calendar':
-      let calendarData = await getData(userTeams, 'calendar');
+      let calendarData = await getData(userInfo, 'calendar');
       return ({
         title: 'Calendar',
         description: 'View your upcoming events',
@@ -19,7 +19,7 @@ export async function widgetDetails(widgetType, userTeams) {
       });
 
     case 'contacts':
-      let contactData = await getData(userTeams, 'contacts');
+      let contactData = await getData(userInfo, 'contacts');
       return ({
         title: 'Contacts',
         description: 'View your contacts',
@@ -27,7 +27,7 @@ export async function widgetDetails(widgetType, userTeams) {
       });
 
     case 'teams':
-      let teamData = await getData(userTeams, 'teams');
+      let teamData = await getData(userInfo, 'teams');
       return ({
         title: 'Teams',
         description: 'View your teams',
@@ -39,7 +39,8 @@ export async function widgetDetails(widgetType, userTeams) {
   }
 }
 
-async function getData(userTeams, type) {
+async function getData(userInfo, type) {
+  let userTeams = userInfo.cliques;
   let data = [];
   for (let teamId of userTeams) {
     let teamNameRequest;
@@ -59,7 +60,8 @@ async function getData(userTeams, type) {
         break;
       case 'contacts':
         let contactsRequest = await api.get(urls.teams.fetchMembersById(teamId));
-        data = data.concat(contactsRequest.data);
+        let filteredContacts = contactsRequest.data.filter((contact) => {return contact.id !== userInfo.id;});
+        data = data.concat(filteredContacts);
         break;
       case 'teams':
         let teamsRequest = await api.get(urls.teams.fetchById(teamId));
@@ -77,7 +79,7 @@ async function getData(userTeams, type) {
         displayData.push(`From user ${item.creator}: ${item.announcement}`);
         break;
       case 'calendar':
-        displayData.push(`${item.details} happening on ${item.start}`);
+        displayData.push(`${item.name} happening on ${item.start}`);
         break;
       case 'contacts':
         displayData.push(`${item.first_name} ${item.last_name}`);
