@@ -3,6 +3,7 @@ import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service'
 import { Container, Card, ListGroup, Dropdown, Button, Row, Col, Jumbotron, Image } from 'react-bootstrap';
 import { Link, Redirect, useParams } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
+import Widget from '../../components/Widget/widget.component';
 import './teams.css';
 
 const TeamView = (props) => {
@@ -143,6 +144,7 @@ const TeamView = (props) => {
                             </Col>
                         </Row>
                     </Container>
+                    <Widget appTitle='announcements' userInfo={props.userInfo} teamFilter={teamUsername}></Widget>
                 </Col>
             </Container>
         )

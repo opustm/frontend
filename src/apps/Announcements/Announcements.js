@@ -25,7 +25,7 @@ export default class Announcements extends Component {
             showCreatedToast: false,
             announcementCreatorDict: {},
             creationError: false,
-            teamFilter: 'All',
+            teamFilter: this.props.match.params.teamUsername ? this.props.match.params.teamUsername : 'All',
             priorityDict: {
                 1: ['High', 'table-danger'],
                 2: ['Medium', 'table-warning'],
@@ -255,7 +255,7 @@ export default class Announcements extends Component {
                             <FormControl style={{'marginTop': '10px', 'marginBottom': '10px', 'marginLeft': '10px'}} as="select" onChange={(e) => {this.setState({teamFilter: e.target.value})}}>
                                 <option>All</option>
                                 {this.state.userTeams.map((team) => {
-                                    return <option key={team.id}>{team.name}</option>;
+                                    return <option selected={team.name === this.state.teamFilter} key={team.id}>{team.name}</option>;
                                 })}
                             </FormControl>
                         </Row>

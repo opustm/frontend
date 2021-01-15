@@ -39,7 +39,7 @@ export default class Widget extends Component {
   render() {
     return (
       <Container>
-        <Link to={`${this.props.appTitle}`} className='widgetLink'>
+        <Link to={this.props.teamFilter ? `/${this.props.appTitle}/${this.props.teamFilter}` : `${this.props.appTitle}`} className='widgetLink'>
           <Card>
             <Card.Header>{this.state.title}</Card.Header>
             <Card.Body>
