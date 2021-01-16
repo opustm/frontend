@@ -42,10 +42,10 @@ export default class Announcements extends Component {
 
     async fetchData() {
         let teamIds = this.props.userInfo.cliques;
-        let teams = []
+        let teams = [];
         let newTeamDict = {};
         let newIdDict = {};
-        let events = []
+        let events = [];
         let idToEvent = {};
 
         for (let id of teamIds) {
@@ -56,7 +56,7 @@ export default class Announcements extends Component {
         }
 
         for (let id of teamIds) {
-            const request2 = await api.get(urls.event.fetchTeamEvents(newIdDict[id]));
+            const request2 = await api.get(urls.event.fetchByTeam(newIdDict[id]));
             let dataarray = request2.data;
             for (let event of dataarray){
                 let eventid=event["id"];

@@ -55,7 +55,7 @@ async function getData(userInfo, type) {
       case 'calendar':
         teamNameRequest = await api.get(urls.teams.fetchById(teamId));
         teamName = teamNameRequest.data.name;
-        let calendarRequest = await api.get(urls.event.fetchTeamEvents(teamName));
+        let calendarRequest = await api.get(urls.event.fetchByTeam(teamName));
         data = data.concat(calendarRequest.data);
         break;
       case 'contacts':

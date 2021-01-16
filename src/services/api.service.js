@@ -37,7 +37,9 @@ export const API_ENDPOINTS = {
     request : {},
     event : {
         fetchAll: `/events/`,
-        fetchTeamEvents: (teamName) => `/cliqueEvents/${teamName}/`
+        fetchById : (id) => `/events/${id}/`,
+        fetchByTeam: (teamName) => `/cliqueEvents/${teamName}/`,
+        fetchByUsername: (username) => `/userEvents/${username}/`
     },
     schedule : {},
     announcement : {
@@ -49,4 +51,5 @@ export const API_ENDPOINTS = {
     todo : {},
 }
 
+// Legacy: Do not use. Instead, use API_CONFIG.baseURL
 export default function APIHost() {return API_CONFIG.baseURL()};
