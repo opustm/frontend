@@ -21,8 +21,8 @@ export const Axios = axios.create({
 // Configure and export API Endpoints
 export const API_ENDPOINTS = {
     teams : {
-        fetchAll : () => `/cliques/`,
-        fetchById : (id) => `/cliques/${id}`,
+        fetchAll : `/cliques/`,
+        fetchById : (id) => `/cliques/${id}/`,
         fetchDetails : (name) => `/cliqueDetails/${name}/`,
         fetchMembers : (name) => `/cliqueMembers/${name}/`,
         fetchMembersById: (id) => `/cliqueidMembers/${id}/`,
@@ -37,7 +37,9 @@ export const API_ENDPOINTS = {
     request : {},
     event : {
         fetchAll: `/events/`,
-        fetchTeamEvents: (teamName) => `/cliqueEvents/${teamName}/`
+        fetchById : (id) => `/events/${id}/`,
+        fetchByTeam: (teamName) => `/cliqueEvents/${teamName}/`,
+        fetchByUsername: (username) => `/userEvents/${username}/`
     },
     schedule : {},
     announcement : {

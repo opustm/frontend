@@ -20,6 +20,7 @@ import Teams from './apps/Teams/Teams';
 import TeamView from './apps/Teams/TeamView';
 import TeamSettings from './apps/Teams/TeamSettings';
 import Calendar from './apps/Calendar/Calendar';
+import Scheduler from './apps/Scheduler/Scheduler';
 import Chat from './apps/Chat/Chat';
 import Contacts from './apps/Contacts/Contacts';
 import Announcements from './apps/Announcements/Announcements';
@@ -64,7 +65,8 @@ export default function App() {
           {loggedIn ? 
             <div className={sidebarToggled? "page sidebar-toggled":"page"}>
               <Route path="/" exact component={Dashboard}/>
-              <Route path="/calendar" exact component={Calendar}/>
+              <Route path="/calendar" exact component={() => {return <Calendar userInfo={userData}/>}}/>
+              <Route path="/scheduler" exact component={Scheduler}/>
               <Route path="/teams" exact component={Teams}/>
               <Route path="/chat" exact component={Chat}/>
               <Route path="/contacts" exact component={() => {return <Contacts userInfo={userData}/>}}/>

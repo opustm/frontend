@@ -59,7 +59,7 @@ export default class Contacts extends Component {
             this.props.userInfo.username ?
             <Container fluid>
                 <h1>Contacts</h1>
-                <Table striped bordered>
+                <Table bordered>
                     <thead>
                         <tr>
                             <th>Get in touch!</th>
