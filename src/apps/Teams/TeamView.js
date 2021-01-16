@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
+import { AppData } from  '../../services/data.service';
 import { Container, Card, ListGroup, Dropdown, Button, Row, Col, Jumbotron, Image } from 'react-bootstrap';
 import { Link, Redirect, useParams } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
@@ -40,6 +41,21 @@ const TeamView = (props) => {
         }
     }, [teamUsername]);
     
+
+    let inviteUserToTeamData = {
+        message: `${AppData.user()} has invited you to join the team ${teamUsername} on Opus`,
+        dateInvited: new Date(),
+        inviteeEmail: "Enter email",
+        clique: teamUsername,
+        inviter: AppData.user(),
+        invitee: "Enter username"
+    }
+
+    const inviteUserToTeamData = () => {
+        await api.post(
+            urls.invitation.invitations(), 
+        )
+    }
   
     return (
             <Container fluid>

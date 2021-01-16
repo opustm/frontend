@@ -19,6 +19,11 @@ let createFormPlaceholderData = {
   relatedCliques: [],
 }
 
+let showInvitationModal = {
+  username: "",
+
+}
+
 // let joinFormPlaceholderData = {
 //   name:null,
 // }

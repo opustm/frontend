@@ -3,7 +3,7 @@ import axios from "axios";
 // Change APIHost based on whether API Server is remote or local
 // Configure API interaction preferences
 const API_CONFIG = {
-    useLocal : true, // Change this to true to use API locally
+    useLocal : false, // Change this to true to use API locally
     urlRemote : "https://opustm-api-staging.herokuapp.com/",
     urlLocal : 'http://localhost:8000/',
     baseURL : () => API_CONFIG.useLocal ? 
@@ -27,27 +27,34 @@ export const API_ENDPOINTS = {
         fetchMembers : (name) => `/cliqueMembers/${name}/`,
         fetchMembersById: (id) => `/cliqueidMembers/${id}/`,
         fetchByUsername: (username) => `/userCliques/${username}/`,
-        fetchRelatedTeams: (teamName) => `/relatedCliques/${teamName}/`
+        fetchRelatedTeams: (teamName) => `/relatedCliques/${teamName}/`,
     },
     user : {
         fetchByUsername: (username) => `userDetails/${username}/`,
-        fetchById: (id) => `/users/${id}/`
+        fetchById: (id) => `/users/${id}/`,
     },
-    invitation : {},
-    request : {},
+    invitation : {
+        invitations : () => `/invitations/`,
+    },
+    request : {
+        requests : () => `/requests/`,
+    },
     event : {
         fetchAll: `/events/`,
-        fetchTeamEvents: (teamName) => `/cliqueEvents/${teamName}/`
+        fetchTeamEvents: (teamName) => `/cliqueEvents/${teamName}/`,
     },
     schedule : {},
     announcement : {
         fetchAll : `/announcements/`,
         fetchByTeam : (teamName) => `/cliqueAnnouncements/${teamName}/`,
-        fetchById: (announcementId) => `/announcements/${announcementId}/`
+        fetchById: (announcementId) => `/announcements/${announcementId}/`,
     },
     message : {},
     todo : {},
 }
 
 // Legacy: Do not use. Instead, use API_CONFIG.baseURL
-export default function APIHost() {return API_CONFIG.baseURL()};
+export default function APIHost() {
+    console.warn("Function APIHost is depreciated due to inconsistency. Use API_CONFIG.baseURL instead")
+    return API_CONFIG.baseURL()
+};
