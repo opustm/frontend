@@ -1,4 +1,5 @@
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
+import * as Icon from 'react-icons/fi';
 
 export async function widgetDetails(widgetType, userInfo, teamFilter) {
   switch(widgetType){
@@ -7,6 +8,7 @@ export async function widgetDetails(widgetType, userInfo, teamFilter) {
       return ({
         title: 'Announcements',
         description: 'View your announcements',
+        icon: <Icon.FiRss style={{marginTop: '-5px'}}/>,
         data: announcementData
       });
 
@@ -15,6 +17,7 @@ export async function widgetDetails(widgetType, userInfo, teamFilter) {
       return ({
         title: 'Calendar',
         description: 'View your upcoming events',
+        icon: <Icon.FiCalendar style={{marginTop: '-5px'}}/>,
         data: calendarData
       });
 
@@ -23,6 +26,7 @@ export async function widgetDetails(widgetType, userInfo, teamFilter) {
       return ({
         title: 'Contacts',
         description: 'View your contacts',
+        icon: <Icon.FiBook style={{marginTop: '-5px'}}/>,
         data: contactData
       });
 
@@ -31,6 +35,7 @@ export async function widgetDetails(widgetType, userInfo, teamFilter) {
       return ({
         title: 'Teams',
         description: 'View your teams',
+        icon: <Icon.FiTarget style={{marginTop: '-5px'}}/>,
         data: teamData
       });
 

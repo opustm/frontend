@@ -10,6 +10,7 @@ export default class Widget extends Component {
     this.state = {
       title:  '',
       description: '',
+      icon: '',
       data: []
     }
   }
@@ -41,7 +42,7 @@ export default class Widget extends Component {
       <Container>
         <Link to={this.props.teamFilter ? `/${this.props.appTitle}/${this.props.teamFilter}` : `${this.props.appTitle}`} className='widgetLink'>
           <Card>
-            <Card.Header>{this.state.title}</Card.Header>
+            <Card.Header>{this.state.icon} {this.state.title}</Card.Header>
             <Card.Body>
               {this.state.description}
               <ListGroup>
