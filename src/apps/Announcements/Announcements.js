@@ -284,7 +284,7 @@ export default class Announcements extends Component {
                                 else {
                                     return (
                                         <tr key={announcement.id} className={this.state.priorityDict[announcement.priority][1]}>
-                                            <td><Icon.FiXCircle onClick={() => {this.deleteAnnouncement(announcement)}} size={20} style={{'marginRight': '-20px'}}></Icon.FiXCircle></td>
+                                            <td><Icon.FiXCircle onClick={() => {this.deleteAnnouncement(announcement)}} size={20}></Icon.FiXCircle></td>
                                             <td>{this.state.idToTeamDict[announcement.clique]}</td>
                                             <td>
                                                 <Link style={{'color':'white'}} to={`/user/${this.state.announcementCreatorDict[announcement.creator][1]}`}>
