@@ -20,6 +20,7 @@ export default class Login extends Component {
       last_name: '',
       phone: '',
       password: '',
+      bio: '',
       picture: '#000000',
       theme: 'light',
       teams: [1],
