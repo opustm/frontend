@@ -7,10 +7,6 @@ import { Link, Redirect } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
 import './teams.css';
 
-// 
-// Data Processing Variables
-// 
-
 let createFormPlaceholderData = {
   name: "New Team Name",
   cliqueType: "sub",
@@ -24,24 +20,15 @@ let showInvitationModal = {
 
 }
 
-// let joinFormPlaceholderData = {
-//   name:null,
-// }
-
 const Teams = () => {
   const [teams,setTeams] = useState([0]);
   const [showCreateModal, setShowCreateModal]= useState(false);
-  // const [showJoinModal, setShowJoinModal] = useState(false);
   const { value:teamName, bind:bindTeamName, reset:resetTeamName } = useInput('');
   document.title = "Opus | Teams"
 
-  // 
-  // Functions
-  // 
 
   useEffect(() => {
     async function fetchTeams() {
-      // const request = await api.get(urls.teams.fetchAll());
       const request = await api.get(urls.teams.fetchByUsername(AppData.user()))
       setTeams(request.data);
       return request;
@@ -76,10 +63,6 @@ const Teams = () => {
     resetTeamName();
   }
 
-  // 
-  // Internal Components
-  // 
-
   let createTeamModal =
     <Modal show={showCreateModal} onHide={() => {setShowCreateModal(false)}}>
       <Modal.Header closeButton>
@@ -103,14 +86,6 @@ const Teams = () => {
         </Form>
       </Modal.Body>
     </Modal>
-
-  // let joinTeamModal = 
-  //   <Modal show={showJoinModal} onHide={setShowJoinModal(false)}>
-  //   </Modal>
-
-  // 
-  // List of Teams
-  // 
 
   let teamsView =      
     <ul>
@@ -159,10 +134,6 @@ const Teams = () => {
         )
       })}
     </ul>
-
-  // 
-  // Main Render Function
-  // 
 
   return (
     <Container fluid>
