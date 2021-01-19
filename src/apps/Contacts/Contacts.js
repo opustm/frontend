@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import APIHost from '../../services/api.service';
 import { Container, Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
+import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 
-const API_HOST = APIHost();
-const axios = require('axios').default;
+// const API_HOST = APIHost();
+// const axios = require('axios').default;
 
 export default class Contacts extends Component {
     constructor(props) {
@@ -26,7 +26,7 @@ export default class Contacts extends Component {
 
     async getUserContacts() {
         this.props.userInfo.cliques.forEach(async (cliqueId)=> {
-            let memberResponse = await axios.get(API_HOST + `cliqueidMembers/${cliqueId}`);
+            let memberResponse = await api.get(urls.teams.fetchMembersById(cliqueId));
             let newContacts = this.state.allContacts.concat(memberResponse.data);
             this.setState({allContacts: newContacts});
         });
@@ -36,7 +36,7 @@ export default class Contacts extends Component {
         let dict = {};
         let cliqueIds = this.props.userInfo.cliques;
         for (let cliqueId of cliqueIds) {
-            let response = await axios.get(API_HOST + `cliques/${cliqueId}`);
+            let response = await api.get(urls.teams.fetchById(cliqueId));
             let cliqueName = response.data.name;
             dict[cliqueId] = cliqueName;
         }
@@ -59,7 +59,7 @@ export default class Contacts extends Component {
             this.props.userInfo.username ?
             <Container fluid>
                 <h1>Contacts</h1>
-                <Table striped bordered>
+                <Table bordered>
                     <thead>
                         <tr>
                             <th>Get in touch!</th>
