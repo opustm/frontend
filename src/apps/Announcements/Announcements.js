@@ -175,9 +175,12 @@ export default class Announcements extends Component {
                                 <Form.Label>Select Event</Form.Label>
                                 <Form.Control as="select" onChange={(e) => {this.setState({announcementEvent: parseInt(e.target.value)})}}>
                                     <option selected disabled hidden>Choose an event</option>
-                                    {this.state.teamEvents.map((event) => {
+                                    {this.state.announcementTeam ? this.state.teamEvents.filter((event) => {
+                                        return event.clique === this.state.announcementTeam
+                                    }).map((event) => {
                                         return <option key={event.id} value={event.id}>{event.name}</option>
-                                    })}
+                                    }) : <option disabled>You must select a team first</option>
+                                }
                                 </Form.Control>
                             </Form.Group>
                             <Form.Group>
