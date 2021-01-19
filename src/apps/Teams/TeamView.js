@@ -3,6 +3,7 @@ import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service'
 import { Container, Card, ListGroup, Dropdown, Button, Row, Col, Jumbotron, Image } from 'react-bootstrap';
 import { Link, Redirect, useParams } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
+import Widget from '../../components/Widget/widget.component';
 import './teams.css';
 
 const TeamView = (props) => {
@@ -130,19 +131,27 @@ const TeamView = (props) => {
                                 </Card>
                             </Col>
                             <Col md={4} lg={4} sm={12}>
-                            <Card>
-                                <Card.Header>
-                                    Groups
-                                </Card.Header>
-                                <Card.Body className="text-center">
-                                {groups?        
-                                  <p>This team has {groups.length} group(s).</p>
-                                : <p>The team does not have any groups yet</p>}
-                                </Card.Body>
-                            </Card>
+                                <Card>
+                                    <Card.Header>
+                                        Groups
+                                    </Card.Header>
+                                    <Card.Body className="text-center">
+                                    {groups?        
+                                    <p>This team has {groups.length} group(s).</p>
+                                    : <p>The team does not have any groups yet</p>}
+                                    </Card.Body>
+                                </Card>
                             </Col>
                         </Row>
                     </Container>
+                    <Row style={{'marginTop': '15px'}}>
+                        <Col>
+                            <Widget appTitle='calendar' userInfo={props.userInfo} teamFilter={teamUsername}></Widget>
+                        </Col>
+                        <Col>
+                            <Widget appTitle='announcements' userInfo={props.userInfo} teamFilter={teamUsername}></Widget>
+                        </Col>
+                    </Row>
                 </Col>
             </Container>
         )

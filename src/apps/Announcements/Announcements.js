@@ -25,7 +25,7 @@ export default class Announcements extends Component {
             showCreatedToast: false,
             announcementCreatorDict: {},
             creationError: false,
-            teamFilter: 'All',
+            teamFilter: this.props.match.params.teamUsername ? this.props.match.params.teamUsername : 'All',
             priorityDict: {
                 1: ['High', 'table-danger'],
                 2: ['Medium', 'table-warning'],
@@ -175,9 +175,12 @@ export default class Announcements extends Component {
                                 <Form.Label>Select Event</Form.Label>
                                 <Form.Control as="select" onChange={(e) => {this.setState({announcementEvent: parseInt(e.target.value)})}}>
                                     <option selected disabled hidden>Choose an event</option>
-                                    {this.state.teamEvents.map((event) => {
+                                    {this.state.announcementTeam ? this.state.teamEvents.filter((event) => {
+                                        return event.clique === this.state.announcementTeam
+                                    }).map((event) => {
                                         return <option key={event.id} value={event.id}>{event.name}</option>
-                                    })}
+                                    }) : <option disabled>You must select a team first</option>
+                                }
                                 </Form.Control>
                             </Form.Group>
                             <Form.Group>
@@ -255,7 +258,7 @@ export default class Announcements extends Component {
                             <FormControl style={{'marginTop': '10px', 'marginBottom': '10px', 'marginLeft': '10px'}} as="select" onChange={(e) => {this.setState({teamFilter: e.target.value})}}>
                                 <option>All</option>
                                 {this.state.userTeams.map((team) => {
-                                    return <option key={team.id}>{team.name}</option>;
+                                    return <option selected={team.name === this.state.teamFilter} key={team.id}>{team.name}</option>;
                                 })}
                             </FormControl>
                         </Row>
@@ -284,7 +287,7 @@ export default class Announcements extends Component {
                                 else {
                                     return (
                                         <tr key={announcement.id} className={this.state.priorityDict[announcement.priority][1]}>
-                                            <td><Icon.FiXCircle onClick={() => {this.deleteAnnouncement(announcement)}} size={20} style={{'marginRight': '-20px'}}></Icon.FiXCircle></td>
+                                            <td><Icon.FiXCircle onClick={() => {this.deleteAnnouncement(announcement)}} size={20}></Icon.FiXCircle></td>
                                             <td>{this.state.idToTeamDict[announcement.clique]}</td>
                                             <td>
                                                 <Link style={{'color':'white'}} to={`/user/${this.state.announcementCreatorDict[announcement.creator][1]}`}>
