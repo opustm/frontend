@@ -16,11 +16,11 @@ export default class Widget extends Component {
 
   componentDidMount() {
     let t = this;
-    async function getDetails(appTitle, userInfo) {
-      let newState = await widgetDetails(appTitle, userInfo);
+    async function getDetails(appTitle, userInfo, teamFilter) {
+      let newState = await widgetDetails(appTitle, userInfo, teamFilter);
       t.setState(newState);
     }
-    getDetails(this.props.appTitle, this.props.userInfo);
+    getDetails(this.props.appTitle, this.props.userInfo, this.props.teamFilter);
   }
 
   // A generic widget will have the following:

@@ -1,9 +1,9 @@
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 
-export async function widgetDetails(widgetType, userInfo) {
+export async function widgetDetails(widgetType, userInfo, teamFilter) {
   switch(widgetType){
     case 'announcements':
-      let announcementData = await getData(userInfo, 'announcements');
+      let announcementData = await getData(userInfo, 'announcements', teamFilter);
       return ({
         title: 'Announcements',
         description: 'View your announcements',
@@ -39,38 +39,67 @@ export async function widgetDetails(widgetType, userInfo) {
   }
 }
 
-async function getData(userInfo, type) {
+async function getData(userInfo, type, teamFilter) {
   let userTeams = userInfo.cliques;
   let data = [];
-  for (let teamId of userTeams) {
-    let teamNameRequest;
-    let teamName;
-    switch(type) {
-      case 'announcements':
-        teamNameRequest = await api.get(urls.teams.fetchById(teamId));
-        teamName = teamNameRequest.data.name;
-        let announcementReq = await api.get(urls.announcement.fetchByTeam(teamName));
+  let teamNameRequest;
+  let teamName;
+  switch(type) {
+    case 'announcements':
+      if (teamFilter) {
+        let announcementReq = await api.get(urls.announcement.fetchByTeam(teamFilter));
         data = data.concat(announcementReq.data);
-        break;
-      case 'calendar':
-        teamNameRequest = await api.get(urls.teams.fetchById(teamId));
-        teamName = teamNameRequest.data.name;
+      }
+      else {
+        for (let teamId of userTeams) {
+          teamNameRequest = await api.get(urls.teams.fetchById(teamId));
+          teamName = teamNameRequest.data.name;
+          let announcementReq = await api.get(urls.announcement.fetchByTeam(teamName));
+          data = data.concat(announcementReq.data);
+        }
+      }
+      break;
+
+    case 'calendar':
+      if (teamFilter) {
         let calendarRequest = await api.get(urls.event.fetchByTeam(teamName));
         data = data.concat(calendarRequest.data);
-        break;
-      case 'contacts':
-        let contactsRequest = await api.get(urls.teams.fetchMembersById(teamId));
-        let filteredContacts = contactsRequest.data.filter((contact) => {return contact.id !== userInfo.id;});
-        data = data.concat(filteredContacts);
-        break;
-      case 'teams':
+      }
+      else {
+        for (let teamId of userTeams) {
+          teamNameRequest = await api.get(urls.teams.fetchById(teamId));
+          teamName = teamNameRequest.data.name;
+          let calendarRequest = await api.get(urls.event.fetchByTeam(teamName));
+          data = data.concat(calendarRequest.data);
+        }
+      }
+      break;
+
+    case 'contacts':
+      if (teamFilter) {
+        let contactsRequest = await api.get(urls.teams.fetchMembers(teamFilter));
+        data = data.concat(contactsRequest.data);
+      }
+      else {
+        for (let teamId of userTeams) {
+          let contactsRequest = await api.get(urls.teams.fetchMembersById(teamId));
+          let filteredContacts = contactsRequest.data.filter((contact) => {return contact.id !== userInfo.id;});
+          data = data.concat(filteredContacts);
+        }
+      }
+      break;
+
+    case 'teams':
+      for (let teamId of userTeams) {
         let teamsRequest = await api.get(urls.teams.fetchById(teamId));
         data = data.concat(teamsRequest.data);
-        break;
-      default:
-        break;
-    }
+      }
+      break;
+
+    default:
+      break;
   }
+  
   let truncatedData = data.slice(0,3);
   let displayData = [];
   truncatedData.forEach((item) => {
