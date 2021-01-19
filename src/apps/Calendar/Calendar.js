@@ -20,7 +20,7 @@ export default class Calendar extends Component{
             eventStart: 0,
             eventEnd: 0,
             eventInvited: [],
-            eventFilter: 'All',
+            eventFilter: this.props.match.params.teamUsername ? this.props.match.params.teamUsername : 'All',
             creationError: null,
             createAnnouncement: false,
             announcementBody: '',
@@ -181,7 +181,7 @@ export default class Calendar extends Component{
     }
 
     handleFilter(e){
-        let filter = e.target.value === 'All' ? 'All' : parseInt(e.target.value);
+        let filter = e.target.value === '-1' ? -1 : e.target.value;
         this.setState({eventFilter: filter});
     }
 
@@ -266,7 +266,7 @@ export default class Calendar extends Component{
                             <Form.Control style={{'marginTop': '10px', 'marginBottom': '10px', 'marginLeft': '10px'}} as="select" onChange={(e) => {this.handleFilter(e)}}>
                                 <option>All</option>
                                 {this.state.userTeams.map((team) => {
-                                    return <option key={team.id} value={team.id}>{team.name} Team</option>;
+                                    return <option key={team.id} selected={team.name === this.state.eventFilter} value={team.name}>{team.name} Team</option>;
                                 })}
                                 <option value={-1}>Events without an associated team</option>
                             </Form.Control>
@@ -287,7 +287,7 @@ export default class Calendar extends Component{
 
                     <tbody>
                         {this.state.userEvents.map((event) => {
-                            let teamId = event.clique ? event.clique : -1;
+                            let teamId = event.clique ? this.state.idToTeamDict[event.clique] : -1;
                             if (this.state.eventFilter === 'All' || this.state.eventFilter === teamId) {
                                 return (
                                     <tr key={event.id}>

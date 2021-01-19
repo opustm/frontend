@@ -11,7 +11,7 @@ export async function widgetDetails(widgetType, userInfo, teamFilter) {
       });
 
     case 'calendar':
-      let calendarData = await getData(userInfo, 'calendar');
+      let calendarData = await getData(userInfo, 'calendar', teamFilter);
       return ({
         title: 'Calendar',
         description: 'View your upcoming events',
@@ -19,7 +19,7 @@ export async function widgetDetails(widgetType, userInfo, teamFilter) {
       });
 
     case 'contacts':
-      let contactData = await getData(userInfo, 'contacts');
+      let contactData = await getData(userInfo, 'contacts', teamFilter);
       return ({
         title: 'Contacts',
         description: 'View your contacts',
@@ -27,7 +27,7 @@ export async function widgetDetails(widgetType, userInfo, teamFilter) {
       });
 
     case 'teams':
-      let teamData = await getData(userInfo, 'teams');
+      let teamData = await getData(userInfo, 'teams', teamFilter);
       return ({
         title: 'Teams',
         description: 'View your teams',
@@ -62,7 +62,7 @@ async function getData(userInfo, type, teamFilter) {
 
     case 'calendar':
       if (teamFilter) {
-        let calendarRequest = await api.get(urls.event.fetchByTeam(teamName));
+        let calendarRequest = await api.get(urls.event.fetchByTeam(teamFilter));
         data = data.concat(calendarRequest.data);
       }
       else {
@@ -102,13 +102,15 @@ async function getData(userInfo, type, teamFilter) {
   
   let truncatedData = data.slice(0,3);
   let displayData = [];
-  truncatedData.forEach((item) => {
+  for (let item of truncatedData) {
     switch(type){
       case 'announcements':
-        displayData.push(`From user ${item.creator}: ${item.announcement}`);
+        let creatorReq = await api.get(urls.user.fetchById(item.creator));
+        let creatorName = `${creatorReq.data.first_name} ${creatorReq.data.last_name}`
+        displayData.push(`From user ${creatorName}: '${item.announcement}'`);
         break;
       case 'calendar':
-        displayData.push(`${item.name} happening on ${item.start}`);
+        displayData.push(`'${item.name}' happening on ${item.start}`);
         break;
       case 'contacts':
         displayData.push(`${item.first_name} ${item.last_name}`);
@@ -119,6 +121,6 @@ async function getData(userInfo, type, teamFilter) {
       default:
         break;
     }
-  });
+  };
   return displayData;
 }

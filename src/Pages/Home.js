@@ -21,7 +21,7 @@ export default class Home extends Component {
                         <Widget appTitle='calendar' userInfo={this.props.userInfo}></Widget>
                     </Col>
                 </Row>
-                <Row>
+                <Row style={{'marginTop': '15px'}}>
                     <Col>
                         <Widget appTitle='contacts' userInfo={this.props.userInfo}></Widget>
                     </Col>

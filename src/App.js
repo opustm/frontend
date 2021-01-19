@@ -65,7 +65,7 @@ export default function App() {
           {loggedIn ? 
             <div className={sidebarToggled? "page sidebar-toggled":"page"}>
               <Route path="/" exact component={() => {return <Home userInfo={userData}/>}}/>
-              <Route path="/calendar" exact component={() => {return <Calendar userInfo={userData}/>}}/>
+              <Route path="/calendar/:teamUsername?" exact component={(props) => {return <Calendar {...props} userInfo={userData}/>}}/>
               <Route path="/scheduler" exact component={Scheduler}/>
               <Route path="/teams" exact component={Teams}/>
               <Route path="/chat" exact component={Chat}/>
