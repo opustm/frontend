@@ -4,6 +4,7 @@ import './stylesheets/App.css'
 
 // Services
 import AuthService from './services/auth.service';
+import { AppData } from './services/data.service';
 
 // Components
 import Navigation from './components/Navigation/navigation.component';
@@ -24,9 +25,10 @@ import Chat from './apps/Chat/Chat';
 import Contacts from './apps/Contacts/Contacts';
 import Announcements from './apps/Announcements/Announcements';
 
+// Main Application
 export default function App() {
   let authService = new AuthService();
-  let [loggedIn, setLoggedIn] = useState(false);
+  let [loggedIn, setLoggedIn] = useState(() => AppData.user() && AppData.token());
   let [sidebarToggled,setSidebar] = useState(true)
   let [userData, setUserData] = useState({noUser: 'notLoggedIn'});
   
@@ -47,6 +49,8 @@ export default function App() {
   }
 
     return (
+
+      // React Dynamic Routing
       <Router>
         {loggedIn ? 
           <Navigation 
