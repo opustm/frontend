@@ -55,7 +55,7 @@ function Navigation(props){
                 </Link>
                 <Dropdown>
                     <DropdownToggle variant="outline-secondary">
-                        <Icon.FiUser id='profileMenuIcon' size={25} color={props.userInfo.picture}></Icon.FiUser>
+                        <Icon.FiUser id='profileMenuIcon' size={25} color='white'></Icon.FiUser>
                     </DropdownToggle>
                     <DropdownMenu>
                         <Link className='dropdown-item' to={props ? `/user/${props.userInfo.username}` : ''}>

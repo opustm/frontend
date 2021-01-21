@@ -81,10 +81,10 @@ export default class Calendar extends Component{
         events = events.concat(request3.data);
         this.setState({
             userEvents: events,
-        }, () => {$('#sort_test').DataTable({
+        }, () => {$('#eventTable').DataTable({
             paging: false,
             info: false,
-            order: [ 3, 'asc' ],
+            order: [ 3, 'asc' ]
         });});
     }
 
@@ -282,7 +282,7 @@ export default class Calendar extends Component{
                     </Col>
                 </Row>              
 
-                <Table bordered id="sort_test">
+                <Table bordered id="eventTable">
                     <thead>
                         <tr key={-1}>
                             <th></th>

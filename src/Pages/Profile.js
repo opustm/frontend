@@ -22,6 +22,7 @@ export default class Profile extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props.userInfo);
     this.getUserData(this.props.match.params.username);
   }
 
@@ -44,6 +45,7 @@ export default class Profile extends Component {
         email: data.email,
         picture: data.picture,
         phone: data.phone,
+        bio: data.bio,
         profileExists: true,
         showSpinner: false
       });
@@ -212,6 +214,7 @@ export default class Profile extends Component {
                 <h5 className="reduceHeaderMargin">Username: {this.state.username}</h5>
                 <h5>Phone: {this.state.phone}</h5>
                 <h5>Email: {this.state.email}</h5>
+                <p>About: {this.state.bio}</p>
               </div>
               }
             </Col>

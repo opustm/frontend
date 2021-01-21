@@ -3,9 +3,10 @@ import { Container, Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
+import './Contacts.css';
 
-// const API_HOST = APIHost();
-// const axios = require('axios').default;
+const $ = require('jquery');
+$.DataTable = require('datatables.net');
 
 export default class Contacts extends Component {
     constructor(props) {
@@ -41,6 +42,7 @@ export default class Contacts extends Component {
             dict[cliqueId] = cliqueName;
         }
         this.setState({teamDict: dict});
+        // , () => {$('#contactsTable').DataTable()}
     }
 
     checkSharedTeams(singleContact) {
@@ -59,16 +61,16 @@ export default class Contacts extends Component {
             this.props.userInfo.username ?
             <Container fluid>
                 <h1>Contacts</h1>
-                <Table bordered>
+                <Table bordered id="contactsTable">
                     <thead>
                         <tr>
                             <th>Get in touch!</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Phone Number</th>
-                            <th>Shared Teams</th>
+                            <th>First Name<Icon.FiChevronUp className='sortArrows'/><Icon.FiChevronDown /></th>
+                            <th>Last Name<Icon.FiChevronUp className='sortArrows'/><Icon.FiChevronDown /></th>
+                            <th>Username<Icon.FiChevronUp className='sortArrows'/><Icon.FiChevronDown /></th>
+                            <th>Email<Icon.FiChevronUp className='sortArrows'/><Icon.FiChevronDown /></th>
+                            <th>Phone Number<Icon.FiChevronUp className='sortArrows'/><Icon.FiChevronDown /></th>
+                            <th>Shared Teams<Icon.FiChevronUp className='sortArrows'/><Icon.FiChevronDown /></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -107,7 +109,7 @@ export default class Contacts extends Component {
                                     </tr>
                                 )
                             }
-                            return <tr key={0}></tr>;
+                            return <tr></tr>;
                         })}
                     </tbody>
                 </Table>
