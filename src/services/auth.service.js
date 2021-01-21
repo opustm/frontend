@@ -19,6 +19,7 @@ export default class AuthService {
     .then(res => res.json())
     .then(json => {
       if (json.user) {
+        console.log(json.user);
         localStorage.setItem('token', json.token);
         localStorage.setItem("user",json.user.username);
         state = {

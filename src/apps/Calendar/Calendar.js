@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { Container, Table, Row, Col, Button, Modal, Form, Alert } from 'react-bootstrap';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 import * as Icon from 'react-icons/fi';
+import './Calendar.css';
 
+const $ = require('jquery');
+$.DataTable = require('datatables.net');
 
 export default class Calendar extends Component{
     constructor(props) {
@@ -29,6 +32,7 @@ export default class Calendar extends Component{
             idToTeamDict: {},
         }
     }
+    
 
     componentDidMount() {
         if (this.props.userInfo.username) {
@@ -77,7 +81,11 @@ export default class Calendar extends Component{
         events = events.concat(request3.data);
         this.setState({
             userEvents: events,
-        });
+        }, () => {$('#sort_test').DataTable({
+            paging: false,
+            info: false,
+            order: [ 3, 'asc' ],
+        });});
     }
 
     handleChooseTeam(e){
@@ -278,10 +286,10 @@ export default class Calendar extends Component{
                     <thead>
                         <tr key={-1}>
                             <th></th>
-                            <th>Name</th>
-                            <th>Team</th>
-                            <th>Time</th>
-                            <th>Details</th>
+                            <th>Name<Icon.FiChevronUp className='sortArrows'/><Icon.FiChevronDown /></th>
+                            <th>Team<Icon.FiChevronUp className='sortArrows'/><Icon.FiChevronDown /></th>
+                            <th>Time<Icon.FiChevronUp className='sortArrows'/><Icon.FiChevronDown /></th>
+                            <th>Details<Icon.FiChevronUp className='sortArrows'/><Icon.FiChevronDown /></th>
                         </tr>
                     </thead>
 

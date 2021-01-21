@@ -1,0 +1,11 @@
+th:hover {
+  cursor: pointer;
+}
+
+.sortArrows {
+  margin-left: 5px;
+}
+
+label input {
+  margin-left: 5px;
+}
