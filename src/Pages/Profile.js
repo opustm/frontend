@@ -22,7 +22,6 @@ export default class Profile extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.userInfo);
     this.getUserData(this.props.match.params.username);
   }
 
@@ -71,7 +70,6 @@ export default class Profile extends Component {
       "bio": this.state.bio
     }
     try {
-      console.log(body);
       let response = await api.put(urls.user.fetchByUsername(this.state.username), body);
       this.setState(response.data);
     }
