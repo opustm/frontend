@@ -3,10 +3,9 @@ import { Container, Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
+import {getContacts} from '../../services/contacts.service';
 import './Contacts.css';
 
-const $ = require('jquery');
-$.DataTable = require('datatables.net');
 
 export default class Contacts extends Component {
     constructor(props) {
@@ -26,11 +25,8 @@ export default class Contacts extends Component {
     }
 
     async getUserContacts() {
-        this.props.userInfo.cliques.forEach(async (cliqueId)=> {
-            let memberResponse = await api.get(urls.teams.fetchMembersById(cliqueId));
-            let newContacts = this.state.allContacts.concat(memberResponse.data);
-            this.setState({allContacts: newContacts});
-        });
+        let contacts = await getContacts(this.props.userInfo);
+        this.setState({allContacts: contacts});
     }
 
     async createTeamDict() {
@@ -42,7 +38,6 @@ export default class Contacts extends Component {
             dict[cliqueId] = cliqueName;
         }
         this.setState({teamDict: dict});
-        // , () => {$('#contactsTable').DataTable()}
     }
 
     checkSharedTeams(singleContact) {
@@ -51,8 +46,8 @@ export default class Contacts extends Component {
             if (id in this.state.teamDict) {
                 toReturn += this.state.teamDict[id] + ', ';
             }
-            toReturn = toReturn.slice(0, -2);
         }
+        toReturn = toReturn.slice(0, -2);
         return toReturn;
     }
 
