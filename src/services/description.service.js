@@ -18,7 +18,7 @@ export const descriptions = {
         },
         Home: {
             title:"OpusTM",
-            body:"This section will tell the user what our product is!",
+            body:"Welcome to Opus Team Management!",
         },
     },
     apps:"",

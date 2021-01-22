@@ -4,8 +4,9 @@ import {Container, Row, Col, Form, Button, Modal, Alert} from 'react-bootstrap';
 import * as Icon from 'react-icons/fi';
 import InputColor from 'react-input-color';
 import { API_ENDPOINTS as urls, Axios as api } from '../services/api.service';
-import '../stylesheets/Login.css';
 import AuthService from '../services/auth.service';
+import { descriptions } from '../services/description.service';
+import '../stylesheets/Login.css';
 
 
 export default class Login extends Component {
@@ -123,8 +124,8 @@ export default class Login extends Component {
         <Row className='loginRow'>
           <Col id='leftLogin'>
             <Row>
-              <Col md={{offset:2}}>
-                <p className='vertShift'>This text will tell the user what our product is!</p>
+              <Col md={{offset:3}}>
+                <p className='vertShift'>{descriptions.pages.Home.body}</p>
               </Col>
             </Row>
           </Col>
