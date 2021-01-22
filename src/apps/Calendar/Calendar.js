@@ -4,8 +4,6 @@ import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service'
 import * as Icon from 'react-icons/fi';
 import './Calendar.css';
 
-const $ = require('jquery');
-$.DataTable = require('datatables.net');
 
 export default class Calendar extends Component{
     constructor(props) {
@@ -47,6 +45,7 @@ export default class Calendar extends Component{
         let membersDict = {};
         let allMembers = [];
         let newIdDict = {};
+        let ids = new Set();
         for (let id of teamIds) {
             const request = await api.get(urls.teams.fetchById(id));
             teams.push(request.data);
@@ -55,12 +54,15 @@ export default class Calendar extends Component{
             membersDict[id] = members.data;
         }
         for (let teamid in membersDict){
-            let teamMembersArray=membersDict[teamid];
+            let teamMembersArray = membersDict[teamid];
             for (let member of teamMembersArray) {
-                allMembers.push(member);
+                if (!ids.has(member.id)) {
+                    allMembers.push(member);
+                }
+                ids.add(member.id);
             }
         }
-
+        
         this.setState({
             userTeams: teams,
             teamIdToMembersDict: membersDict,
@@ -79,13 +81,7 @@ export default class Calendar extends Component{
         }
         const request3 = await api.get(urls.event.fetchByUsername(this.props.userInfo.username));
         events = events.concat(request3.data);
-        this.setState({
-            userEvents: events,
-        }, () => {$('#eventTable').DataTable({
-            paging: false,
-            info: false,
-            order: [ 3, 'asc' ]
-        });});
+        this.setState({userEvents: events});
     }
 
     handleChooseTeam(e){
