@@ -30,6 +30,7 @@ export const API_ENDPOINTS = {
         fetchRelatedTeams: (teamName) => `/relatedCliques/${teamName}/`
     },
     user : {
+        fetchAll: `/users/`,
         fetchByUsername: (username) => `userDetails/${username}/`,
         fetchById: (id) => `/users/${id}/`
     },

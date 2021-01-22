@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import {Container, Row, Col, Form, Button, Modal, Alert} from 'react-bootstrap';
 import * as Icon from 'react-icons/fi';
 import InputColor from 'react-input-color';
-
+import { API_ENDPOINTS as urls, Axios as api } from '../services/api.service';
 import '../stylesheets/Login.css';
 import AuthService from '../services/auth.service';
 
@@ -26,12 +26,23 @@ export default class Login extends Component {
       cliques: [],
       signupError: false,
       signupErrorMessages: [],
+      allUsernames: new Set(),
       loginError: false,
       showModal: false,
     };
   }
 
   componentDidMount() {
+    let t = this;
+    async function getUsernames() {
+      let request = await api.get(urls.user.fetchAll);
+      let usernames = new Set();
+      request.data.forEach((user) => {
+        usernames.add(user.username);
+      });
+      t.setState({allUsernames: usernames});
+    }
+    getUsernames();
     if (this.state.logged_in) {
       let token = localStorage.getItem('token');
       let newState = this.state.authService.getCurrentUser(token);
@@ -66,7 +77,6 @@ export default class Login extends Component {
   }
 
   dataIsValid() {
-    console.log('validating');
     let errors = [];
     let passwordRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})");
     if (!this.state.first_name || !this.state.last_name || !this.state.phone || !this.state.email || !this.state.username || !this.state.password) {
@@ -78,6 +88,9 @@ export default class Login extends Component {
     if (this.state.phone.includes('-' || this.state.phone.includes(' '))) {
       errors.push('Do not use dashes in the phone field');
     }
+    if (this.state.allUsernames.has(this.state.username)) {
+      errors.push('Username already taken. Please choose another one.');
+    }
     this.setState({
       signupError: errors.length ? true : false,
       signupErrorMessages: errors
@@ -86,7 +99,16 @@ export default class Login extends Component {
     
   }
 
-  handleClose = () => this.setState({showModal: false});
+  handleClose = () => this.setState({
+    showModal: false,
+    username: '',
+    email: '',
+    first_name: '',
+    last_name: '',
+    phone: '',
+    password: '',
+    picture: '#000000'
+  });
   handleShow = () => this.setState({showModal: true});
 
   handleColorChange(e) {
