@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import {Container, Row, Col, Form, Button, Modal} from 'react-bootstrap';
+import {Container, Row, Col, Form, Button, Modal, Alert} from 'react-bootstrap';
 import * as Icon from 'react-icons/fi';
 import InputColor from 'react-input-color';
 
@@ -23,8 +23,9 @@ export default class Login extends Component {
       bio: '',
       picture: '#000000',
       theme: 'light',
-      teams: [1],
-      cliques: [1],
+      cliques: [],
+      signupError: false,
+      signupErrorMessages: [],
       loginError: false,
       showModal: false,
     };
@@ -56,11 +57,34 @@ export default class Login extends Component {
   }
 
   async handleSignup(e, data) {
-    this.handleClose();
-    e.preventDefault();
-    let state = await this.state.authService.signup(data);
-    this.setState(state);
-  };
+    if (this.dataIsValid()) {
+      this.handleClose();
+      e.preventDefault();
+      let state = await this.state.authService.signup(data);
+      this.setState(state);
+    }
+  }
+
+  dataIsValid() {
+    console.log('validating');
+    let errors = [];
+    let passwordRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})");
+    if (!this.state.first_name || !this.state.last_name || !this.state.phone || !this.state.email || !this.state.username || !this.state.password) {
+      errors.push('All fields are required');
+    }
+    if (!passwordRegex.test(this.state.password)) {
+      errors.push('Password is missing one or more requirements');
+    }
+    if (this.state.phone.includes('-' || this.state.phone.includes(' '))) {
+      errors.push('Do not use dashes in the phone field');
+    }
+    this.setState({
+      signupError: errors.length ? true : false,
+      signupErrorMessages: errors
+    });
+    return (errors.length ? false : true);
+    
+  }
 
   handleClose = () => this.setState({showModal: false});
   handleShow = () => this.setState({showModal: true});
@@ -89,7 +113,7 @@ export default class Login extends Component {
               <Form>
                 <Form.Group>
                   <Form.Label>Username</Form.Label>
-                  <Form.Control 
+                  <Form.Control
                     type="text"
                     name="username"
                     onChange={this.handleChange}
@@ -163,7 +187,13 @@ export default class Login extends Component {
               <Row>
                 <Col>
                   <Form.Group>
-                    <Form.Label>Phone Number</Form.Label>
+                    <Form.Label>Phone Number
+                      <Container>
+                        <Row>
+                          <small>(Do not include dashes)</small>
+                        </Row>
+                      </Container>
+                    </Form.Label>
                     <Form.Control
                       type="number"
                       name="phone"
@@ -174,7 +204,13 @@ export default class Login extends Component {
                 </Col>
                 <Col>
                   <Form.Group>
-                    <Form.Label>Email</Form.Label>
+                    <Form.Label>Email
+                      <Container>
+                        <Row>
+                          <small>(Format: test@example.com)</small>
+                        </Row>
+                      </Container>
+                    </Form.Label>
                     <Form.Control
                       type="email"
                       name="email"
@@ -202,6 +238,11 @@ export default class Login extends Component {
                   onChange={this.handleChange}
                 />
               </Form.Group>
+              <small>Password must be at least 8 characters, contain one lowercase letter, one uppercase letter, one number, and one special character (!@#$%^&*)</small>
+              <Alert style={{marginTop:'10px'}}variant='danger' hidden={!this.state.signupError}>
+                {this.state.signupError ? this.state.signupErrorMessages.map((error) => {return <li>{error}</li>}) : ''}
+              </Alert>
+              <hr />
               <p id='iconP'>Pick a color for your avatar:</p>
               <Row>
                 <Col lg={{offset: 4, span: 3}}>
@@ -217,7 +258,6 @@ export default class Login extends Component {
                   <p>Click Me!</p>
                 </Col>
               </Row>
-              
             </Form>
           </Modal.Body>
           <Modal.Footer>
