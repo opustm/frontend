@@ -63,9 +63,18 @@ export default class Login extends Component {
 
   async handleLogin(e, data) {
     e.preventDefault();
-    let state = await this.state.authService.login(data);
+    let state = await this.state.authService.login(data); 
+    if (!state.logged_in){
+      alert('Invalid sign in credentials. Please try again.');
+    }
     this.setState(state);
     this.props.onLoggedInChange(this.state.logged_in);
+  }
+
+  handleLoginPress(e, data) {
+    if (e.charCode === 13) {
+      this.handleLogin(e, data);  
+    } 
   }
 
   async handleSignup(e, data) {
@@ -73,7 +82,7 @@ export default class Login extends Component {
       this.handleClose();
       e.preventDefault();
       let state = await this.state.authService.signup(data);
-      this.setState(state);
+      this.setState(state, () => {this.handleLogin(e, data)});
     }
   }
 
@@ -98,6 +107,12 @@ export default class Login extends Component {
     });
     return (errors.length ? false : true);
     
+  }
+
+  handleRegisterPress(e, data) {
+    if (e.charCode === 13) {
+      this.handleSignup(e, data);  
+    } 
   }
 
   handleClose = () => this.setState({
@@ -150,13 +165,13 @@ export default class Login extends Component {
                     name="password"
                     onChange={this.handleChange}
                     value={this.state.password}
+                    onKeyPress={e => this.handleLoginPress(e, this.state)}
                   />
                   <Form.Text>
                     <a className='loginLink' href="https://google.com">Forgot your password?</a>
                   </Form.Text>
                 </Form.Group>
                 <Button
-                
                   onClick={e => this.handleLogin(e, this.state)}
                   id="loginSubmit"
                 >SIGN IN</Button>
@@ -259,6 +274,7 @@ export default class Login extends Component {
                   name="password"
                   value={this.state.password}
                   onChange={this.handleChange}
+                  onKeyPress={e => this.handleRegisterPress(e, this.state)}
                 />
               </Form.Group>
               <small>Password must be at least 8 characters, contain one lowercase letter, one uppercase letter, one number, and one special character (!@#$%^&*)</small>
