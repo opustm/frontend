@@ -117,9 +117,8 @@ export default class Announcements extends Component {
         this.setState({
             userAnnouncements: announcements,
             announcementCreatorDict: creatorIdToName,
-            announcementObjects: tableObjects,
-            displayedAnnouncements: tableObjects
-        });
+            announcementObjects: tableObjects
+        }, () => {this.handleTeamFilter(this.state.teamFilter)});
     }
 
     async handleCreate(evt) {

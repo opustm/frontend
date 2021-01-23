@@ -1,10 +1,21 @@
 import React, { Component } from 'react';
-import { Container, Table } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 import {getContacts} from '../../services/contacts.service';
+import BootstrapTable from 'react-bootstrap-table-next';
 import './Contacts.css';
+
+const columns = [
+    { dataField: 'meet', text: 'Get In Touch!'},
+    { dataField: 'firstName', text: 'First Name', sort: true},
+    { dataField: 'lastName', text: 'Last Name', sort: true},
+    { dataField: 'username', text: 'Username', sort: true},
+    { dataField: 'email', text: 'Email', sort: true},
+    { dataField: 'phoneNumber', text: 'Phone Number', sort: true},
+    { dataField: 'sharedTeams', text: 'Shared Teams', sort: true},
+]
 
 
 export default class Contacts extends Component {
@@ -13,6 +24,7 @@ export default class Contacts extends Component {
         document.title = "Opus | Contacts"
         this.state = {
             allContacts: [],
+            contactObjects : [],
             teamDict: {}
         }
     }
@@ -26,7 +38,34 @@ export default class Contacts extends Component {
 
     async getUserContacts() {
         let contacts = await getContacts(this.props.userInfo);
-        this.setState({allContacts: contacts});
+        let contactObjects = [];
+        contacts.forEach((contact) => {
+            if (contact.id !== this.props.userInfo.id) {
+                let object = {
+                    meet: (
+                        <span>
+                            <Link to='/chat'>
+                                <Icon.FiMessageSquare />
+                            </Link>
+                            <Link to='/calendar'>
+                                <Icon.FiCalendar />
+                            </Link>
+                        </span>
+                        ),
+                    firstName: contact.first_name,
+                    lastName: contact.last_name,
+                    username: <Link to={`/user/${contact.username}`}>{contact.username}</Link>,
+                    email: contact.email,
+                    phoneNumber: contact.phone,
+                    sharedTeams: this.checkSharedTeams(contact)
+                };
+                contactObjects.push(object);
+            }
+        })
+        this.setState({
+            allContacts: contacts,
+            contactObjects: contactObjects
+        });
     }
 
     async createTeamDict() {
@@ -56,58 +95,7 @@ export default class Contacts extends Component {
             this.props.userInfo.username ?
             <Container fluid>
                 <h1>Contacts</h1>
-                <Table bordered id="contactsTable">
-                    <thead>
-                        <tr>
-                            <th>Get in touch!</th>
-                            <th>First Name<Icon.FiChevronUp className='sortArrows'/><Icon.FiChevronDown /></th>
-                            <th>Last Name<Icon.FiChevronUp className='sortArrows'/><Icon.FiChevronDown /></th>
-                            <th>Username<Icon.FiChevronUp className='sortArrows'/><Icon.FiChevronDown /></th>
-                            <th>Email<Icon.FiChevronUp className='sortArrows'/><Icon.FiChevronDown /></th>
-                            <th>Phone Number<Icon.FiChevronUp className='sortArrows'/><Icon.FiChevronDown /></th>
-                            <th>Shared Teams<Icon.FiChevronUp className='sortArrows'/><Icon.FiChevronDown /></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.state.allContacts.map((singleContact) => {
-                            if (singleContact.username !== this.props.userInfo.username) {
-                                return (
-                                    <tr key={singleContact.id}>
-                                        <td>
-                                            <Link to='/chat'>
-                                                <Icon.FiMessageSquare />
-                                            </Link>
-                                            <Link to='/calendar'>
-                                                <Icon.FiCalendar />
-                                            </Link>
-                                        </td>
-                                        <td>
-                                            <Link to={`/user/${singleContact.username}`}>
-                                                {singleContact.first_name}
-                                            </Link>
-                                        </td>
-                                        <td>
-                                            <Link to={`/user/${singleContact.username}`}>
-                                                {singleContact.last_name}
-                                            </Link>
-                                        </td>
-                                        <td>
-                                            <Link to={`/user/${singleContact.username}`}>
-                                                {singleContact.username}
-                                            </Link>
-                                        </td>
-                                        <td>{singleContact.email}</td>
-                                        <td>{singleContact.phone}</td>
-                                        <td>
-                                            {this.checkSharedTeams(singleContact)}
-                                        </td>
-                                    </tr>
-                                )
-                            }
-                            return <tr></tr>;
-                        })}
-                    </tbody>
-                </Table>
+                <BootstrapTable keyField='id' data={ this.state.contactObjects } columns={ columns } className='contactsTable' />
             </Container> :
             <h4>Log in to view your contacts</h4>
         )
