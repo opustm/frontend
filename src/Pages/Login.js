@@ -140,8 +140,8 @@ export default class Login extends Component {
           <Col id='leftLogin'>
             <Container>
               <Col lg={{offset: 3}} style={{marginTop: '16%'}}>
-                {descriptions.pages.Login.iconMessages.map((messageData) => {
-                  return (<Row style={{marginTop: '30px'}}>{messageData[1]}<h4>{messageData[0]}</h4></Row>);
+                {descriptions.pages.Login.iconMessages.map((messageData, idx) => {
+                  return (<Row style={{marginTop: '30px'}} key={idx}>{messageData[1]}<h4>{messageData[0]}</h4></Row>);
                 })}
               </Col>
             </Container>

@@ -6,30 +6,11 @@ import * as Icon from 'react-icons/fi';
 import './Calendar.css';
 
 const columns = [
-    {
-        dataField: 'x',
-        text: ''
-    },
-    {
-        dataField: 'name',
-        text: 'Name',
-        sort: true
-    },
-    {
-        dataField: 'team',
-        text: 'Team',
-        sort: true
-    },
-    {
-        dataField: 'time',
-        text: 'Time',
-        sort: true
-    },
-    {
-        dataField: 'details',
-        text: 'Details',
-        sort: true
-    }
+    { dataField: 'x', text: '' },
+    { dataField: 'name', text: 'Name', sort: true },
+    { dataField: 'team', text: 'Team', sort: true },
+    { dataField: 'time', text: 'Time', sort: true },
+    { dataField: 'details', text: 'Details', sort: true }
 ]
 
 export default class Calendar extends Component{
