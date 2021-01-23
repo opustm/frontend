@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import Widget from '../components/Widget/widget.component';
+import { Axios as api, API_ENDPOINTS as urls } from '../services/api.service';
 
-// Check to delete expired announcements once you navigate to this page.
-// let now = new Date(Date.now()).toISOString();
-//if (now > announcement.end) {
-//   this.deleteAnnouncement(announcement);
-// return <tr></tr>;
 
 export default class Home extends Component {
     constructor(props) {
@@ -14,6 +10,24 @@ export default class Home extends Component {
         document.title = "Opus | Dashboard"
         this.state = {
         }
+    }
+
+    componentDidMount() {
+        let t = this;
+        async function checkExpired() {
+            for (let id of t.props.userInfo.cliques) {
+                let request = await api.get(urls.teams.fetchById(id));
+                let teamName = request.data.name;
+                let announcementRequest = await api.get(urls.announcement.fetchByTeam(teamName));
+                for (let announcement of announcementRequest.data) {
+                    let now = new Date(Date.now()).toISOString();
+                    if (now > announcement.end) {
+                        const deleteRequest = await api.delete(urls.announcement.fetchById(announcement.id));
+                    }
+                }
+            }
+        }
+        checkExpired();
     }
 
     render() {
