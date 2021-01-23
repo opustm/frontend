@@ -22,17 +22,14 @@ export default class AuthService {
         localStorage.setItem('token', json.token);
         localStorage.setItem("user",json.user.username);
         state = {
+          ...json.user,
           logged_in: true,
-          displayed_form: '',
-          username: json.user.username,
-          first_name: json.user.first_name,
           loginError: false
         }
       }
       else {
         state = {
           logged_in: false,
-          displayed_form: 'login',
           loginError: true
         }
       }
@@ -59,7 +56,6 @@ export default class AuthService {
       localStorage.setItem('token', json.token);
       state = {
         logged_in: true,
-        displayed_form: '',
         username: json.username,
         first_name: json.first_name,
         loginError: false
@@ -79,11 +75,7 @@ export default class AuthService {
       .then(res => res.json())
       .then(json => {
         state = {
-          id: json.id,
-          username: json.username,
-          first_name: json.first_name,
-          last_name: json.last_name,
-          cliques: json.cliques,
+          ...json,
           logged_in: true
         };
       });
