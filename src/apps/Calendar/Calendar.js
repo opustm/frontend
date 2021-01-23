@@ -1,9 +1,36 @@
 import React, { Component } from 'react';
-import { Container, Table, Row, Col, Button, Modal, Form, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Button, Modal, Form, Alert } from 'react-bootstrap';
+import BootstrapTable from 'react-bootstrap-table-next';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 import * as Icon from 'react-icons/fi';
 import './Calendar.css';
 
+const columns = [
+    {
+        dataField: 'x',
+        text: ''
+    },
+    {
+        dataField: 'name',
+        text: 'Name',
+        sort: true
+    },
+    {
+        dataField: 'team',
+        text: 'Team',
+        sort: true
+    },
+    {
+        dataField: 'time',
+        text: 'Time',
+        sort: true
+    },
+    {
+        dataField: 'details',
+        text: 'Details',
+        sort: true
+    }
+]
 
 export default class Calendar extends Component{
     constructor(props) {
@@ -13,6 +40,8 @@ export default class Calendar extends Component{
             showCreateModal: false,
             userTeams: [],
             userEvents: [],
+            eventObjectsForTable: [],
+            displayedEvents: [],
             eventName: '',
             eventDetails: '',
             eventTeam: null,
@@ -28,6 +57,7 @@ export default class Calendar extends Component{
             teamIdToMembersDict: {},
             selectedTeamMembers: [],
             idToTeamDict: {},
+            teamToIdDict: {}
         }
     }
     
@@ -62,7 +92,7 @@ export default class Calendar extends Component{
                 ids.add(member.id);
             }
         }
-        
+
         this.setState({
             userTeams: teams,
             teamIdToMembersDict: membersDict,
@@ -82,6 +112,21 @@ export default class Calendar extends Component{
         const request3 = await api.get(urls.event.fetchByUsername(this.props.userInfo.username));
         events = events.concat(request3.data);
         this.setState({userEvents: events});
+        let tableEvents = [];
+        events.forEach((event) => {
+            let tableObject = {
+                x: <Icon.FiXCircle onClick={() => {this.deleteEvent(event)}} size={20}/>,
+                name: event.name,
+                team: event.clique ? this.state.idToTeamDict[event.clique] : 'N/A',
+                time: `${this.parseDate(event.start)} -- ${this.parseDate(event.end)}`,
+                details: event.details
+            };
+            tableEvents.push(tableObject);
+        });
+        this.setState({
+            eventObjectsForTable: tableEvents,
+            displayedEvents: tableEvents
+        });
     }
 
     handleChooseTeam(e){
@@ -116,6 +161,21 @@ export default class Calendar extends Component{
             body.id = request.data.id;
             let newEventsList = this.state.userEvents;
             newEventsList.push(body);
+            let tableEvent = {
+                x: <Icon.FiXCircle onClick={() => {this.deleteEvent(body)}} size={20}/>,
+                name: this.state.eventName,
+                team: team ? this.state.idToTeamDict[team] : 'N/A',
+                time: `${this.parseDate(start.toISOString())} -- ${this.parseDate(end.toISOString())}`,
+                details: this.state.eventDetails,
+            }
+            let tableObjects = this.state.eventObjectsForTable;
+            tableObjects.push(tableEvent);
+            if (tableEvent.team === this.state.eventFilter) {
+                let events = this.state.displayedEvents;
+                events.push(tableEvent);
+                this.setState({displayedEvents: events});
+            }
+            this.setState({eventObjectsForTable: tableObjects});
             if (this.state.createAnnouncement){
                 let body2 = {
                     announcement: `Generated announcement for event: ${this.state.eventName}`,
@@ -171,7 +231,13 @@ export default class Calendar extends Component{
     async deleteEvent(eventToDelete) {
         const deleteRequest = await api.delete(urls.event.fetchById(eventToDelete.id));
         let filtered = this.state.userEvents.filter((event) => {return event !== eventToDelete});
-        this.setState({userEvents: filtered});
+        let filteredObjects = this.state.eventObjectsForTable.filter((event) => {
+            return event.name !== eventToDelete.name;
+        })
+        this.setState({
+            userEvents: filtered,
+            displayedEvents: filteredObjects
+        });
     }
 
     parseDate(isoDate) {
@@ -185,8 +251,12 @@ export default class Calendar extends Component{
     }
 
     handleFilter(e){
-        let filter = e.target.value === '-1' ? -1 : e.target.value;
+        let filter = e.target.value;
         this.setState({eventFilter: filter});
+        let filtered = this.state.eventObjectsForTable.filter((object) => {
+            return (object.team === filter || filter === 'All');
+        });
+        this.setState({displayedEvents: filtered});
     }
 
     render(){
@@ -272,43 +342,12 @@ export default class Calendar extends Component{
                                 {this.state.userTeams.map((team) => {
                                     return <option key={team.id} selected={team.name === this.state.eventFilter} value={team.name}>{team.name} Team</option>;
                                 })}
-                                <option value={-1}>Events without an associated team</option>
+                                <option value='N/A'>Events without an associated team</option>
                             </Form.Control>
                         </Row>
                     </Col>
-                </Row>              
-
-                <Table bordered id="eventTable">
-                    <thead>
-                        <tr key={-1}>
-                            <th></th>
-                            <th>Name<Icon.FiChevronUp className='sortArrows'/><Icon.FiChevronDown /></th>
-                            <th>Team<Icon.FiChevronUp className='sortArrows'/><Icon.FiChevronDown /></th>
-                            <th>Time<Icon.FiChevronUp className='sortArrows'/><Icon.FiChevronDown /></th>
-                            <th>Details<Icon.FiChevronUp className='sortArrows'/><Icon.FiChevronDown /></th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {this.state.userEvents.map((event) => {
-                            let teamId = event.clique ? this.state.idToTeamDict[event.clique] : -1;
-                            if (this.state.eventFilter === 'All' || this.state.eventFilter === teamId) {
-                                return (
-                                    <tr key={event.id}>
-                                        <td><Icon.FiXCircle onClick={() => {this.deleteEvent(event)}} size={20}></Icon.FiXCircle></td>
-                                        <td>{event.name}</td>
-                                        <td>{event.clique ? this.state.idToTeamDict[event.clique] : 'N/A'}</td>
-                                        <td>{`${this.parseDate(event.start)} - ${this.parseDate(event.end)}`}</td>
-                                        <td>{event.details}</td>
-                                    </tr>
-                                )
-                            }
-                            else {
-                                return <tr></tr>;
-                            }
-                        })}
-                    </tbody>
-                </Table>
+                </Row>
+                <BootstrapTable keyField='id' data={ this.state.displayedEvents } columns={ columns } />
             </Container>
         )
     }

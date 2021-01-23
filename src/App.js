@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import './stylesheets/App.css'
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
 // Services
 import AuthService from './services/auth.service';
