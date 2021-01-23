@@ -25,7 +25,7 @@ import Chat from './apps/Chat/Chat';
 import Contacts from './apps/Contacts/Contacts';
 import Announcements from './apps/Announcements/Announcements';
 
-export default function App() {
+export default function App(props) {
   let authService = new AuthService();
   let [loggedIn, setLoggedIn] = useState(false);
   let [sidebarToggled,setSidebar] = useState(true)
@@ -75,7 +75,7 @@ export default function App() {
               <Route path="/teams/:teamUsername/settings" exact component={TeamSettings}/>
               <Route path="/teams/:teamUsername" exact component={() => {return <TeamView userInfo={userData}/>}}/>
             </div>
-            : <Redirect to='/login' />
+            : <Redirect to='/about' />
           }
         </Switch>
       </Router>

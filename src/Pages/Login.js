@@ -138,11 +138,13 @@ export default class Login extends Component {
       <Container fluid>
         <Row className='loginRow'>
           <Col id='leftLogin'>
-            <Row>
-              <Col md={{offset:3}}>
-                <p className='vertShift'>{descriptions.pages.Home.body}</p>
+            <Container>
+              <Col lg={{offset: 3}} style={{marginTop: '16%'}}>
+                {descriptions.pages.Login.iconMessages.map((messageData) => {
+                  return (<Row style={{marginTop: '30px'}}>{messageData[1]}<h4>{messageData[0]}</h4></Row>);
+                })}
               </Col>
-            </Row>
+            </Container>
           </Col>
           <Col id='rightLogin'>
             <Col lg={{span: 9, offset: 1}}>
