@@ -105,9 +105,8 @@ export default class Calendar extends Component{
             tableEvents.push(tableObject);
         });
         this.setState({
-            eventObjectsForTable: tableEvents,
-            displayedEvents: tableEvents
-        });
+            eventObjectsForTable: tableEvents
+        }, () => {this.handleFilter(this.state.eventFilter)});
     }
 
     handleChooseTeam(e){
@@ -231,13 +230,14 @@ export default class Calendar extends Component{
         return toReturn;
     }
 
-    handleFilter(e){
-        let filter = e.target.value;
-        this.setState({eventFilter: filter});
+    handleFilter(filter){
         let filtered = this.state.eventObjectsForTable.filter((object) => {
             return (object.team === filter || filter === 'All');
         });
-        this.setState({displayedEvents: filtered});
+        this.setState({
+            displayedEvents: filtered,
+            eventFilter: filter
+        });
     }
 
     render(){
@@ -318,7 +318,7 @@ export default class Calendar extends Component{
                     <Col>
                         <Row>
                             <h5 style={{'marginTop': '15px'}}>Select Calendar: </h5>
-                            <Form.Control style={{'marginTop': '10px', 'marginBottom': '10px', 'marginLeft': '10px'}} as="select" onChange={(e) => {this.handleFilter(e)}}>
+                            <Form.Control style={{'marginTop': '10px', 'marginBottom': '10px', 'marginLeft': '10px'}} as="select" onChange={(e) => {this.handleFilter(e.target.value)}}>
                                 <option>All</option>
                                 {this.state.userTeams.map((team) => {
                                     return <option key={team.id} selected={team.name === this.state.eventFilter} value={team.name}>{team.name} Team</option>;
