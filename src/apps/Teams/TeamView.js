@@ -49,7 +49,7 @@ const TeamView = (props) => {
         catch (err) {
             <Redirect to="/404"/>
         }
-    }, [members]);
+    }, [teamUsername]);
 
 
     async function inviteMember() {

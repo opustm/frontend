@@ -1,6 +1,6 @@
-import APIHost from './api.service';
+import { API_CONFIG as api }  from './api.service';
 
-const API_HOST = APIHost();
+const API_HOST = api.baseURL();
 
 export default class AuthService {
   async login(data) {
