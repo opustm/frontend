@@ -16,5 +16,14 @@
     justify-content: flex-start;
     align-items: center;
     padding: 8px 0px 8px 16px;
-    list-style:
+    /* list-style: */
+}
+
+.deleteIcon {
+    margin-right: 10%;
+    margin-top: 3px;
+}
+
+.deleteIcon:hover, .addIcon:hover {
+    cursor: pointer;
 }
