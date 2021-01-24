@@ -49,7 +49,6 @@ export default function App() {
   }
 
     return (
-
       // React Dynamic Routing
       <Router>
         {loggedIn ? 
@@ -75,7 +74,7 @@ export default function App() {
               <Route path="/announcements" exact component={() => {return <Announcements userInfo={userData}/>}}/>
               <Route path="/user/:username" component={(props) => {return <Profile {...props} userInfo={userData} />}}/>
               <Route path="/teams/:teamUsername/settings" exact component={TeamSettings}/>
-              <Route path="/teams/:teamUsername" exact component={TeamView}/>
+              <Route path="/teams/:teamUsername" exact component={() => {return <TeamView userInfo={userData}/>}}/>
             </div>
             : <Redirect to='/login' />
           }
