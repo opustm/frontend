@@ -27,15 +27,19 @@ export const API_ENDPOINTS = {
         fetchMembers : (name) => `/cliqueMembers/${name}/`,
         fetchMembersById: (id) => `/cliqueidMembers/${id}/`,
         fetchByUsername: (username) => `/userCliques/${username}/`,
-        fetchRelatedTeams: (teamName) => `/relatedCliques/${teamName}/`
+        fetchRelatedTeams: (teamName) => `/relatedCliques/${teamName}/`,
     },
     user : {
         fetchAll: `/users/`,
         fetchByUsername: (username) => `userDetails/${username}/`,
-        fetchById: (id) => `/users/${id}/`
+        fetchById: (id) => `/users/${id}/`,
     },
-    invitation : {},
-    request : {},
+    invitation : {
+        invitations : () => `/invitations/`,
+    },
+    request : {
+        requests : () => `/requests/`,
+    },
     event : {
         fetchAll: `/events/`,
         fetchById : (id) => `/events/${id}/`,
@@ -46,11 +50,14 @@ export const API_ENDPOINTS = {
     announcement : {
         fetchAll : `/announcements/`,
         fetchByTeam : (teamName) => `/cliqueAnnouncements/${teamName}/`,
-        fetchById: (announcementId) => `/announcements/${announcementId}/`
+        fetchById: (announcementId) => `/announcements/${announcementId}/`,
     },
     message : {},
     todo : {},
 }
 
 // Legacy: Do not use. Instead, use API_CONFIG.baseURL
-export default function APIHost() {return API_CONFIG.baseURL()};
+export default function APIHost() {
+    console.warn("Function APIHost is depreciated due to inconsistency. Use API_CONFIG.baseURL instead")
+    return API_CONFIG.baseURL()
+};

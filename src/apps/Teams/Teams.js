@@ -7,10 +7,6 @@ import { Link, Redirect } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
 import './teams.css';
 
-// 
-// Data Processing Variables
-// 
-
 let createFormPlaceholderData = {
   name: "New Team Name",
   cliqueType: "sub",
@@ -19,24 +15,20 @@ let createFormPlaceholderData = {
   relatedCliques: [],
 }
 
-// let joinFormPlaceholderData = {
-//   name:null,
-// }
+let showInvitationModal = {
+  username: "",
+
+}
 
 const Teams = () => {
   const [teams,setTeams] = useState([0]);
   const [showCreateModal, setShowCreateModal]= useState(false);
-  // const [showJoinModal, setShowJoinModal] = useState(false);
   const { value:teamName, bind:bindTeamName, reset:resetTeamName } = useInput('');
   document.title = "Opus | Teams"
 
-  // 
-  // Functions
-  // 
 
   useEffect(() => {
     async function fetchTeams() {
-      // const request = await api.get(urls.teams.fetchAll());
       const request = await api.get(urls.teams.fetchByUsername(AppData.user()))
       setTeams(request.data);
       return request;
@@ -59,9 +51,27 @@ const Teams = () => {
   }
 
   async function createTeam(){
-    await api.post(
-      urls.teams.fetchAll, createFormPlaceholderData
+    
+    let response = await api.post(
+      urls.teams.fetchAll(), createFormPlaceholderData
     )
+
+    let user = await api.get(urls.user.fetchByUsername(AppData.user()));
+    let userData = user.data;
+    let teamId = response.data.id;
+
+    userData.cliques.push(teamId);
+    await api.put(
+        urls.user.fetchByUsername(AppData.user()),
+        userData
+    )
+    .then(
+        (response) => {
+            <Redirect to={`/teams/`}/>
+        }
+    )
+
+
   }
 
   const handleSubmit = (evt) => {
@@ -70,10 +80,6 @@ const Teams = () => {
     createTeam()
     resetTeamName();
   }
-
-  // 
-  // Internal Components
-  // 
 
   let createTeamModal =
     <Modal show={showCreateModal} onHide={() => {setShowCreateModal(false)}}>
@@ -98,14 +104,6 @@ const Teams = () => {
         </Form>
       </Modal.Body>
     </Modal>
-
-  // let joinTeamModal = 
-  //   <Modal show={showJoinModal} onHide={setShowJoinModal(false)}>
-  //   </Modal>
-
-  // 
-  // List of Teams
-  // 
 
   let teamsView =      
     <ul>
@@ -155,10 +153,6 @@ const Teams = () => {
       })}
     </ul>
 
-  // 
-  // Main Render Function
-  // 
-
   return (
     <Container fluid>
       <Col sm={12} md={{span: 10, offset: 1}}>
@@ -170,7 +164,8 @@ const Teams = () => {
           </p>
           <div>
             <ButtonGroup className="mr-2">
-              <Button variant="primary" onClick={() => {setShowCreateModal(true)}}><Icon.FiUsers/> Create Team</Button>
+              <Button variant="primary" 
+              onClick={() => {setShowCreateModal(true)}}><Icon.FiUsers/> Create Team</Button>
             </ButtonGroup>
             <ButtonGroup className='mr-2'>
               <Button variant="success"><Icon.FiPlus/> Join Team</Button>
