@@ -51,9 +51,27 @@ const Teams = () => {
   }
 
   async function createTeam(){
-    await api.post(
-      urls.teams.fetchAll, createFormPlaceholderData
+    
+    let response = await api.post(
+      urls.teams.fetchAll(), createFormPlaceholderData
     )
+
+    let user = await api.get(urls.user.fetchByUsername(AppData.user()));
+    let userData = user.data;
+    let teamId = response.data.id;
+
+    userData.cliques.push(teamId);
+    await api.put(
+        urls.user.fetchByUsername(AppData.user()),
+        userData
+    )
+    .then(
+        (response) => {
+            <Redirect to={`/teams/`}/>
+        }
+    )
+
+
   }
 
   const handleSubmit = (evt) => {
@@ -146,7 +164,8 @@ const Teams = () => {
           </p>
           <div>
             <ButtonGroup className="mr-2">
-              <Button variant="primary" onClick={() => {setShowCreateModal(true)}}><Icon.FiUsers/> Create Team</Button>
+              <Button variant="primary" 
+              onClick={() => {setShowCreateModal(true)}}><Icon.FiUsers/> Create Team</Button>
             </ButtonGroup>
             <ButtonGroup className='mr-2'>
               <Button variant="success"><Icon.FiPlus/> Join Team</Button>
