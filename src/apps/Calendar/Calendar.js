@@ -166,7 +166,7 @@ export default class Calendar extends Component{
                     end: end.toISOString(),
                     acknowledged: [this.props.userInfo.id]
                 };
-                let request2 = await api.post(urls.announcement.fetchAll, body2);
+                await api.post(urls.announcement.fetchAll, body2);
             }
             this.setState({
                 userEvents: newEventsList,
@@ -209,7 +209,7 @@ export default class Calendar extends Component{
     }
 
     async deleteEvent(eventToDelete) {
-        const deleteRequest = await api.delete(urls.event.fetchById(eventToDelete.id));
+        await api.delete(urls.event.fetchById(eventToDelete.id));
         let filtered = this.state.userEvents.filter((event) => {return event !== eventToDelete});
         let filteredObjects = this.state.eventObjectsForTable.filter((event) => {
             return event.name !== eventToDelete.name;
