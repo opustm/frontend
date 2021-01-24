@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 import { AppData } from  '../../services/data.service';
-import { Container, Card, ListGroup, Dropdown, Button, Row, Col, Jumbotron, Image } from 'react-bootstrap';
+import { useInput } from '../../services/forms.service';
+import { Container, Modal, Card, ListGroup, Dropdown, Button, Row, Col, Jumbotron, Image, Form } from 'react-bootstrap';
 import { Link, Redirect, useParams } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
 import './teams.css';
@@ -10,14 +11,18 @@ const TeamView = (props) => {
     const [details,setDetails] = useState();
     const [members,setMembers] = useState();
     const [groups,setGroups] = useState();
+    const [showMemberInviteModal, setShowMemberInviteModal] = useState(false);
+    const { value:inviteeUsername, bind:bindInviteeUsername, reset:resetInviteeUsername } = useInput('');
     let teamUsername = useParams().teamUsername;
-    
+    document.title = `Opus | Team - ${teamUsername}`;
+
     useEffect(() => {
         async function fetchDetails() {
             const request = await api.get(
                 urls.teams.fetchDetails(teamUsername)
                 );
             setDetails(request.data);
+            return request;
         }
         async function fetchMembers() {
             const request = await api.get(
@@ -31,6 +36,7 @@ const TeamView = (props) => {
             );
             if (request.data) setGroups(request.data);
         }
+
         try {
             fetchDetails();
             fetchMembers();
@@ -39,27 +45,88 @@ const TeamView = (props) => {
         catch (err) {
             <Redirect to="/404"/>
         }
-    }, [teamUsername]);
-    
+    }, [members]);
 
-    let inviteUserToTeamData = {
-        message: `${AppData.user()} has invited you to join the team ${teamUsername} on Opus`,
-        dateInvited: new Date(),
-        inviteeEmail: "Enter email",
-        clique: teamUsername,
-        inviter: AppData.user(),
-        invitee: "Enter username"
-    }
 
-    const inviteUserToTeamData = () => {
-        await api.post(
-            urls.invitation.invitations(), 
+    async function inviteMember() {
+
+        let user = await api.get(urls.user.fetchByUsername(inviteeUsername));
+        let userData = user.data;
+
+        let team = await api.get(urls.teams.fetchDetails(teamUsername));
+        let teamId = team.data.id;
+
+        userData.cliques.push(teamId);
+        await api.put(
+            urls.user.fetchByUsername(inviteeUsername),
+            userData
         )
+        .then(
+            (response) => {
+                <Redirect to={`/teams/${teamUsername}`}/>
+            }
+        )
+
+
     }
-  
+
+    async function removeMember(member) {
+        let user = await api.get(urls.user.fetchByUsername(member));
+        let userData = user.data;
+        let team = await api.get(urls.teams.fetchDetails(teamUsername));
+        let teamId = team.data.id;
+
+        // Remove the user locally
+        userData.cliques.splice(userData.cliques.indexOf(teamId));
+        
+        // Make a put request
+        await api.put(
+            urls.user.fetchByUsername(member),
+            userData
+        )
+        .then(
+            (response) => {
+                <Redirect to={`/teams/${teamUsername}`}/>
+            }
+        )
+
+    }
+
+    const handleSubmit = (evt) => {
+        evt.preventDefault();
+        // inviteMemberModalPlaceholder.username = inviteeUsername;
+        inviteMember();
+        resetInviteeUsername();
+    }
+
+    let memberInviteModal =
+        <Modal show={showMemberInviteModal} onHide={() => {setShowMemberInviteModal(false)}}>
+            <Modal.Header closeButton>
+                <Modal.Title>Add a Member</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Form onSubmit={handleSubmit}>
+                    <Row>
+                    <Col>
+                        <Form.Group>
+                            <Form.Label>Enter username</Form.Label>
+                            <Form.Control
+                                type="text"
+                                {...bindInviteeUsername}/>
+                        </Form.Group>
+                        <Button type="submit" variant="success" onClick={() => {setShowMemberInviteModal(false)}}>Invite Member</Button>
+                    </Col>
+                    </Row>
+                </Form>
+            </Modal.Body>
+        </Modal>
+
+
+
     return (
             <Container fluid>
                 <Col sm={12} md={{span: 10, offset: 1}}>
+                    {memberInviteModal}
                     <Jumbotron>
                         <Row>
                         <Col md={3} lg={2} className="text-center">
@@ -76,7 +143,9 @@ const TeamView = (props) => {
 
                             <Row>
                                 <Col>
-                                    <Button variant="success"><Icon.FiUserPlus/> Invite Member</Button>
+                                    <Button variant="success" 
+                                        onClick={() => {setShowMemberInviteModal(true)}}>
+                                        <Icon.FiUserPlus/> Add Member</Button>
                                 </Col>
                                 <Col className="text-right">
                                 <div className="d-inline-block mb-1">
@@ -131,7 +200,7 @@ const TeamView = (props) => {
                                                                         </Dropdown.Toggle>
                                                                         <Dropdown.Menu>
                                                                         <Dropdown.Item href="#">Permissions</Dropdown.Item>
-                                                                        <Dropdown.Item href="#">Remove</Dropdown.Item>
+                                                                        <Dropdown.Item onClick={() => {removeMember(item.username)}}>Remove</Dropdown.Item>
                                                                     </Dropdown.Menu>
                                                                 </Dropdown>
                                                             </Col>
