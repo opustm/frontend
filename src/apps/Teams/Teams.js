@@ -15,11 +15,6 @@ let createFormPlaceholderData = {
   relatedCliques: [],
 }
 
-let showInvitationModal = {
-  username: "",
-
-}
-
 const Teams = () => {
   const [teams,setTeams] = useState([0]);
   const [showCreateModal, setShowCreateModal]= useState(false);
@@ -53,7 +48,7 @@ const Teams = () => {
   async function createTeam(){
     
     let response = await api.post(
-      urls.teams.fetchAll(), createFormPlaceholderData
+      urls.teams.fetchAll, createFormPlaceholderData
     )
 
     let user = await api.get(urls.user.fetchByUsername(AppData.user()));
@@ -167,9 +162,9 @@ const Teams = () => {
               <Button variant="primary" 
               onClick={() => {setShowCreateModal(true)}}><Icon.FiUsers/> Create Team</Button>
             </ButtonGroup>
-            <ButtonGroup className='mr-2'>
+            {/* <ButtonGroup className='mr-2'>
               <Button variant="success"><Icon.FiPlus/> Join Team</Button>
-            </ButtonGroup>
+            </ButtonGroup> */}
           </div>
         </Jumbotron>
         <Container className="teams-container">        
