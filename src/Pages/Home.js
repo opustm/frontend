@@ -22,7 +22,7 @@ export default class Home extends Component {
                 for (let announcement of announcementRequest.data) {
                     let now = new Date(Date.now()).toISOString();
                     if (now > announcement.end) {
-                        const deleteRequest = await api.delete(urls.announcement.fetchById(announcement.id));
+                        await api.delete(urls.announcement.fetchById(announcement.id));
                     }
                 }
             }
