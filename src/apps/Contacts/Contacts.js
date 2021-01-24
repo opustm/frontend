@@ -4,8 +4,6 @@ import { Link } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 
-// const API_HOST = APIHost();
-// const axios = require('axios').default;
 
 export default class Contacts extends Component {
     constructor(props) {
