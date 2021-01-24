@@ -135,7 +135,7 @@ export default class Announcements extends Component {
     }
 
     async deleteAnnouncement(announcementToDelete) {
-        const deleteRequest = await api.delete(urls.announcement.fetchById(announcementToDelete.id));
+        await api.delete(urls.announcement.fetchById(announcementToDelete.id));
         let filtered = this.state.userAnnouncements.filter((announcement) => {return announcement !== announcementToDelete;});
         this.setState({userAnnouncements: filtered});
     }
