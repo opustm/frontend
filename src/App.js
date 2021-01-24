@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import './stylesheets/App.css'
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
 // Services
 import AuthService from './services/auth.service';
@@ -12,7 +13,7 @@ import Navigation from './components/Navigation/navigation.component';
 // Pages
 import Login from './Pages/Login';
 import About from './Pages/About';
-import Dashboard from './Pages/Home';
+import Home from './Pages/Home';
 import Error from './Pages/NotFound';
 import Profile from './Pages/Profile';
 
@@ -21,6 +22,7 @@ import Teams from './apps/Teams/Teams';
 import TeamView from './apps/Teams/TeamView';
 import TeamSettings from './apps/Teams/TeamSettings';
 import Calendar from './apps/Calendar/Calendar';
+import Scheduler from './apps/Scheduler/Scheduler';
 import Chat from './apps/Chat/Chat';
 import Contacts from './apps/Contacts/Contacts';
 import Announcements from './apps/Announcements/Announcements';
@@ -66,17 +68,18 @@ export default function App() {
             <Route path="/404" exact component={Error}/>
           {loggedIn ? 
             <div className={sidebarToggled? "page sidebar-toggled":"page"}>
-              <Route path="/" exact component={Dashboard}/>
-              <Route path="/calendar" exact component={Calendar}/>
+              <Route path="/" exact component={() => {return <Home userInfo={userData}/>}}/>
+              <Route path="/calendar/:teamUsername?" exact component={(props) => {return <Calendar {...props} userInfo={userData}/>}}/>
+              <Route path="/scheduler" exact component={Scheduler}/>
               <Route path="/teams" exact component={Teams}/>
               <Route path="/chat" exact component={Chat}/>
               <Route path="/contacts" exact component={() => {return <Contacts userInfo={userData}/>}}/>
-              <Route path="/announcements" exact component={() => {return <Announcements userInfo={userData}/>}}/>
+              <Route path="/announcements/:teamUsername?" exact component={(props) => {return <Announcements {...props} userInfo={userData}/>}}/>
               <Route path="/user/:username" component={(props) => {return <Profile {...props} userInfo={userData} />}}/>
               <Route path="/teams/:teamUsername/settings" exact component={TeamSettings}/>
               <Route path="/teams/:teamUsername" exact component={() => {return <TeamView userInfo={userData}/>}}/>
             </div>
-            : <Redirect to='/login' />
+            : <Redirect to='/about' />
           }
         </Switch>
       </Router>

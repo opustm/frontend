@@ -44,6 +44,7 @@ export default class Profile extends Component {
         email: data.email,
         picture: data.picture,
         phone: data.phone,
+        bio: data.bio,
         profileExists: true,
         showSpinner: false
       });
@@ -60,12 +61,13 @@ export default class Profile extends Component {
   async editUserData() {
     let body = {
       "username": this.state.username,
-      "cliques": [1],
+      "cliques": this.props.userInfo.cliques,
       "phone": this.state.phone,
       "email": this.state.email,
       "first_name": this.state.first_name,
       "last_name": this.state.last_name,
-      "picture": this.state.picture
+      "picture": this.state.picture,
+      "bio": this.state.bio
     }
     try {
       let response = await api.put(urls.user.fetchByUsername(this.state.username), body);
@@ -101,6 +103,10 @@ export default class Profile extends Component {
 
       case 'picture':
         this.setState({picture: e.hex});
+        break;
+
+      case 'bio':
+        this.setState({bio: e.target.value});
         break;
 
       default:
@@ -183,7 +189,10 @@ export default class Profile extends Component {
                     <Form.Label>Email: </Form.Label>
                     <Form.Control value={this.state.email} onChange={(e) => {this.handleUserEdit(e, 'email')}}></Form.Control>
                   </Form.Group>
-                  
+                  <Form.Group>
+                    <Form.Label>Bio: </Form.Label>
+                    <Form.Control value={this.state.bio} onChange={(e) => {this.handleUserEdit(e, 'bio')}}></Form.Control>
+                  </Form.Group>
                   <Container>
                     <Row>
                       <p>Edit Profile Color: </p>
@@ -203,6 +212,7 @@ export default class Profile extends Component {
                 <h5 className="reduceHeaderMargin">Username: {this.state.username}</h5>
                 <h5>Phone: {this.state.phone}</h5>
                 <h5>Email: {this.state.email}</h5>
+                <p>About: {this.state.bio}</p>
               </div>
               }
             </Col>

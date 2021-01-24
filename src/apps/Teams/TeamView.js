@@ -4,6 +4,7 @@ import { useInput } from '../../services/forms.service';
 import { Container, Modal, Card, ListGroup, Dropdown, Button, Row, Col, Jumbotron, Image, Form } from 'react-bootstrap';
 import { Link, Redirect, useParams } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
+import Widget from '../../components/Widget/widget.component';
 import './teams.css';
 
 const TeamView = (props) => {
@@ -12,6 +13,10 @@ const TeamView = (props) => {
     const [groups,setGroups] = useState();
     const [showMemberInviteModal, setShowMemberInviteModal] = useState(false);
     const { value:inviteeUsername, bind:bindInviteeUsername, reset:resetInviteeUsername } = useInput('');
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [aboutToDelete, setAboutToDelete] = useState();
+    const [showCreateModal, setShowCreateModal] = useState(false);
+    const [newGroupName, setNewGroupName] = useState();
     let teamUsername = useParams().teamUsername;
     document.title = `Opus | Team - ${teamUsername}`;
 
@@ -121,9 +126,77 @@ const TeamView = (props) => {
         </Modal>
 
 
+    const confirmDelete = (groupIdToDelete) => {
+        setAboutToDelete(groupIdToDelete);
+        setShowConfirmModal(true);
+    }
 
+    const deleteSubgroup = async (groupIdToDelete) => {
+        await api.delete(urls.teams.fetchById(groupIdToDelete));
+        setShowConfirmModal(false);
+        let newGroups = groups.filter((group) => {
+            return groupIdToDelete !== group.id});
+        setGroups(newGroups);
+    }
+
+    const createSubgroup = async () => {
+        let body = {
+            name: newGroupName,
+            workspace: 'irrelevant',
+            cliqueType: 'sub',
+            picture: 'null.jpeg',
+            displayName: newGroupName,
+            permissions: [],
+            relatedCliques: [details.id]
+        }
+        setShowCreateModal(false);
+        let response = await api.post(urls.teams.fetchAll, body);
+        body['id'] = response.data.id;
+        let newGroups = groups
+        newGroups.push(body);
+        setGroups(newGroups);
+        setNewGroupName('');
+    }
+    
+  
     return (
             <Container fluid>
+                <Modal show={showConfirmModal} onHide={() => {setShowConfirmModal(false)}}>
+                    <Modal.Header>Confirm Delete Subgroup</Modal.Header>
+                    <Modal.Body>
+                        <p>{`Are you sure you want to delete the subgroup "${aboutToDelete}"?`}</p>
+                        <small>(This action cannot be undone)</small>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Container>
+                            <Row>
+                                <Button variant="secondary" onClick={() => {setShowConfirmModal(false)}}>Cancel</Button>
+                                <Button variant="primary" onClick={() => {deleteSubgroup(aboutToDelete)}}>Confirm</Button>
+                            </Row>
+                        </Container>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={showCreateModal} onHide={() => {setShowCreateModal(false)}}>
+                    <Modal.Header>Create New Subgroup</Modal.Header>
+                    <Modal.Body>
+                        <Form>
+                            <Form.Group>
+                                <Form.Label>Name</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={newGroupName}
+                                    onChange={(e) => {setNewGroupName(e.target.value)}}
+                                ></Form.Control>
+                            </Form.Group>
+                        </Form>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => {setShowCreateModal(false)}}>Cancel</Button>
+                        <Button variant="primary" onClick={() => {createSubgroup()}}>Confirm</Button>
+                    </Modal.Footer>
+                </Modal>
+
                 <Col sm={12} md={{span: 10, offset: 1}}>
                     {memberInviteModal}
                     <Jumbotron>
@@ -214,19 +287,44 @@ const TeamView = (props) => {
                                 </Card>
                             </Col>
                             <Col md={4} lg={4} sm={12}>
-                            <Card>
-                                <Card.Header>
-                                    Groups
-                                </Card.Header>
-                                <Card.Body className="text-center">
-                                {groups?        
-                                  <p>This team has {groups.length} group(s).</p>
-                                : <p>The team does not have any groups yet</p>}
-                                </Card.Body>
-                            </Card>
+                                <Card>
+                                    <Card.Header>
+                                        Groups
+                                        <Icon.FiPlus className="addIcon" onClick={() => {setShowCreateModal(true)}}/>
+                                    </Card.Header>
+                                    <Card.Body className="text-center">
+                                    {groups?
+                                    <ListGroup>
+                                        {groups.map((group) => {
+                                            return (
+                                                <ListGroup.Item className="d-flex justify-content-start">
+                                                    <p>{group.name}</p>
+                                                    <Dropdown>
+                                                        <Dropdown.Toggle variant="small">
+                                                            <Icon.FiSettings/>
+                                                            </Dropdown.Toggle>
+                                                            <Dropdown.Menu>
+                                                            <Dropdown.Item onClick={() => {confirmDelete(group.id)}}>Remove</Dropdown.Item>
+                                                        </Dropdown.Menu>
+                                                    </Dropdown>
+                                                </ListGroup.Item>  
+                                            ) 
+                                        })}
+                                    </ListGroup>
+                                    : <p>The team does not have any groups yet</p>}
+                                    </Card.Body>
+                                </Card>
                             </Col>
                         </Row>
                     </Container>
+                    <Row style={{'marginTop': '15px'}}>
+                        <Col>
+                            <Widget appTitle='calendar' userInfo={props.userInfo} teamFilter={teamUsername}></Widget>
+                        </Col>
+                        <Col>
+                            <Widget appTitle='announcements' userInfo={props.userInfo} teamFilter={teamUsername}></Widget>
+                        </Col>
+                    </Row>
                 </Col>
             </Container>
         )
