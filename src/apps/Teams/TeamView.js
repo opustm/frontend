@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
-import { AppData } from  '../../services/data.service';
 import { useInput } from '../../services/forms.service';
 import { Container, Modal, Card, ListGroup, Dropdown, Button, Row, Col, Jumbotron, Image, Form } from 'react-bootstrap';
 import { Link, Redirect, useParams } from 'react-router-dom';
