@@ -41,10 +41,15 @@ export default class Announcements extends Component {
             priorityFilter: 0,
             priorityDict: {
                 0: ['All'],
-                1: ['High', 'table-danger', '#e74c3c'],
-                2: ['Medium', 'table-warning', '#f39c12'],
-                3: ['Low', 'table-success', '#18bc9c']
+                1: ['High', '#e74c3c'],
+                2: ['Medium', '#f39c12'],
+                3: ['Low', '#18bc9c']
             },
+            styleDict: {
+                'High': 'table-danger',
+                'Medium': 'table-warning',
+                'Low': 'table-success'
+            }
         }
     }
 
@@ -306,7 +311,7 @@ export default class Announcements extends Component {
                                 let lis = this.state.priorityDict[key];
                                 return (
                                     <Row key={key}>
-                                        <Icon.FiSquare style={{'fill': lis[2], 'color': lis[2]}}/>
+                                        <Icon.FiSquare style={{'fill': lis[1], 'color': lis[1]}}/>
                                         {lis[0]}
                                     </Row>
                                 )
@@ -354,9 +359,7 @@ export default class Announcements extends Component {
                     </Col>
                 </Row>
                 </Jumbotron>
-
-
-                <BootstrapTable keyField='id' data={ this.state.displayedAnnouncements } columns={ columns }/>
+                <BootstrapTable keyField='id' data={ this.state.displayedAnnouncements } columns={ columns } rowClasses={(row) => {return this.state.styleDict[row.priority]} }/>
             </Container>
         )
     }
