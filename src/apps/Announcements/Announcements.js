@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Button, Modal, Form, FormControl, Toast, Alert } from 'react-bootstrap';
+import { Container, Jumbotron, Row, Col, Button, Modal, Form, FormControl, Toast, Alert } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 import * as Icon from 'react-icons/fi';
@@ -283,11 +283,16 @@ export default class Announcements extends Component {
                     </Modal.Body>
                 </Modal>
 
-                <Row>
-                    <Col>
-                        <h1>Announcements</h1>
-                    </Col>
-                </Row>
+
+                <Jumbotron>
+                    <Row>
+                        <Col>
+                            <h1>Announcements</h1>
+                            <p>
+                                View or modify your announcements. Make announcements to your team or groups.
+                            </p>
+                        </Col>
+                    </Row>
                 <Row>
                     <Col>
                         <Button style={{'marginTop': '10px', 'marginBottom': '10px'}} onClick={() => {this.setState({showCreateModal: true})}}><Icon.FiPlusCircle style={{'marginTop' : '-3px'}} /> Create Announcement</Button>
@@ -348,6 +353,9 @@ export default class Announcements extends Component {
                         </Row>
                     </Col>
                 </Row>
+                </Jumbotron>
+
+
                 <BootstrapTable keyField='id' data={ this.state.displayedAnnouncements } columns={ columns }/>
             </Container>
         )

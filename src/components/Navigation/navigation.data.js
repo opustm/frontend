@@ -21,12 +21,12 @@ export const SidebarApps = [
         icon: <Icon.FiTarget/>,
         cName:'nav-text'
     },
-    {
-        title: 'Chat',
-        path:'/chat',
-        icon: <Icon.FiMessageSquare/>,
-        cName:'nav-text'
-    },
+    // {
+    //     title: 'Chat',
+    //     path:'/chat',
+    //     icon: <Icon.FiMessageSquare/>,
+    //     cName:'nav-text'
+    // },
     {
         title: 'Contacts',
         path:'/contacts',

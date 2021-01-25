@@ -137,7 +137,7 @@ export default class Login extends Component {
     return (
       <Container fluid>
         <Row className='loginRow'>
-          <Col id='leftLogin'>
+          <Col id='leftLogin' className="colorful">
             <Container>
               <Col lg={{offset: 3}} style={{marginTop: '16%'}}>
                 {descriptions.pages.Login.iconMessages.map((messageData, idx) => {
