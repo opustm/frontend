@@ -150,8 +150,6 @@ const Teams = () => {
 
   return (
     <Container fluid>
-      <Col sm={12} md={{span: 10, offset: 1}}>
-        {createTeamModal}
         <Jumbotron>
           <h1>Teams</h1>
           <p>
@@ -167,6 +165,9 @@ const Teams = () => {
             </ButtonGroup> */}
           </div>
         </Jumbotron>
+      <Col sm={12} md={{span: 10, offset: 1}}>
+        {createTeamModal}
+
         <Container className="teams-container">        
         {teams[0]? 
             teamsView: <div className="text-center"><Spinner animation="border" role="status"/></div>}
