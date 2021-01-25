@@ -137,7 +137,7 @@ export default class Login extends Component {
     return (
       <Container fluid>
         <Row className='loginRow'>
-          <Col id='leftLogin'>
+          <Col id='leftLogin' className="colorful">
             <Container>
               <Col lg={{offset: 3}} style={{marginTop: '16%'}}>
                 {descriptions.pages.Login.iconMessages.map((messageData, idx) => {
@@ -148,7 +148,7 @@ export default class Login extends Component {
           </Col>
           <Col id='rightLogin'>
             <Col lg={{span: 9, offset: 1}}>
-              <h1 className='vertShift'>Opus Team</h1>
+              <h1 className='vertShift'>Opus Team Management</h1>
               <br/>
               <Form>
                 <Form.Group>
