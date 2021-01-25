@@ -5,12 +5,13 @@ import * as Icon from 'react-icons/fi';
 
 export default function About(props) {
     return (
-        <div style={{height: '90%'}}>
-            <div className="navbar">
-                <Link to="#" className="nav-text nav-title" style={{marginLeft: '45%'}}>
-                    Opus Team
-                </Link>
-            </div>
+        ""
+    )
+    
+}
+
+
+        {/* <div style={{height: '90%'}}>
             <Container fluid>
                 <Row style={{height: '100%'}}>
                     <Col style={{backgroundColor: '#00CFAA', height: '100%'}}>
@@ -73,8 +74,4 @@ export default function About(props) {
                     </Col>
                 </Row>
             </Container>
-        </div>
-        
-    )
-    
-}
+        </div> */}
