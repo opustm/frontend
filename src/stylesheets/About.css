@@ -7,7 +7,7 @@
   
   /* Thin out the marketing headings */
   .featurette-heading {
-    font-weight: 300;
+    /* font-weight: 300; */
     line-height: 1;
     letter-spacing: -.05rem;
   }
@@ -36,23 +36,9 @@
   }
 
 
-.colorful {
+.white-text {
     width: 100%;
     height: 100%;
-    background: linear-gradient(-45deg, #40da92, #4f7fc7, #23d5a8, #127ebd);
-    background-size: 400% 400%;
-    animation: gradient 30 ease infinite;
     color: #ffffff;
 }
 
-@keyframes gradient {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
