@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Button, Modal, Form, Alert } from 'react-bootstrap';
+import { Container, Jumbotron, Row, Col, Button, Modal, Form, Alert } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 import * as Icon from 'react-icons/fi';
@@ -243,11 +243,13 @@ export default class Calendar extends Component{
     render(){
         return(
             <Container fluid>
+                <Jumbotron>                    
                 <Modal show={this.state.showCreateModal} onHide={() => {this.setState({showCreateModal: false})}}>
                     <Modal.Header>
                         <Modal.Title>
                             Create an event
                         </Modal.Title>
+
                     </Modal.Header>
                     <small style={{'paddingLeft': '10px', 'paddingTop': '10px'}}>* indicates required field</small>
                     <Modal.Body>
@@ -309,6 +311,9 @@ export default class Calendar extends Component{
                 <Row>
                     <Col>
                         <h1>Calendar</h1>
+                        <p>
+                            You have 15 events total in January.
+                        </p>
                     </Col>
                 </Row>
                 <Row>
@@ -328,6 +333,7 @@ export default class Calendar extends Component{
                         </Row>
                     </Col>
                 </Row>
+                </Jumbotron>
                 <BootstrapTable keyField='id' data={ this.state.displayedEvents } columns={ columns } />
             </Container>
         )
