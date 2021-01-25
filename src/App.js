@@ -30,7 +30,7 @@ import Announcements from './apps/Announcements/Announcements';
 // Main Application
 export default function App() {
   let authService = new AuthService();
-  let [loggedIn, setLoggedIn] = useState(() => AppData.user() && AppData.token());
+  let [loggedIn, setLoggedIn] = useState(false);
   let [sidebarToggled,setSidebar] = useState(true)
   let [userData, setUserData] = useState({noUser: 'notLoggedIn'});
   
