@@ -3,11 +3,30 @@ html, body, #root, .container-fluid, .loginRow {
 }
 
 #leftLogin {
-  background-image: url("https://images.unsplash.com/photo-1594878462445-84cdf4a789d8?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1334&q=80");
-  /* background-image: url("https://source.unsplash.com/collection/162468/700x900"); */
-  animation-duration: 800ms;
-  background-color: #000000;
-  color: #FFFFFF;
+  color: #ffffff;
+}
+
+
+
+.colorful {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(-45deg, #40da92, #4f7fc7, #23d5a8, #127ebd);
+  background-size: 400% 400%;
+  animation: gradient 50 ease infinite;
+  color: #ffffff;
+}
+
+@keyframes gradient {
+  0% {
+      background-position: 0% 50%;
+  }
+  50% {
+      background-position: 100% 50%;
+  }
+  100% {
+      background-position: 0% 50%;
+  }
 }
 
 .vertShift {
