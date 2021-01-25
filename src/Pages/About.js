@@ -78,9 +78,10 @@ export default function About(props) {
         </div>
       </div>
 
+        <Container>
       <hr className="featurette-divider" />
 
-      <div className="row featurette">
+        <div className="row featurette">
         <div className="col-md-7">
           <h2 className="featurette-heading">
             Why we built this.{" "}
@@ -123,8 +124,10 @@ export default function About(props) {
       </div>
 
       <hr className="featurette-divider" />
+        </Container>
 
-      <div className="row">
+        <Container>
+        <div className="row">
         {descriptions.pages.About.developers.map((dev) => {
           return (
             <div className="col-md-4">
@@ -140,8 +143,10 @@ export default function About(props) {
           );
         })}
       </div>
-      <hr className="featurette-divider" />
 
+        </Container>
+      <hr className="featurette-divider" />
+      
       <footer className="container py-5">
         <div className="row">
           <div className="col-12 col-md">
