@@ -1,4 +1,5 @@
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
+import { getContacts } from '../../services/contacts.service';
 import * as Icon from 'react-icons/fi';
 
 export async function widgetDetails(widgetType, userInfo, teamFilter) {
@@ -76,6 +77,8 @@ async function getData(userInfo, type, teamFilter) {
           teamName = teamNameRequest.data.name;
           let calendarRequest = await api.get(urls.event.fetchByTeam(teamName));
           data = data.concat(calendarRequest.data);
+          let userEventRequest = await api.get(urls.event.fetchByUsername(userInfo.username));
+          data = data.concat(userEventRequest.data);
         }
       }
       break;
@@ -86,11 +89,7 @@ async function getData(userInfo, type, teamFilter) {
         data = data.concat(contactsRequest.data);
       }
       else {
-        for (let teamId of userTeams) {
-          let contactsRequest = await api.get(urls.teams.fetchMembersById(teamId));
-          let filteredContacts = contactsRequest.data.filter((contact) => {return contact.id !== userInfo.id;});
-          data = data.concat(filteredContacts);
-        }
+          data = await getContacts(userInfo);
       }
       break;
 

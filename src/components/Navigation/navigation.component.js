@@ -46,7 +46,7 @@ function Navigation(props){
             </nav>
             </IconContext.Provider>
             <IconContext.Provider value={{"color":"#FFFFFF"}}>
-            <div className="navbar">
+            <div className="navbar site-header sticky-top py-1">
                 <Link to="#" className="menu-bars">
                     <Icon.FiMenu onClick={showSidebar}/>
                 </Link>
@@ -55,7 +55,7 @@ function Navigation(props){
                 </Link>
                 <Dropdown>
                     <DropdownToggle variant="outline-secondary">
-                        <Icon.FiUser id='profileMenuIcon' size={25} color={props.userInfo.picture}></Icon.FiUser>
+                        <Icon.FiUser id='profileMenuIcon' size={25} color='white'></Icon.FiUser>
                     </DropdownToggle>
                     <DropdownMenu>
                         <Link className='dropdown-item' to={props ? `/user/${props.userInfo.username}` : ''}>
@@ -66,7 +66,7 @@ function Navigation(props){
                                 localStorage.removeItem('token');
                                 props.onLoggedInChange(false);
                             }}
-                            href='/login'
+                            href='/'
                         >
                             <Icon.FiLogOut color='#7b8a8b' className='dropdownIcon'/>
                             Logout

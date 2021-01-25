@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import './stylesheets/App.css'
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
 // Services
 import AuthService from './services/auth.service';
+import { AppData } from './services/data.service';
 
 // Components
 import Navigation from './components/Navigation/navigation.component';
@@ -25,6 +27,7 @@ import Chat from './apps/Chat/Chat';
 import Contacts from './apps/Contacts/Contacts';
 import Announcements from './apps/Announcements/Announcements';
 
+// Main Application
 export default function App() {
   let authService = new AuthService();
   let [loggedIn, setLoggedIn] = useState(false);
@@ -48,6 +51,7 @@ export default function App() {
   }
 
     return (
+      // React Dynamic Routing
       <Router>
         {loggedIn ? 
           <Navigation 
@@ -75,7 +79,7 @@ export default function App() {
               <Route path="/teams/:teamUsername/settings" exact component={TeamSettings}/>
               <Route path="/teams/:teamUsername" exact component={() => {return <TeamView userInfo={userData}/>}}/>
             </div>
-            : <Redirect to='/login' />
+            : <Redirect to='/about' />
           }
         </Switch>
       </Router>

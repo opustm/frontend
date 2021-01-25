@@ -1,8 +1,8 @@
 import axios from "axios";
 
-// Change APIHost based on whether API Server is remote or local
+// Change API Url based on whether API Server is remote or local
 // Configure API interaction preferences
-const API_CONFIG = {
+export const API_CONFIG = {
     useLocal : false, // Change this to true to use API locally
     urlRemote : "https://opustm-api.herokuapp.com/",
     urlLocal : 'http://localhost:8000/',
@@ -27,14 +27,19 @@ export const API_ENDPOINTS = {
         fetchMembers : (name) => `/cliqueMembers/${name}/`,
         fetchMembersById: (id) => `/cliqueidMembers/${id}/`,
         fetchByUsername: (username) => `/userCliques/${username}/`,
-        fetchRelatedTeams: (teamName) => `/relatedCliques/${teamName}/`
+        fetchRelatedTeams: (teamName) => `/relatedCliques/${teamName}/`,
     },
     user : {
+        fetchAll: `/users/`,
         fetchByUsername: (username) => `userDetails/${username}/`,
-        fetchById: (id) => `/users/${id}/`
+        fetchById: (id) => `/users/${id}/`,
     },
-    invitation : {},
-    request : {},
+    invitation : {
+        invitations : () => `/invitations/`,
+    },
+    request : {
+        requests : () => `/requests/`,
+    },
     event : {
         fetchAll: `/events/`,
         fetchById : (id) => `/events/${id}/`,
@@ -45,11 +50,14 @@ export const API_ENDPOINTS = {
     announcement : {
         fetchAll : `/announcements/`,
         fetchByTeam : (teamName) => `/cliqueAnnouncements/${teamName}/`,
-        fetchById: (announcementId) => `/announcements/${announcementId}/`
+        fetchById: (announcementId) => `/announcements/${announcementId}/`,
     },
     message : {},
     todo : {},
 }
 
 // Legacy: Do not use. Instead, use API_CONFIG.baseURL
-export default function APIHost() {return API_CONFIG.baseURL()};
+export default function APIHost() {
+    console.warn("Function APIHost is depreciated due to inconsistency. Use API_CONFIG.baseURL instead")
+    return API_CONFIG.baseURL()
+};
