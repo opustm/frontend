@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Jumbotron } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
@@ -94,7 +94,10 @@ export default class Contacts extends Component {
         return (
             this.props.userInfo.username ?
             <Container fluid>
+                <Jumbotron>
                 <h1>Contacts</h1>
+                <p>You have <a href="#">3 messages</a> from Winston Churchill.</p>
+                </Jumbotron>
                 <BootstrapTable keyField='id' data={ this.state.contactObjects } columns={ columns } className='contactsTable' />
             </Container> :
             <h4>Log in to view your contacts</h4>
