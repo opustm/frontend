@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import BIRDS from "vanta/dist/vanta.birds.min";
 import { Container, Button, Nav, Row } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import { descriptions } from "../services/description.service";
 import * as Icon from "react-icons/fi";
 import * as THREE from 'three';
@@ -50,7 +49,7 @@ export default function About(props) {
 
       <Nav className="justify-content-between site-header sticky-top py-1">
       <a class="py-2" href="https://opustm.herokuapp.com">
-          <img width="36" height="36" src="https://opustm.github.io/docs/images/logo64.png" class="d-block mx-auto"/>
+      <img width="36" height="36" alt="Opus Logo" src="https://opustm.github.io/docs/images/logo64.png" class="d-block mx-auto"/>
         </a>
         <Nav.Item>
         <Row>
@@ -81,6 +80,8 @@ export default function About(props) {
 
       <hr className="featurette-divider" />
 
+
+      <Container>
       <div className="row featurette">
         <div className="col-md-7">
           <h2 className="featurette-heading">
@@ -100,6 +101,7 @@ export default function About(props) {
         </div>
       </div>
 
+      </Container>
       <div className="row featurette">
         <div className="col-md-7 order-md-2">
           <h2 className="featurette-heading">
@@ -123,8 +125,9 @@ export default function About(props) {
         </div>
       </div>
 
-      <hr className="featurette-divider" />
 
+      <hr className="featurette-divider" />
+      <Container>
       <div className="row">
         {descriptions.pages.About.developers.map((dev) => {
           return (
@@ -142,6 +145,7 @@ export default function About(props) {
         })}
       </div>
       <hr className="featurette-divider" />
+      </Container>
 
       <footer className="container py-5">
         <div className="row">

@@ -66,7 +66,7 @@ function Navigation(props){
                                 localStorage.removeItem('token');
                                 props.onLoggedInChange(false);
                             }}
-                            href='/login'
+                            href='/'
                         >
                             <Icon.FiLogOut color='#7b8a8b' className='dropdownIcon'/>
                             Logout

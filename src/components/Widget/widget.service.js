@@ -77,6 +77,8 @@ async function getData(userInfo, type, teamFilter) {
           teamName = teamNameRequest.data.name;
           let calendarRequest = await api.get(urls.event.fetchByTeam(teamName));
           data = data.concat(calendarRequest.data);
+          let userEventRequest = await api.get(urls.event.fetchByUsername(userInfo.username));
+          data = data.concat(userEventRequest.data);
         }
       }
       break;
