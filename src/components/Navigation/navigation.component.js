@@ -46,7 +46,7 @@ function Navigation(props){
             </nav>
             </IconContext.Provider>
             <IconContext.Provider value={{"color":"#FFFFFF"}}>
-            <div className="navbar">
+            <div className="navbar site-header sticky-top py-1">
                 <Link to="#" className="menu-bars">
                     <Icon.FiMenu onClick={showSidebar}/>
                 </Link>
