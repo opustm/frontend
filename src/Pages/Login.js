@@ -148,7 +148,7 @@ export default class Login extends Component {
           </Col>
           <Col id='rightLogin'>
             <Col lg={{span: 9, offset: 1}}>
-              <h1 className='vertShift'>Opus Team Management</h1>
+              <h1 className='vertShift'>Opus Team</h1>
               <br/>
               <Form>
                 <Form.Group>
