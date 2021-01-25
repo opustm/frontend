@@ -19,7 +19,7 @@ export const descriptions = {
             body: `Opus was designed by Swopnil Shrestha, Josh Van Sant, and David Will to satisfy the requirements for the Luther College Computer Science Senior Project (CS 490/491). 
             We designed Opus as a lightweight, versatile workforce management platform for small teams, in order to include features from other platforms that we liked,
             while eliminating those that we felt were unnecessary.
-            Once you create an account, you'll be able to do all of the following, and more:`,
+            Once you create an account, you'll be able to do all of the following, and more.`,
             featureList: [
                 'Join an existing team, or create your own',
                 'Invite new users to your team',
@@ -31,20 +31,20 @@ export const descriptions = {
             developers: [
                 [
                     'Swopnil Shrestha',
-                    'lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
+                    'Founder, Engineer',
                     'https://www.linkedin.com/in/swopnilnep/',
                     'https://github.com/swopnilnep'
                 ],
 
                 [
                     'Josh Van Sant',
-                    'lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
+                    'Founder, Engineer',
                     'https://www.linkedin.com/in/joshua-van-sant-14a403149/',
                     'https://github.com/jvansant'
                 ],
                 [
                     'David Will',
-                    'lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
+                    'Founder, Engineer',
                     'https://www.linkedin.com/in/davidwill523/',
                     'https://github.com/willda07'
                 ]
