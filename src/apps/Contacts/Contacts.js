@@ -96,7 +96,7 @@ export default class Contacts extends Component {
             <Container fluid>
                 <Jumbotron>
                 <h1>Contacts</h1>
-                <p>You have <a href="#">3 messages</a> from Winston Churchill.</p>
+                <p>You have <a href="https://google.com">3 messages</a> from Winston Churchill.</p>
                 </Jumbotron>
                 <BootstrapTable keyField='id' data={ this.state.contactObjects } columns={ columns } className='contactsTable' />
             </Container> :
