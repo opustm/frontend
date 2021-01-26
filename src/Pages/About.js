@@ -49,7 +49,7 @@ export default function About(props) {
 
       <Nav className="justify-content-between site-header sticky-top py-1">
       <a class="py-2" href="https://opustm.herokuapp.com">
-          <img width="36" height="36" alt="Opus Logo" src="https://opustm.github.io/docs/images/logo64.png" class="d-block mx-auto"/>
+      <img width="36" height="36" alt="Opus Logo" src="https://opustm.github.io/docs/images/logo64.png" class="d-block mx-auto"/>
         </a>
         <Nav.Item>
         <Row>
@@ -81,7 +81,9 @@ export default function About(props) {
         <Container>
       <hr className="featurette-divider" />
 
-        <div className="row featurette">
+
+      <Container>
+      <div className="row featurette">
         <div className="col-md-7">
           <h2 className="featurette-heading">
             Why we built this.{" "}
@@ -100,6 +102,7 @@ export default function About(props) {
         </div>
       </div>
 
+      </Container>
       <div className="row featurette">
         <div className="col-md-7 order-md-2">
           <h2 className="featurette-heading">
@@ -123,11 +126,10 @@ export default function About(props) {
         </div>
       </div>
 
-      <hr className="featurette-divider" />
-        </Container>
 
-        <Container>
-        <div className="row">
+      <hr className="featurette-divider" />
+      <Container>
+      <div className="row">
         {descriptions.pages.About.developers.map((dev) => {
           return (
             <div className="col-md-4">
@@ -143,6 +145,8 @@ export default function About(props) {
           );
         })}
       </div>
+      <hr className="featurette-divider" />
+      </Container>
 
         </Container>
       <hr className="featurette-divider" />

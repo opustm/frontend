@@ -5,7 +5,7 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
 // Services
 import AuthService from './services/auth.service';
-import { AppData } from './services/data.service';
+// import { AppData } from './services/data.service';
 
 // Components
 import Navigation from './components/Navigation/navigation.component';

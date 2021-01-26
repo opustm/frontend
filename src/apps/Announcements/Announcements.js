@@ -359,6 +359,8 @@ export default class Announcements extends Component {
                     </Col>
                 </Row>
                 </Jumbotron>
+
+
                 <BootstrapTable keyField='id' data={ this.state.displayedAnnouncements } columns={ columns } rowClasses={(row) => {return this.state.styleDict[row.priority]} }/>
             </Container>
         )
