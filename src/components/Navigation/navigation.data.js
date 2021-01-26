@@ -73,14 +73,14 @@ export const SidebarTeams = [
     {
         title:'Photography-Club',
         path:'#',
-        photo: 'https://via.placeholder.com/40/2F80ED?text=PC',
+        photo: 'https://via.placeholder.com/40/D9740F?text=PC',
         cName:'nav-text team',
         groups:['Biology','Physics']
     },
     {
         title:'Math-Study-Group',
         path:'#',
-        photo: 'https://via.placeholder.com/40/2F80ED?text=M',
+        photo: 'https://via.placeholder.com/40/D62741?text=M',
         cName:'nav-text team',
         groups:['Biology','Physics']
     },
