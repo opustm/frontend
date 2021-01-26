@@ -43,23 +43,51 @@ export const SidebarApps = [
 
 export const SidebarTeams = [
     {
-        title:'Dunder Mifflin',
+        title:'Senior Project',
         path:'#',
         photo: 'https://via.placeholder.com/40/F2C94C?text=D',
         cName:'nav-text team',
         groups:['Comedy','Drama']
     },
     {
-        title:'Pied Piper',
+        title:'LutherCS',
         path:'#',
         photo: 'https://via.placeholder.com/40/6FCF97?text=M',
         cName:'nav-text team',
         groups: ['Sales','Marketing','Food']
     },
     {
-        title:'Luther College',
+        title:'LutherBands',
         path:'#',
         photo: 'https://via.placeholder.com/40/2F80ED?text=L',
+        cName:'nav-text team',
+        groups:['Biology','Physics']
+    },
+    {
+        title:'Track-Team',
+        path:'#',
+        photo: 'https://via.placeholder.com/40/2F80ED?text=T',
+        cName:'nav-text team',
+        groups:['Biology','Physics']
+    },
+    {
+        title:'Photography-Club',
+        path:'#',
+        photo: 'https://via.placeholder.com/40/2F80ED?text=PC',
+        cName:'nav-text team',
+        groups:['Biology','Physics']
+    },
+    {
+        title:'Math-Study-Group',
+        path:'#',
+        photo: 'https://via.placeholder.com/40/2F80ED?text=M',
+        cName:'nav-text team',
+        groups:['Biology','Physics']
+    },
+    {
+        title:'Prarie Houses',
+        path:'#',
+        photo: 'https://via.placeholder.com/40/2F80ED?text=PH',
         cName:'nav-text team',
         groups:['Biology','Physics']
     },
