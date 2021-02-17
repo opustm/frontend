@@ -59,6 +59,7 @@ export default class Profile extends Component {
   }
 
   async editUserData() {
+    // Remove cliques since we removed it from the backend
     let body = {
       "username": this.state.username,
       "cliques": this.props.userInfo.cliques,

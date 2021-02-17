@@ -67,7 +67,8 @@ const Teams = () => {
     let user = await api.get(urls.user.fetchByUsername(AppData.user()));
     let userData = user.data;
     let teamId = response.data.id;
-
+    // userData won't have a cliques property after API refactor. Won't need to update user data when they join a new team
+    // We will have to update the team itself though, and add the user to it.
     userData.cliques.push(teamId);
     await api
       .put(urls.user.fetchByUsername(AppData.user()), userData)

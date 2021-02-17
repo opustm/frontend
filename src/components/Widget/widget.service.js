@@ -46,6 +46,7 @@ export async function widgetDetails(widgetType, userInfo, teamFilter) {
 }
 
 async function getData(userInfo, type, teamFilter) {
+  // Query /users/<username>/teams/ instead of the loops here
   let userTeams = userInfo.cliques;
   let data = [];
   let teamNameRequest;
@@ -89,6 +90,7 @@ async function getData(userInfo, type, teamFilter) {
         data = data.concat(contactsRequest.data);
       }
       else {
+          // Query /users/<username>/contacts/ instead
           data = await getContacts(userInfo);
       }
       break;
@@ -109,6 +111,7 @@ async function getData(userInfo, type, teamFilter) {
   for (let item of truncatedData) {
     switch(type){
       case 'announcements':
+        // Will need to update this to use the creator's username
         let creatorReq = await api.get(urls.user.fetchById(item.creator));
         let creatorName = `${creatorReq.data.first_name} ${creatorReq.data.last_name}`
         displayData.push(`From user ${creatorName}: '${item.announcement}'`);

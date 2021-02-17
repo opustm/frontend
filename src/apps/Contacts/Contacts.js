@@ -39,6 +39,7 @@ export default class Contacts extends Component {
   }
 
   async getUserContacts() {
+    // Change this to use /users/<username>/contacts/
     let contacts = await getContacts(this.props.userInfo);
     let contactObjects = [];
     contacts.forEach((contact) => {
@@ -74,6 +75,7 @@ export default class Contacts extends Component {
 
   async createTeamDict() {
     let dict = {};
+    // Won't have 'cliques' prop in userInfo now. If we still need the teamDict we can make it at the top level?
     let cliqueIds = this.props.userInfo.cliques;
     for (let cliqueId of cliqueIds) {
       let response = await api.get(urls.teams.fetchById(cliqueId));
@@ -84,6 +86,7 @@ export default class Contacts extends Component {
   }
 
   checkSharedTeams(singleContact) {
+    // Should be able to just check if singleContact is in object returned by /users/<username>/contacts/
     let toReturn = "";
     for (let id of singleContact.cliques) {
       if (id in this.state.teamDict) {

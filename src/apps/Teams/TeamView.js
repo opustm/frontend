@@ -59,7 +59,7 @@ const TeamView = (props) => {
 
         let team = await api.get(urls.teams.fetchDetails(teamUsername));
         let teamId = team.data.id;
-
+        // Need to update the team now, not the user
         userData.cliques.push(teamId);
         await api.put(
             urls.user.fetchByUsername(inviteeUsername),
@@ -81,8 +81,10 @@ const TeamView = (props) => {
         let teamId = team.data.id;
 
         // Remove the user locally
+        // We'll have to rework this
         userData.cliques.splice(userData.cliques.indexOf(teamId));
         
+        // Need to update the team now, not the user
         // Make a put request
         await api.put(
             urls.user.fetchByUsername(member),

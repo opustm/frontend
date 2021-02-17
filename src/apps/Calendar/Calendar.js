@@ -50,13 +50,14 @@ export default class Calendar extends Component{
     }
 
     async fetchData(){
-        //Fetching team data is unecessary if events can be filtered by teamid instead of teamname in API
+        // Remove next line
         let teamIds = this.props.userInfo.cliques;       
         let teams = [];
         let membersDict = {};
         let allMembers = [];
         let newIdDict = {};
         let ids = new Set();
+        // Call should be to /users/<username>/teams/ now
         for (let id of teamIds) {
             const request = await api.get(urls.teams.fetchById(id));
             teams.push(request.data);

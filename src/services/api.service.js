@@ -31,8 +31,12 @@ export const API_ENDPOINTS = {
     },
     user : {
         fetchAll: `/users/`,
-        fetchByUsername: (username) => `userDetails/${username}/`,
+        fetchByUsername: (username) => `users/${username}/`,
+        // Remove fetchById
         fetchById: (id) => `/users/${id}/`,
+        fetchTeams: (username) => `/users/${username}/teams/`,
+        fetchContacts: (username) => `/users/${username}/contacts/`,
+        fetchSchedule: (username) => `/users/${username}/schedule/`
     },
     invitation : {
         invitations : () => `/invitations/`,

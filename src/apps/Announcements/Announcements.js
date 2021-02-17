@@ -60,6 +60,7 @@ export default class Announcements extends Component {
     }
 
     async fetchData() {
+        // Remove next line: new API will return team objects
         let teamIds = this.props.userInfo.cliques;
         let teams = [];
         let newTeamDict = {};
@@ -67,6 +68,7 @@ export default class Announcements extends Component {
         let events = [];
         let idToEvent = {};
 
+        // Call should be to /users/<username>/teams/ now
         for (let id of teamIds) {
             const request = await api.get(urls.teams.fetchById(id));
             teams.push(request.data);
@@ -101,6 +103,7 @@ export default class Announcements extends Component {
             announcements = announcements.concat(request.data);
             for (let a of request.data) {
                 if (!creatorIdToName.hasOwnProperty(a.creator)) {
+                    // Will need to update call here to use usernames
                     const creatorRequest = await api.get(urls.user.fetchById(a.creator));
                     creatorIdToName[a.creator] = [`${creatorRequest.data.first_name} ${creatorRequest.data.last_name}`, creatorRequest.data.username];
                 }

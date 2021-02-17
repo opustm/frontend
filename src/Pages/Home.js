@@ -15,6 +15,7 @@ export default class Home extends Component {
     componentDidMount() {
         let t = this;
         async function checkExpired() {
+            // Redo this so that it uses the /announcements/<username>/ route
             for (let id of t.props.userInfo.cliques) {
                 let request = await api.get(urls.teams.fetchById(id));
                 let teamName = request.data.name;

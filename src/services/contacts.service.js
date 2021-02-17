@@ -1,5 +1,6 @@
 import { Axios as api, API_ENDPOINTS as urls } from './api.service';
 
+// This whole file is unnecessary now that we can get the contacts at /users/<username>/contacts/
 export async function getContacts(userInfo) {
   let contacts = [];
   let seen = new Set();
