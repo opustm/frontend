@@ -16,10 +16,10 @@ export default class Home extends Component {
         let t = this;
         async function checkExpired() {
             // Redo this so that it uses the /announcements/<username>/ route
-            for (let id of t.props.userInfo.cliques) {
-                let request = await api.get(urls.teams.fetchById(id));
-                let teamName = request.data.name;
-                let announcementRequest = await api.get(urls.announcement.fetchByTeam(teamName));
+            let request = await api.get(urls.user.fetchTeams(t.props.userInfo.username));
+            let teams = request.data;
+            for (let team of teams) {
+                let announcementRequest = await api.get(urls.announcement.fetchByTeam(team.name));
                 for (let announcement of announcementRequest.data) {
                     let now = new Date(Date.now()).toISOString();
                     if (now > announcement.end) {

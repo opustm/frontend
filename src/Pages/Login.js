@@ -21,10 +21,9 @@ export default class Login extends Component {
       last_name: '',
       phone: '',
       password: '',
-      bio: '',
+      bio: "This user hasn't created a bio yet.",
       picture: '#000000',
       theme: 'light',
-      cliques: [],
       signupError: false,
       signupErrorMessages: [],
       allUsernames: new Set(),
@@ -36,7 +35,7 @@ export default class Login extends Component {
   componentDidMount() {
     let t = this;
     async function getUsernames() {
-      let request = await api.get(urls.user.fetchAll);
+      let request = await api.get(urls.user.fetchAll());
       let usernames = new Set();
       request.data.forEach((user) => {
         usernames.add(user.username);
@@ -77,10 +76,21 @@ export default class Login extends Component {
     } 
   }
 
-  async handleSignup(e, data) {
+  async handleSignup(e) {
     if (this.dataIsValid()) {
       this.handleClose();
       e.preventDefault();
+      let data = {
+        username: this.state.username,
+        password: this.state.password,
+        first_name: this.state.first_name,
+        last_name: this.state.last_name,
+        bio: this.state.bio,
+        picture: this.state.picture,
+        theme: this.state.theme,
+        phone: this.state.phone,
+        email: this.state.email
+      }
       let state = await this.state.authService.signup(data);
       this.setState(state, () => {this.handleLogin(e, data)});
     }
@@ -305,7 +315,7 @@ export default class Login extends Component {
             <Button variant="secondary" onClick={this.handleClose}>
               Cancel
             </Button>
-            <Button variant="primary" onClick={e => this.handleSignup(e, this.state)}>
+            <Button variant="primary" onClick={e => this.handleSignup(e)}>
               Create Account
             </Button>
           </Modal.Footer>

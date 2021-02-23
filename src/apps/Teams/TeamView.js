@@ -54,7 +54,7 @@ const TeamView = (props) => {
 
     async function inviteMember() {
 
-        let user = await api.get(urls.user.fetchByUsername(inviteeUsername));
+        let user = await api.get(urls.user.fetchByUser(inviteeUsername));
         let userData = user.data;
 
         let team = await api.get(urls.teams.fetchDetails(teamUsername));
@@ -62,7 +62,7 @@ const TeamView = (props) => {
         // Need to update the team now, not the user
         userData.cliques.push(teamId);
         await api.put(
-            urls.user.fetchByUsername(inviteeUsername),
+            urls.user.fetchByUser(inviteeUsername),
             userData
         )
         .then(
@@ -75,7 +75,7 @@ const TeamView = (props) => {
     }
 
     async function removeMember(member) {
-        let user = await api.get(urls.user.fetchByUsername(member));
+        let user = await api.get(urls.user.fetchByUser(member));
         let userData = user.data;
         let team = await api.get(urls.teams.fetchDetails(teamUsername));
         let teamId = team.data.id;
@@ -87,7 +87,7 @@ const TeamView = (props) => {
         // Need to update the team now, not the user
         // Make a put request
         await api.put(
-            urls.user.fetchByUsername(member),
+            urls.user.fetchByUser(member),
             userData
         )
         .then(
@@ -152,7 +152,7 @@ const TeamView = (props) => {
             relatedCliques: [details.id]
         }
         setShowCreateModal(false);
-        let response = await api.post(urls.teams.fetchAll, body);
+        let response = await api.post(urls.teams.fetchAll(), body);
         body['id'] = response.data.id;
         let newGroups = groups
         newGroups.push(body);

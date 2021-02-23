@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Jumbotron, Row, Col, Button, Modal, Form, Alert } from 'react-bootstrap';
+import { Container, Jumbotron, Row, Col, Button, Modal, Form, Alert, Spinner } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 import * as Icon from 'react-icons/fi';
@@ -20,8 +20,7 @@ export default class Calendar extends Component{
         this.state = {
             showCreateModal: false,
             userTeams: [],
-            userEvents: [],
-            eventObjectsForTable: [],
+            eventObjects: [],
             displayedEvents: [],
             eventName: '',
             eventDetails: '',
@@ -50,30 +49,17 @@ export default class Calendar extends Component{
     }
 
     async fetchData(){
-        // Remove next line
-        let teamIds = this.props.userInfo.cliques;       
-        let teams = [];
+        const teamRequest = await api.get(urls.user.fetchTeams(this.props.userInfo.id));
+        let teams = teamRequest.data;
+        const contactsRequest = await api.get(urls.user.fetchContacts(this.props.userInfo.id));
+        let allMembers = contactsRequest.data;
         let membersDict = {};
-        let allMembers = [];
         let newIdDict = {};
-        let ids = new Set();
-        // Call should be to /users/<username>/teams/ now
-        for (let id of teamIds) {
-            const request = await api.get(urls.teams.fetchById(id));
-            teams.push(request.data);
-            newIdDict[id] = request.data.name;
-            const members = await api.get(urls.teams.fetchMembersById(id));
-            membersDict[id] = members.data;
-        }
-        for (let teamid in membersDict){
-            let teamMembersArray = membersDict[teamid];
-            for (let member of teamMembersArray) {
-                if (!ids.has(member.id)) {
-                    allMembers.push(member);
-                }
-                ids.add(member.id);
-            }
-        }
+
+        teams.forEach((team) => {
+            let teamMembers = team.members.concat(team.managers.concat(team.owners));
+            membersDict[team.id] = teamMembers;
+        })
 
         this.setState({
             userTeams: teams,
@@ -86,34 +72,34 @@ export default class Calendar extends Component{
     async fetchEvents() {
         let teamEventsDict = {};
         let events = []
+        // Duplicate events are happening here. Get just the users events and then just loop through those to create the dictionary.
         for (let team of this.state.userTeams) {
-            const request2 = await api.get(urls.event.fetchByTeam(team.name));
+            const request2 = await api.get(urls.event.fetchByTeam(team.id));
             teamEventsDict[team.id] = request2.data;
             events = events.concat(request2.data);
         }
-        const request3 = await api.get(urls.event.fetchByUsername(this.props.userInfo.username));
+        const request3 = await api.get(urls.event.fetchByUser(this.props.userInfo.id));
         events = events.concat(request3.data);
-        this.setState({userEvents: events});
+        
         let tableEvents = [];
         events.forEach((event) => {
             let tableObject = {
                 x: <Icon.FiXCircle onClick={() => {this.deleteEvent(event)}} size={20}/>,
                 name: event.name,
-                team: event.clique ? this.state.idToTeamDict[event.clique] : 'N/A',
+                team: event.team ? event.team.name : 'N/A',
                 time: `${this.parseDate(event.start)} -- ${this.parseDate(event.end)}`,
                 details: event.details
             };
             tableEvents.push(tableObject);
         });
-        this.setState({
-            eventObjectsForTable: tableEvents
-        }, () => {this.handleFilter(this.state.eventFilter)});
+        this.setState({eventObjects: tableEvents}, () => {this.handleFilter(this.state.eventFilter)});
     }
 
     handleChooseTeam(e){
+        let teamId = parseInt(e.target.value);
         this.setState({
-            eventTeam: parseInt(e.target.value),
-            selectedTeamMembers: this.state.teamIdToMembersDict[parseInt(e.target.value)]
+            eventTeam: teamId,
+            selectedTeamMembers: this.state.teamIdToMembersDict[teamId]
         });
     }
 
@@ -132,45 +118,46 @@ export default class Calendar extends Component{
                 end: end.toISOString(),
                 details: this.state.eventDetails,
                 picture: "event.jpg",
-                clique: team,
+                team: team,
                 user: us,
-                invited: [],
-                notGoing: [],
+                invited: []
             };
 
-            let request = await api.post(urls.event.fetchAll, body);
+            let request = await api.post(urls.event.fetchAll(), body);
             body.id = request.data.id;
-            let newEventsList = this.state.userEvents;
-            newEventsList.push(body);
             let tableEvent = {
                 x: <Icon.FiXCircle onClick={() => {this.deleteEvent(body)}} size={20}/>,
                 name: this.state.eventName,
-                team: team ? this.state.idToTeamDict[team] : 'N/A',
+                team: team ? team : 'N/A',
                 time: `${this.parseDate(start.toISOString())} -- ${this.parseDate(end.toISOString())}`,
                 details: this.state.eventDetails,
             }
-            let tableObjects = this.state.eventObjectsForTable;
+            let tableObjects = this.state.eventObjects;
             tableObjects.push(tableEvent);
             if (tableEvent.team === this.state.eventFilter) {
+                console.log(tableEvent.team);
                 let events = this.state.displayedEvents;
                 events.push(tableEvent);
+                console.log(events);
                 this.setState({displayedEvents: events});
             }
-            this.setState({eventObjectsForTable: tableObjects});
-            if (this.state.createAnnouncement){
-                let body2 = {
-                    announcement: `Generated announcement for event: ${this.state.eventName}`,
-                    clique: this.state.eventTeam,
-                    event: body.id,
-                    priority: 3,
-                    creator: this.props.userInfo.id,
-                    end: end.toISOString(),
-                    acknowledged: [this.props.userInfo.id]
-                };
-                await api.post(urls.announcement.fetchAll, body2);
-            }
+            console.log(tableObjects);
+            this.setState({eventObjects: tableObjects});
+
+            // Need to decide if we want to do anything with this.
+            // if (this.state.createAnnouncement){
+            //     let body2 = {
+            //         announcement: `Generated announcement for event: ${this.state.eventName}`,
+            //         clique: this.state.eventTeam,
+            //         event: body.id,
+            //         priority: 3,
+            //         creator: this.props.userInfo.id,
+            //         end: end.toISOString(),
+            //         acknowledged: [this.props.userInfo.id]
+            //     };
+            //     await api.post(urls.announcement.fetchAll(), body2);
+            // }
             this.setState({
-                userEvents: newEventsList,
                 eventDetails: '',
                 eventPicture: '',
                 eventName: ''
@@ -203,7 +190,7 @@ export default class Calendar extends Component{
             errorMessage.push('Event cannot start in the past.');
         }
         if (end < start && this.state.eventStart && this.state.eventEnd) {
-            errorMessage.push('Event end must be after event start.');
+            errorMessage.push('Event End must be after Event Start.');
         }
         this.setState({creationError: errorMessage.length ? errorMessage : false});
         return errorMessage.length;
@@ -211,12 +198,10 @@ export default class Calendar extends Component{
 
     async deleteEvent(eventToDelete) {
         await api.delete(urls.event.fetchById(eventToDelete.id));
-        let filtered = this.state.userEvents.filter((event) => {return event !== eventToDelete});
-        let filteredObjects = this.state.eventObjectsForTable.filter((event) => {
+        let filteredObjects = this.state.eventObjects.filter((event) => {
             return event.name !== eventToDelete.name;
         })
         this.setState({
-            userEvents: filtered,
             displayedEvents: filteredObjects
         });
     }
@@ -232,7 +217,7 @@ export default class Calendar extends Component{
     }
 
     handleFilter(filter){
-        let filtered = this.state.eventObjectsForTable.filter((object) => {
+        let filtered = this.state.eventObjects.filter((object) => {
             return (object.team === filter || filter === 'All');
         });
         this.setState({
@@ -275,19 +260,16 @@ export default class Calendar extends Component{
                                 <Form.Label>Team</Form.Label>
                                 <Form.Control as="select" onChange={(e) => {this.handleChooseTeam(e)}}>
                                     <option selected disabled hidden>Choose a team for this event</option>
-                                    {this.state.userTeams.map((team) => {
-                                        return <option key={team.id} value={team.id}>{team.name}</option>
+                                    {this.state.userTeams.map((team,idx) => {
+                                        return <option key={idx} value={team.id}>{team.name}</option>
                                     })}
                                 </Form.Control>
                             </Form.Group>
                             <Form.Group controlId="formControlsSelectMultiple">
                                 <Form.Label>Invite Participants</Form.Label>
                                 <Form.Control as="select" multiple onChange={(e) => {this.setState({eventInvited: e.target.value})}}>
-                                {this.state.selectedTeamMembers.map((member) => {
-                                    if (member.id !== this.props.userInfo.id) {
-                                        return <option key={member.id} value={member.id}>{member.username}</option>
-                                    }
-                                    return <></>;
+                                {this.state.selectedTeamMembers.map((member, idx) => {
+                                    return member.id !== this.props.userInfo.id ? <option key={idx}>{member.username}</option> : <></>;
                                 })}
                                 </Form.Control>
                             </Form.Group> 
@@ -302,7 +284,7 @@ export default class Calendar extends Component{
                                 </Form.Control>
                             </Form.Group>
                             <Alert variant='danger' hidden={!this.state.creationError}>
-                                {this.state.creationError ? this.state.creationError.map((msg)=>{return <li>{msg}</li>}) : ''}
+                                {this.state.creationError ? this.state.creationError.map((msg,idx)=>{return <li key={idx}>{msg}</li>}) : ''}
                             </Alert>
                             <Button type="submit">Submit</Button>
                         </Form>
@@ -313,7 +295,7 @@ export default class Calendar extends Component{
                     <Col>
                         <h1>Calendar</h1>
                         <p>
-                            You have 15 events total in January.
+                            You have {this.state.eventObjects.length} event{this.state.eventObjects.length === 1 ? '' : 's'} on your calendar.
                         </p>
                     </Col>
                 </Row>
@@ -324,10 +306,10 @@ export default class Calendar extends Component{
                     <Col>
                         <Row>
                             <h5 style={{'marginTop': '15px'}}>Select Calendar: </h5>
-                            <Form.Control style={{'marginTop': '10px', 'marginBottom': '10px', 'marginLeft': '10px'}} as="select" onChange={(e) => {this.handleFilter(e.target.value)}}>
+                            <Form.Control style={{'marginTop': '10px', 'marginBottom': '10px', 'marginLeft': '10px'}} as="select" onChange={(e) => {this.handleFilter(parseInt(e.target.value))}}>
                                 <option>All</option>
                                 {this.state.userTeams.map((team) => {
-                                    return <option key={team.id} selected={team.name === this.state.eventFilter} value={team.name}>{team.name} Team</option>;
+                                    return <option key={team.id} selected={team.id === this.state.eventFilter} value={team.id}>{team.name} Team</option>;
                                 })}
                                 <option value='N/A'>Events without an associated team</option>
                             </Form.Control>
@@ -335,7 +317,11 @@ export default class Calendar extends Component{
                     </Col>
                 </Row>
                 </Jumbotron>
-                <BootstrapTable keyField='id' data={ this.state.displayedEvents } columns={ columns } />
+                {
+                    this.state.eventObjects.length ? 
+                    <BootstrapTable keyField='id' data={ this.state.displayedEvents } columns={ columns } />
+                    : <Spinner animation="border" role="status"/>
+                }
             </Container>
         )
     }

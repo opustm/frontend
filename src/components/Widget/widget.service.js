@@ -1,5 +1,4 @@
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
-import { getContacts } from '../../services/contacts.service';
 import * as Icon from 'react-icons/fi';
 
 export async function widgetDetails(widgetType, userInfo, teamFilter) {
@@ -46,11 +45,9 @@ export async function widgetDetails(widgetType, userInfo, teamFilter) {
 }
 
 async function getData(userInfo, type, teamFilter) {
-  // Query /users/<username>/teams/ instead of the loops here
-  let userTeams = userInfo.cliques;
+  let teamRequest = await api.get(urls.user.fetchTeams(userInfo.id));
+  let userTeams = teamRequest.data;
   let data = [];
-  let teamNameRequest;
-  let teamName;
   switch(type) {
     case 'announcements':
       if (teamFilter) {
@@ -58,10 +55,8 @@ async function getData(userInfo, type, teamFilter) {
         data = data.concat(announcementReq.data);
       }
       else {
-        for (let teamId of userTeams) {
-          teamNameRequest = await api.get(urls.teams.fetchById(teamId));
-          teamName = teamNameRequest.data.name;
-          let announcementReq = await api.get(urls.announcement.fetchByTeam(teamName));
+        for (let team of userTeams) {
+          let announcementReq = await api.get(urls.announcement.fetchByTeam(team.id));
           data = data.concat(announcementReq.data);
         }
       }
@@ -73,14 +68,8 @@ async function getData(userInfo, type, teamFilter) {
         data = data.concat(calendarRequest.data);
       }
       else {
-        for (let teamId of userTeams) {
-          teamNameRequest = await api.get(urls.teams.fetchById(teamId));
-          teamName = teamNameRequest.data.name;
-          let calendarRequest = await api.get(urls.event.fetchByTeam(teamName));
-          data = data.concat(calendarRequest.data);
-          let userEventRequest = await api.get(urls.event.fetchByUsername(userInfo.username));
-          data = data.concat(userEventRequest.data);
-        }
+          let eventRequest = await api.get(urls.event.fetchByUser(userInfo.id));
+          data = data.concat(eventRequest.data);
       }
       break;
 
@@ -90,16 +79,13 @@ async function getData(userInfo, type, teamFilter) {
         data = data.concat(contactsRequest.data);
       }
       else {
-          // Query /users/<username>/contacts/ instead
-          data = await getContacts(userInfo);
+          let contactsRequest = await api.get(urls.user.fetchContacts(userInfo.id));
+          data = data.concat(contactsRequest.data);
       }
       break;
 
     case 'teams':
-      for (let teamId of userTeams) {
-        let teamsRequest = await api.get(urls.teams.fetchById(teamId));
-        data = data.concat(teamsRequest.data);
-      }
+      data = userTeams;
       break;
 
     default:
@@ -111,10 +97,7 @@ async function getData(userInfo, type, teamFilter) {
   for (let item of truncatedData) {
     switch(type){
       case 'announcements':
-        // Will need to update this to use the creator's username
-        let creatorReq = await api.get(urls.user.fetchById(item.creator));
-        let creatorName = `${creatorReq.data.first_name} ${creatorReq.data.last_name}`
-        displayData.push(`From user ${creatorName}: '${item.announcement}'`);
+        displayData.push(`From ${item.creator.first_name} ${item.creator.last_name}: '${item.announcement}'`);
         break;
       case 'calendar':
         displayData.push(`'${item.name}' happening on ${item.start}`);

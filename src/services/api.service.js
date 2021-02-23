@@ -3,8 +3,8 @@ import axios from "axios";
 // Change API Url based on whether API Server is remote or local
 // Configure API interaction preferences
 export const API_CONFIG = {
-    useLocal : false, // Change this to true to use API locally
-    urlRemote : "https://opustm-api.herokuapp.com/",
+    useLocal : true, // Change this to true to use API locally
+    urlRemote : "https://opustm-api-staging.herokuapp.com/",
     urlLocal : 'http://localhost:8000/',
     baseURL : () => API_CONFIG.useLocal ? 
         API_CONFIG.urlLocal : API_CONFIG.urlRemote,
@@ -21,41 +21,40 @@ export const Axios = axios.create({
 // Configure and export API Endpoints
 export const API_ENDPOINTS = {
     teams : {
-        fetchAll : `/cliques/`,
-        fetchById : (id) => `/cliques/${id}/`,
-        fetchDetails : (name) => `/cliqueDetails/${name}/`,
-        fetchMembers : (name) => `/cliqueMembers/${name}/`,
-        fetchMembersById: (id) => `/cliqueidMembers/${id}/`,
-        fetchByUsername: (username) => `/userCliques/${username}/`,
+        fetchAll: () => `/teams/`,
+        fetchById: (teamID) => `/teams/${teamID}/`,
+        fetchMembers : (teamID) => `/teams/${teamID}/members/`,
         fetchRelatedTeams: (teamName) => `/relatedCliques/${teamName}/`,
     },
     user : {
-        fetchAll: `/users/`,
-        fetchByUsername: (username) => `users/${username}/`,
-        // Remove fetchById
-        fetchById: (id) => `/users/${id}/`,
-        fetchTeams: (username) => `/users/${username}/teams/`,
-        fetchContacts: (username) => `/users/${username}/contacts/`,
-        fetchSchedule: (username) => `/users/${username}/schedule/`
-    },
-    invitation : {
-        invitations : () => `/invitations/`,
+        fetchAll: () => `/users/`,
+        fetchById: (userID) => `users/${userID}/`,
+        fetchTeams: (userID) => `/users/${userID}/teams/`,
+        fetchContacts: (userID) => `/users/${userID}/contacts/`,
+        fetchSchedule: (userID) => `/users/${userID}/schedule/`
     },
     request : {
-        requests : () => `/requests/`,
+        fetchAll: () => `/requests/`,
+        fetchById: (requestID) => `/requests/${requestID}/`,
+        fetchByTeam: (teamID) => `/requests/team/${teamID}/`,
+        fetchByUser: (userID) => `/requests/team/${userID}/`,
     },
     event : {
-        fetchAll: `/events/`,
-        fetchById : (id) => `/events/${id}/`,
-        fetchByTeam: (teamName) => `/cliqueEvents/${teamName}/`,
-        fetchByUsername: (username) => `/userEvents/${username}/`
+        fetchAll: () => `/events/`,
+        fetchById : (eventID) => `/events/${eventID}/`,
+        fetchByTeam: (teamID) => `/events/team/${teamID}/`,
+        fetchByUser: (userID) => `/events/user/${userID}/`
+    },
+    announcement : {
+        fetchAll: () => `/announcements/`,
+        fetchById: (announcementID) => `/announcements/${announcementID}/`,
+        fetchByTeam : (teamID) => `/announcements/team/${teamID}/`,
+        fetchByUser: (userID) => `/announcements/user/${userID}`,
+    },
+    invitation : {
+        fetchAll : () => `/invitations/`,
     },
     schedule : {},
-    announcement : {
-        fetchAll : `/announcements/`,
-        fetchByTeam : (teamName) => `/cliqueAnnouncements/${teamName}/`,
-        fetchById: (announcementId) => `/announcements/${announcementId}/`,
-    },
     message : {},
     todo : {},
 }

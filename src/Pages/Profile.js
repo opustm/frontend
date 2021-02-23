@@ -22,6 +22,7 @@ export default class Profile extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props.location.state)
     this.getUserData(this.props.match.params.username);
   }
 
