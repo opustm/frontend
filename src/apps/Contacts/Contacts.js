@@ -21,9 +21,9 @@ export default class Contacts extends Component {
     super(props);
     document.title = "Opus | Contacts";
     this.state = {
-      allContacts: [],
       contactObjects: [],
       teamIds: new Set(),
+      showSpinner: true
     };
   }
 
@@ -70,8 +70,8 @@ export default class Contacts extends Component {
     }
 
     this.setState({
-      allContacts: contacts,
-      contactObjects: contactObjects
+      contactObjects: contactObjects,
+      showSpinner: false
     });
   }
 
@@ -94,18 +94,19 @@ export default class Contacts extends Component {
         <Jumbotron>
           <h1>Contacts</h1>
           <p>
-            You have {this.state.allContacts.length} contact{this.state.allContacts.length === 1 ? '' : 's'}.
+            You have {this.state.contactObjects.length} contact{this.state.contactObjects.length === 1 ? '' : 's'}.
           </p>
         </Jumbotron>
-        { this.state.contactObjects.length ? 
-          <BootstrapTable
-            keyField="id"
-            data={this.state.contactObjects}
-            columns={columns}
-            className="contactsTable"
-          />
-          : <Spinner animation="border" role="status"/>
+        { this.state.showSpinner ? 
+          <Spinner animation="border" role="status"/> :
+          <></>
         }
+        <BootstrapTable
+          keyField="id"
+          data={this.state.contactObjects}
+          columns={columns}
+          className="contactsTable"
+        />
       </Container>
     )
   }

@@ -21,6 +21,7 @@ export default class Announcements extends Component {
         document.title = "Opus | Announcements";
         this.state = {
             showCreateModal: false,
+            showSpinner: true,
             userTeams: [],
             userAnnouncements: [],
             announcementObjects: [],
@@ -103,7 +104,8 @@ export default class Announcements extends Component {
         })
         this.setState({
             userAnnouncements: announcements,
-            announcementObjects: tableObjects
+            announcementObjects: tableObjects,
+            showSpinner: false
         }, () => {this.handleTeamFilter(this.state.teamFilter)});
     }
 
@@ -340,11 +342,11 @@ export default class Announcements extends Component {
                     </Col>
                 </Row>
                 </Jumbotron>
-
-                {this.state.announcementObjects.length ? 
-                    <BootstrapTable keyField='id' data={ this.state.displayedAnnouncements } columns={ columns } rowClasses={(row) => {return this.state.styleDict[row.priority]} }/>
-                    : <Spinner animation="border" role="status"/>
+                {this.state.showSpinner ? 
+                    <Spinner animation="border" role="status"/> :
+                    <></>
                 }
+                <BootstrapTable keyField='id' data={ this.state.displayedAnnouncements } columns={ columns } rowClasses={(row) => {return this.state.styleDict[row.priority]} }/>
             </Container>
             
         )

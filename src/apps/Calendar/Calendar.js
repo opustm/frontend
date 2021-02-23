@@ -37,7 +37,8 @@ export default class Calendar extends Component{
             teamIdToMembersDict: {},
             selectedTeamMembers: [],
             idToTeamDict: {},
-            teamToIdDict: {}
+            teamToIdDict: {},
+            showSpinner: true
         }
     }
     
@@ -70,21 +71,13 @@ export default class Calendar extends Component{
     }
 
     async fetchEvents() {
-        let teamEventsDict = {};
-        let events = []
-        // Duplicate events are happening here. Get just the users events and then just loop through those to create the dictionary.
-        for (let team of this.state.userTeams) {
-            const request2 = await api.get(urls.event.fetchByTeam(team.id));
-            teamEventsDict[team.id] = request2.data;
-            events = events.concat(request2.data);
-        }
-        const request3 = await api.get(urls.event.fetchByUser(this.props.userInfo.id));
-        events = events.concat(request3.data);
+        const userRequest = await api.get(urls.event.fetchByUser(this.props.userInfo.id));
+        let events = userRequest.data;
         
         let tableEvents = [];
         events.forEach((event) => {
             let tableObject = {
-                x: <Icon.FiXCircle onClick={() => {this.deleteEvent(event)}} size={20}/>,
+                x: <Icon.FiXCircle className="deleteButton" onClick={() => {this.deleteEvent(event)}} size={20}/>,
                 name: event.name,
                 team: event.team ? event.team.name : 'N/A',
                 time: `${this.parseDate(event.start)} -- ${this.parseDate(event.end)}`,
@@ -92,7 +85,10 @@ export default class Calendar extends Component{
             };
             tableEvents.push(tableObject);
         });
-        this.setState({eventObjects: tableEvents}, () => {this.handleFilter(this.state.eventFilter)});
+        this.setState({
+            eventObjects: tableEvents,
+            showSpinner: false
+        }, () => {this.handleFilter(this.state.eventFilter)});
     }
 
     handleChooseTeam(e){
@@ -134,14 +130,11 @@ export default class Calendar extends Component{
             }
             let tableObjects = this.state.eventObjects;
             tableObjects.push(tableEvent);
-            if (tableEvent.team === this.state.eventFilter) {
-                console.log(tableEvent.team);
+            if (tableEvent.name === this.state.eventFilter || this.state.eventFilter === 'All') {
                 let events = this.state.displayedEvents;
                 events.push(tableEvent);
-                console.log(events);
                 this.setState({displayedEvents: events});
             }
-            console.log(tableObjects);
             this.setState({eventObjects: tableObjects});
 
             // Need to decide if we want to do anything with this.
@@ -198,11 +191,11 @@ export default class Calendar extends Component{
 
     async deleteEvent(eventToDelete) {
         await api.delete(urls.event.fetchById(eventToDelete.id));
-        let filteredObjects = this.state.eventObjects.filter((event) => {
-            return event.name !== eventToDelete.name;
-        })
+        let filteredObjects = this.state.eventObjects.filter((event) => {return event.details !== eventToDelete.details});
+        let filteredDisplay = this.state.displayedEvents.filter((event) => {return event.details !== eventToDelete.details});
         this.setState({
-            displayedEvents: filteredObjects
+            displayedEvents: filteredDisplay,
+            eventObjects: filteredObjects
         });
     }
 
@@ -217,9 +210,7 @@ export default class Calendar extends Component{
     }
 
     handleFilter(filter){
-        let filtered = this.state.eventObjects.filter((object) => {
-            return (object.team === filter || filter === 'All');
-        });
+        let filtered = this.state.eventObjects.filter((object) => {return (object.team === filter || filter === 'All')});
         this.setState({
             displayedEvents: filtered,
             eventFilter: filter
@@ -306,10 +297,10 @@ export default class Calendar extends Component{
                     <Col>
                         <Row>
                             <h5 style={{'marginTop': '15px'}}>Select Calendar: </h5>
-                            <Form.Control style={{'marginTop': '10px', 'marginBottom': '10px', 'marginLeft': '10px'}} as="select" onChange={(e) => {this.handleFilter(parseInt(e.target.value))}}>
+                            <Form.Control style={{'marginTop': '10px', 'marginBottom': '10px', 'marginLeft': '10px'}} as="select" onChange={(e) => {this.handleFilter(e.target.value)}}>
                                 <option>All</option>
                                 {this.state.userTeams.map((team) => {
-                                    return <option key={team.id} selected={team.id === this.state.eventFilter} value={team.id}>{team.name} Team</option>;
+                                    return <option key={team.id} selected={team.id === this.state.eventFilter} value={team.name}>{team.name} Team</option>;
                                 })}
                                 <option value='N/A'>Events without an associated team</option>
                             </Form.Control>
@@ -318,10 +309,11 @@ export default class Calendar extends Component{
                 </Row>
                 </Jumbotron>
                 {
-                    this.state.eventObjects.length ? 
-                    <BootstrapTable keyField='id' data={ this.state.displayedEvents } columns={ columns } />
-                    : <Spinner animation="border" role="status"/>
+                    this.state.showSpinner ? 
+                    <Spinner animation="border" role="status"/> :
+                    <></>
                 }
+                <BootstrapTable keyField='id' data={ this.state.displayedEvents } columns={ columns } />
             </Container>
         )
     }
