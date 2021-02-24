@@ -43,19 +43,27 @@ const Teams = (props) => {
   useEffect(() => {
     async function fetchTeams() {
       const request = await api.get(urls.user.fetchTeams(props.userInfo.id));
-      setTeams(request.data);
+      let teamIds = teams.map((team) => {return team.id});
+      let requestIds = new Set(request.data.map((team) => {return team.id}));
+      for (let id of teamIds) {
+        if (!requestIds.has(id)) {
+          setTeams(request.data);
+          break;
+        }
+      }
     }
     try {
       fetchTeams();
     } catch (err) {
       <Redirect to="/404" />;
     }
-  }, [props.userInfo.id]);
+  }, [props.userInfo.id, teams]);
 
   async function deleteTeam(teamID) {
     await api.delete(urls.teams.fetchById(teamID)).then(function (response) {
       <Redirect to="/teams" />;
     });
+    setTeams(teams.filter((team) => {return team.id !== teamID}));
   }
 
   async function createTeam() {
