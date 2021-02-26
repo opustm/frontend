@@ -60,7 +60,10 @@ export default class Contacts extends Component {
         firstName: contact.first_name,
         lastName: contact.last_name,
         username: (
-          <Link to={`/user/${contact.username}`}>{contact.username}</Link>
+          <Link to={{
+            pathname: `/user/${contact.username}`,
+            state: {userId: contact.id}
+          }}>{contact.username}</Link>
         ),
         email: contact.email,
         phoneNumber: contact.phone,
