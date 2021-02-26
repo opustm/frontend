@@ -18,12 +18,12 @@ export default class Profile extends Component {
       authService: new AuthService(),
       editingInfo: false,
       updateError: false,
+      userId: ''
     }
   }
 
   componentDidMount() {
-    console.log(this.props.location.state)
-    this.getUserData(this.props.match.params.username);
+    this.setState({userId: this.props.location.state.userId}, () => {this.getUserData()});
   }
 
   beginEditing() {
@@ -34,9 +34,9 @@ export default class Profile extends Component {
     });
   }
 
-  async getUserData(username) {
+  async getUserData() {
     try {
-      let response = await api.get(urls.user.fetchByUsername(username));
+      let response = await api.get(urls.user.fetchById(this.state.userId));
       let data = response.data;
       this.setState({
         username: data.username,
@@ -60,10 +60,8 @@ export default class Profile extends Component {
   }
 
   async editUserData() {
-    // Remove cliques since we removed it from the backend
     let body = {
       "username": this.state.username,
-      "cliques": this.props.userInfo.cliques,
       "phone": this.state.phone,
       "email": this.state.email,
       "first_name": this.state.first_name,
@@ -72,49 +70,13 @@ export default class Profile extends Component {
       "bio": this.state.bio
     }
     try {
-      let response = await api.put(urls.user.fetchByUsername(this.state.username), body);
+      let response = await api.put(urls.user.fetchById(this.state.userId), body);
       this.setState(response.data);
     }
     catch (error) {
       this.setState({updateError: true});
     }
     this.setState({editingInfo: false});
-  }
-
-  handleUserEdit(e, whichInput) {
-    switch (whichInput) {
-      case 'first_name':
-        this.setState({first_name: e.target.value});
-        break;
-
-      case 'last_name':
-        this.setState({last_name: e.target.value});
-        break;
-
-      case 'username':
-        this.setState({username: e.target.value});
-        break;
-
-      case 'phone':
-        this.setState({phone: e.target.value});
-        break;
-
-      case 'email':
-        this.setState({email: e.target.value});
-        break;
-
-      case 'picture':
-        this.setState({picture: e.hex});
-        break;
-
-      case 'bio':
-        this.setState({bio: e.target.value});
-        break;
-
-      default:
-        console.warn('How did you get here?');
-        break;
-    }
   }
 
   cancelChanges() {
@@ -173,34 +135,34 @@ export default class Profile extends Component {
                 <Form>
                   <Form.Group>
                     <Form.Label>First Name: </Form.Label>
-                    <Form.Control value={this.state.first_name} onChange={(e) => {this.handleUserEdit(e, 'first_name')}}></Form.Control>
+                    <Form.Control value={this.state.first_name} onChange={(e) => {this.setState({first_name: e.target.value})}}></Form.Control>
                   </Form.Group>
                   <Form.Group>
                     <Form.Label>Last Name: </Form.Label>
-                    <Form.Control value={this.state.last_name} onChange={(e) => {this.handleUserEdit(e, 'last_name')}}></Form.Control>
+                    <Form.Control value={this.state.last_name} onChange={(e) => {this.setState({last_name: e.target.value});}}></Form.Control>
                   </Form.Group>
                   <Form.Group>
                     <Form.Label>Username: </Form.Label>
-                    <Form.Control value={this.state.username} onChange={(e) => {this.handleUserEdit(e, 'username')}}></Form.Control>
+                    <Form.Control value={this.state.username} onChange={(e) => {this.setState({username: e.target.value})}}></Form.Control>
                   </Form.Group>
                   <Form.Group>
                     <Form.Label>Phone: </Form.Label>
-                    <Form.Control value={this.state.phone} onChange={(e) => {this.handleUserEdit(e, 'phone')}}></Form.Control>
+                    <Form.Control value={this.state.phone} onChange={(e) => {this.setState({phone: e.target.value});}}></Form.Control>
                   </Form.Group>
                   <Form.Group>
                     <Form.Label>Email: </Form.Label>
-                    <Form.Control value={this.state.email} onChange={(e) => {this.handleUserEdit(e, 'email')}}></Form.Control>
+                    <Form.Control value={this.state.email} onChange={(e) => {this.setState({email: e.target.value});}}></Form.Control>
                   </Form.Group>
                   <Form.Group>
                     <Form.Label>Bio: </Form.Label>
-                    <Form.Control value={this.state.bio} onChange={(e) => {this.handleUserEdit(e, 'bio')}}></Form.Control>
+                    <Form.Control value={this.state.bio} onChange={(e) => {this.setState({bio: e.target.value});}}></Form.Control>
                   </Form.Group>
                   <Container>
                     <Row>
                       <p>Edit Profile Color: </p>
                       <InputColor
                         initialValue={this.state.picture}
-                        onChange={e => this.handleUserEdit(e, 'picture')}
+                        onChange= {(e) => {this.setState({picture: e.hex})}}
                         placement="right"
                       />
                     </Row>
