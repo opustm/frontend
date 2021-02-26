@@ -81,28 +81,19 @@ const TeamView = (props) => {
         setMembers(allMembers);
     }
 
-    async function removeMember(member) {
-        let user = await api.get(urls.user.fetchById(member));
-        let userData = user.data;
-        let team = await api.get(urls.teams.fetchById(teamUsername));
-        let teamId = team.data.id;
-
-        // Remove the user locally
-        // We'll have to rework this
-        userData.cliques.splice(userData.cliques.indexOf(teamId));
-        
-        // Need to update the team now, not the user
-        // Make a put request
-        await api.put(
-            urls.user.fetchById(member),
-            userData
-        )
-        .then(
-            (response) => {
-                <Redirect to={`/teams/${teamUsername}`}/>
-            }
-        )
-
+    async function removeMember(toRemove) {
+        let teamRequest = await api.get(urls.teams.fetchById(teamId));
+        let team = teamRequest.data;
+        let levels = ['members', 'managers', 'owners'];
+        // Filter out the member that's being removed, then map the objects to IDs so that we can make a put request.
+        levels.forEach((level) => {
+            team[level] = team[level].filter((member) => {return member.id !== toRemove}).map((memberObj) =>{return memberObj.id});
+        })
+        let putResponse = await api.put(urls.teams.fetchById(teamId), team);
+        let newData = putResponse.data;
+        setDetails(newData);
+        let allMembers = newData.members.concat(newData.managers.concat(newData.owners));
+        setMembers(allMembers);
     }
 
     const handleSubmit = (evt) => {
@@ -281,7 +272,7 @@ const TeamView = (props) => {
                                                                         </Dropdown.Toggle>
                                                                         <Dropdown.Menu>
                                                                         <Dropdown.Item href="#">Permissions</Dropdown.Item>
-                                                                        <Dropdown.Item onClick={() => {removeMember(item.username)}}>Remove</Dropdown.Item>
+                                                                        <Dropdown.Item onClick={() => {removeMember(item.id)}}>Remove</Dropdown.Item>
                                                                     </Dropdown.Menu>
                                                                 </Dropdown>
                                                             </Col>
