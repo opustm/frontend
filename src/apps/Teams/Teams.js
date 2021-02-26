@@ -123,7 +123,10 @@ const Teams = (props) => {
           <div key={index} className="team-element">
             <li className="col-12 d-flex width-full border-bottom color-border-secondary">
               <Col md={1} lg={1} className="d-flex justify-content-center">
-                <Link to={`/teams/${item.name}`}>
+                <Link to={{
+                    pathname: `/teams/${item.name}`,
+                    state: {teamId: item.id},
+                  }}>
                   <img
                     className="team-photo avatar"
                     alt="Team logo"
@@ -135,7 +138,10 @@ const Teams = (props) => {
                 <Row>
                   <div className="d-inline-block mb-1">
                     <h4 className="wb-break-all">
-                      <Link to={`teams/${item.name}`}>{item.name}</Link>
+                      <Link to={{
+                        pathname: `teams/${item.name}`,
+                        state: {teamId: item.id}
+                        }}>{item.name}</Link>
                     </h4>
                   </div>
                 </Row>

@@ -55,10 +55,8 @@ async function getData(userInfo, type, teamFilter) {
         data = data.concat(announcementReq.data);
       }
       else {
-        for (let team of userTeams) {
-          let announcementReq = await api.get(urls.announcement.fetchByTeam(team.id));
-          data = data.concat(announcementReq.data);
-        }
+        let announcementReq = await api.get(urls.announcement.fetchByUser(userInfo.id));
+        data = announcementReq.data;
       }
       break;
 
