@@ -104,7 +104,7 @@ async function getData(userInfo, type, teamFilter) {
         displayData.push(`${item.first_name} ${item.last_name}`);
         break;
       case 'teams':
-        displayData.push(`${item.name}`);
+        displayData.push([item.name, item.id]);
         break;
       default:
         break;

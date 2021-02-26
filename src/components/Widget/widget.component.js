@@ -48,8 +48,11 @@ export default class Widget extends Component {
               <ListGroup>
                 {this.state.data.length !== 0 ? this.state.data.map((item, idx) => {
                   if (this.props.appTitle === 'teams') {
-                    return (<Link to={`/teams/${item}`}>
-                      <ListGroup.Item key={idx}>{item}</ListGroup.Item>
+                    return (<Link to={{
+                      pathname: `/teams/${item[0]}`,
+                      state: {teamId: item[1]}
+                      }}>
+                      <ListGroup.Item key={idx}>{item[0]}</ListGroup.Item>
                     </Link>
                     );
                   }
