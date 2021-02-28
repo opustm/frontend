@@ -58,7 +58,10 @@ function Navigation(props){
                         <Icon.FiUser id='profileMenuIcon' size={25} color='white'></Icon.FiUser>
                     </DropdownToggle>
                     <DropdownMenu>
-                        <Link className='dropdown-item' to={props ? `/user/${props.userInfo.username}` : ''}>
+                        <Link className='dropdown-item' to={{
+                            pathname: props ? `/user/${props.userInfo.username}` : '',
+                            state: {userId: props.userInfo.id}
+                        }}>
                             <Icon.FiUser color='#7b8a8b' className='dropdownIcon'/>View Profile
                         </Link>
                         <DropdownItem

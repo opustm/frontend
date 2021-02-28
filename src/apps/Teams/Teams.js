@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useInput } from "./../../services/forms.service.js";
-import { AppData } from "../../services/data.service";
 import {
   Container,
   Spinner,
@@ -23,13 +22,15 @@ import "./teams.css";
 
 let createFormPlaceholderData = {
   name: "New Team Name",
-  cliqueType: "sub",
+  teamType: "team",
   picture: "https://via.placeholder.com/40/5555555?text=T",
-  permissions: [],
-  relatedCliques: [],
+  members: [],
+  managers: [],
+  owners: [],
+  relatedTeams: [],
 };
 
-const Teams = () => {
+const Teams = (props) => {
   const [teams, setTeams] = useState([0]);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const {
@@ -41,44 +42,43 @@ const Teams = () => {
 
   useEffect(() => {
     async function fetchTeams() {
-      const request = await api.get(urls.teams.fetchByUsername(AppData.user()));
-      setTeams(request.data);
-      return request;
+      const request = await api.get(urls.user.fetchTeams(props.userInfo.id));
+      let teamIds = teams.map((team) => {return team.id});
+      let requestIds = new Set(request.data.map((team) => {return team.id}));
+      for (let id of teamIds) {
+        if (!requestIds.has(id)) {
+          setTeams(request.data);
+          break;
+        }
+      }
     }
     try {
       fetchTeams();
     } catch (err) {
       <Redirect to="/404" />;
     }
-  }, [teams]);
+  }, [props.userInfo.id, teams]);
 
   async function deleteTeam(teamID) {
     await api.delete(urls.teams.fetchById(teamID)).then(function (response) {
       <Redirect to="/teams" />;
     });
+    setTeams(teams.filter((team) => {return team.id !== teamID}));
   }
 
   async function createTeam() {
     let response = await api.post(
-      urls.teams.fetchAll,
+      urls.teams.fetchAll(),
       createFormPlaceholderData
     );
-
-    let user = await api.get(urls.user.fetchByUsername(AppData.user()));
-    let userData = user.data;
-    let teamId = response.data.id;
-
-    userData.cliques.push(teamId);
-    await api
-      .put(urls.user.fetchByUsername(AppData.user()), userData)
-      .then((response) => {
-        <Redirect to={`/teams/`} />;
-      });
+    let newTeams = teams.concat(response.data);
+    setTeams(newTeams);
   }
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
     createFormPlaceholderData.name = teamName;
+    createFormPlaceholderData.owners = [props.userInfo.id];
     createTeam();
     resetTeamName();
   };
@@ -123,7 +123,10 @@ const Teams = () => {
           <div key={index} className="team-element">
             <li className="col-12 d-flex width-full border-bottom color-border-secondary">
               <Col md={1} lg={1} className="d-flex justify-content-center">
-                <Link to={`/teams/${item.name}`}>
+                <Link to={{
+                    pathname: `/teams/${item.name}`,
+                    state: {teamId: item.id},
+                  }}>
                   <img
                     className="team-photo avatar"
                     alt="Team logo"
@@ -135,7 +138,10 @@ const Teams = () => {
                 <Row>
                   <div className="d-inline-block mb-1">
                     <h4 className="wb-break-all">
-                      <Link to={`teams/${item.name}`}>{item.name}</Link>
+                      <Link to={{
+                        pathname: `teams/${item.name}`,
+                        state: {teamId: item.id}
+                        }}>{item.name}</Link>
                     </h4>
                   </div>
                 </Row>
@@ -189,9 +195,6 @@ const Teams = () => {
               <Icon.FiUsers /> Create Team
             </Button>
           </ButtonGroup>
-          {/* <ButtonGroup className='mr-2'>
-              <Button variant="success"><Icon.FiPlus/> Join Team</Button>
-            </ButtonGroup> */}
         </div>
       </Jumbotron>
       <Col sm={12} md={{ span: 10, offset: 1 }}>

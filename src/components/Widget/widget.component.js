@@ -17,11 +17,11 @@ export default class Widget extends Component {
 
   componentDidMount() {
     let t = this;
-    async function getDetails(appTitle, userInfo, teamFilter) {
-      let newState = await widgetDetails(appTitle, userInfo, teamFilter);
+    async function getDetails(appTitle, userInfo, teamId) {
+      let newState = await widgetDetails(appTitle, userInfo, teamId);
       t.setState(newState);
     }
-    getDetails(this.props.appTitle, this.props.userInfo, this.props.teamFilter);
+    getDetails(this.props.appTitle, this.props.userInfo, this.props.teamId);
   }
 
   // A generic widget will have the following:
@@ -40,7 +40,10 @@ export default class Widget extends Component {
   render() {
     return (
       <Container>
-        <Link to={this.props.teamFilter ? `/${this.props.appTitle}/${this.props.teamFilter}` : `${this.props.appTitle}`} className='widgetLink'>
+        <Link to={{
+            pathname: this.props.teamDetails ? `/${this.props.appTitle}/${this.props.teamDetails.name}` : `${this.props.appTitle}`,
+            state: {teamId: this.props.teamId}
+          }} className='widgetLink'>
           <Card>
             <Card.Header>{this.state.icon} {this.state.title}</Card.Header>
             <Card.Body>
@@ -48,8 +51,11 @@ export default class Widget extends Component {
               <ListGroup>
                 {this.state.data.length !== 0 ? this.state.data.map((item, idx) => {
                   if (this.props.appTitle === 'teams') {
-                    return (<Link to={`/teams/${item}`}>
-                      <ListGroup.Item key={idx}>{item}</ListGroup.Item>
+                    return (<Link to={{
+                      pathname: `/teams/${item[0]}`,
+                      state: {teamId: item[1]}
+                      }}>
+                      <ListGroup.Item key={idx}>{item[0]}</ListGroup.Item>
                     </Link>
                     );
                   }

@@ -1,4 +1,4 @@
-th:hover {
+th:hover, .deleteButton:hover {
   cursor: pointer;
 }
 
