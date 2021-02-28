@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Jumbotron, Row, Col, Button, Modal, Form, FormControl, Toast, Alert } from 'react-bootstrap';
+import { Container, Jumbotron, Row, Col, Button, Modal, Form, FormControl, Toast, Alert, Spinner } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 import * as Icon from 'react-icons/fi';
@@ -21,21 +21,20 @@ export default class Announcements extends Component {
         document.title = "Opus | Announcements";
         this.state = {
             showCreateModal: false,
+            showSpinner: true,
             userTeams: [],
             userAnnouncements: [],
             announcementObjects: [],
             displayedAnnouncements: [],
-            teamToIdDict: {},
             idToTeamDict: {},
             teamEvents: [],
             idToEventDict: {},
             announcementBody: '',
-            announcementTeam: 0,
+            announcementTeam: -1,
             announcementEvent: null,
             announcementPriority: 0,
             announcementDuration: 0,
             showCreatedToast: false,
-            announcementCreatorDict: {},
             creationError: false,
             teamFilter: this.props.match.params.teamUsername ? this.props.match.params.teamUsername : 'All',
             priorityFilter: 0,
@@ -54,28 +53,23 @@ export default class Announcements extends Component {
     }
 
     componentDidMount() {
-        if (this.props.userInfo.username) {
+        if (this.props.userInfo.id) {
             this.fetchData();
         }
     }
 
     async fetchData() {
-        let teamIds = this.props.userInfo.cliques;
         let teams = [];
-        let newTeamDict = {};
-        let newIdDict = {};
         let events = [];
         let idToEvent = {};
+        let idToTeam = {};
 
-        for (let id of teamIds) {
-            const request = await api.get(urls.teams.fetchById(id));
-            teams.push(request.data);
-            newTeamDict[request.data.name] = id;
-            newIdDict[id] = request.data.name;
-        }
+        const request = await api.get(urls.user.fetchTeams(this.props.userInfo.id));
+        teams = request.data;
 
-        for (let id of teamIds) {
-            const request2 = await api.get(urls.event.fetchByTeam(newIdDict[id]));
+        for (let team of teams) {
+            idToTeam[team.id] = team.name;
+            const request2 = await api.get(urls.event.fetchByTeam(team.id));
             let dataArray = request2.data;
             for (let event of dataArray){
                 let eventId = event["id"];
@@ -85,34 +79,23 @@ export default class Announcements extends Component {
         }
 
         this.setState({
-            teamToIdDict: newTeamDict,
-            idToTeamDict: newIdDict,
             userTeams: teams,
             teamEvents: events,
-            idToEventDict: idToEvent
+            idToEventDict: idToEvent,
+            idToTeamDict: idToTeam
         }, () => {this.fetchAnnouncements()});
     }
 
     async fetchAnnouncements() {
-        let announcements = [];
-        let creatorIdToName = {};
-        for (let team of this.state.userTeams) {
-            const request = await api.get(urls.announcement.fetchByTeam(team.name));
-            announcements = announcements.concat(request.data);
-            for (let a of request.data) {
-                if (!creatorIdToName.hasOwnProperty(a.creator)) {
-                    const creatorRequest = await api.get(urls.user.fetchById(a.creator));
-                    creatorIdToName[a.creator] = [`${creatorRequest.data.first_name} ${creatorRequest.data.last_name}`, creatorRequest.data.username];
-                }
-            }
-        }
+        const announcementRequest = await api.get(urls.announcement.fetchByUser(this.props.userInfo.id));
+        let announcements = announcementRequest.data;
         let tableObjects = [];
         announcements.forEach((announcement) => {
             let object = {
                 x: <Icon.FiXCircle className='deleteButton' size={20} onClick={() => {this.deleteAnnouncement(announcement)}}/>,
                 priority: this.state.priorityDict[announcement.priority][0],
-                team: this.state.idToTeamDict[announcement.clique],
-                creator: `${creatorIdToName[announcement.creator][0]}`,
+                team: announcement.team.name,
+                creator: `${announcement.creator.first_name} ${announcement.creator.last_name}`,
                 message: announcement.announcement,
                 event: announcement.event ? this.state.idToEventDict[announcement.event]["name"] : 'N/A',
                 expires: this.parseEnd(announcement.end)
@@ -121,8 +104,8 @@ export default class Announcements extends Component {
         })
         this.setState({
             userAnnouncements: announcements,
-            announcementCreatorDict: creatorIdToName,
-            announcementObjects: tableObjects
+            announcementObjects: tableObjects,
+            showSpinner: false
         }, () => {this.handleTeamFilter(this.state.teamFilter)});
     }
 
@@ -136,14 +119,14 @@ export default class Announcements extends Component {
             let isoExpiration = expirationDate.toISOString();
             let body = {
                 announcement: this.state.announcementBody,
-                clique: this.state.announcementTeam,
+                team: this.state.announcementTeam,
                 event: this.state.announcementEvent,
                 priority: this.state.announcementPriority,
                 creator: this.props.userInfo.id,
                 end: isoExpiration,
                 acknowledged: [this.props.userInfo.id]
             };
-            let request = await api.post(urls.announcement.fetchAll, body);
+            let request = await api.post(urls.announcement.fetchAll(), body);
             body.id = request.data.id;
             let newAnnouncements = this.state.userAnnouncements;
             newAnnouncements.push(body);
@@ -151,7 +134,7 @@ export default class Announcements extends Component {
             let tableObject = {
                 x: <Icon.FiXCircle className='deleteButton' size={20} onClick={() => {this.deleteAnnouncement(body)}}/>,
                 priority: this.state.priorityDict[this.state.announcementPriority][0],
-                team: this.state.idToTeamDict[this.state.announcementTeam],
+                team: this.state.announcementTeam,
                 creator: `${this.props.userInfo.first_name} ${this.props.userInfo.last_name}`,
                 message: this.state.announcementBody,
                 event: this.state.announcementEvent ? this.state.idToEventDict[this.state.announcementEvent]['name'] : 'N/A',
@@ -178,7 +161,7 @@ export default class Announcements extends Component {
     }
 
     createDataIsInvalid() {
-        if (!this.state.announcementBody || this.state.announcementTeam === 0 || ![1,2,3].includes(this.state.announcementPriority) || this.state.announcementDuration < 1) {
+        if (!this.state.announcementBody || this.state.announcementTeam === -1 || ![1,2,3].includes(this.state.announcementPriority) || this.state.announcementDuration < 1) {
             this.setState({creationError: true});
             return true;
         }
@@ -252,7 +235,7 @@ export default class Announcements extends Component {
                                 <Form.Control as="select" onChange={(e) => {this.setState({announcementEvent: parseInt(e.target.value)})}}>
                                     <option selected disabled hidden>Choose an event</option>
                                     {this.state.announcementTeam ? this.state.teamEvents.filter((event) => {
-                                        return event.clique === this.state.announcementTeam
+                                        return event.team.id === this.state.announcementTeam
                                     }).map((event) => {
                                         return <option key={event.id} value={event.id}>{event.name}</option>
                                     }) : <option disabled>You must select a team first</option>
@@ -359,10 +342,13 @@ export default class Announcements extends Component {
                     </Col>
                 </Row>
                 </Jumbotron>
-
-
+                {this.state.showSpinner ? 
+                    <Spinner animation="border" role="status"/> :
+                    <></>
+                }
                 <BootstrapTable keyField='id' data={ this.state.displayedAnnouncements } columns={ columns } rowClasses={(row) => {return this.state.styleDict[row.priority]} }/>
             </Container>
+            
         )
     }
 }

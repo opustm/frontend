@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 import { useInput } from '../../services/forms.service';
 import { Container, Modal, Card, ListGroup, Dropdown, Button, Row, Col, Jumbotron, Image, Form } from 'react-bootstrap';
-import { Link, Redirect, useParams } from 'react-router-dom';
+import { Link, Redirect, useParams, useLocation } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
 import Widget from '../../components/Widget/widget.component';
 import './teams.css';
@@ -18,25 +18,27 @@ const TeamView = (props) => {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [newGroupName, setNewGroupName] = useState();
     let teamUsername = useParams().teamUsername;
+    let teamId = useLocation().state.teamId;
     document.title = `Opus | Team - ${teamUsername}`;
 
     useEffect(() => {
         async function fetchDetails() {
             const request = await api.get(
-                urls.teams.fetchDetails(teamUsername)
+                urls.teams.fetchById(teamId)
                 );
             setDetails(request.data);
             return request;
         }
         async function fetchMembers() {
             const request = await api.get(
-                urls.teams.fetchMembers(teamUsername)
+                urls.teams.fetchMembers(teamId)
             );
-            setMembers(request.data);
+            let allMembers = request.data.members.concat(request.data.managers.concat(request.data.owners));
+            setMembers(allMembers);
         }
         async function fetchGroups() {
             const request = await api.get(
-                urls.teams.fetchRelatedTeams(teamUsername)
+                urls.teams.fetchRelatedTeams(teamId)
             );
             if (request.data) setGroups(request.data);
         }
@@ -44,56 +46,54 @@ const TeamView = (props) => {
         try {
             fetchDetails();
             fetchMembers();
-            fetchGroups();
+            // fetchGroups();
         }
         catch (err) {
             <Redirect to="/404"/>
         }
-    }, [teamUsername]);
+    }, [teamId]);
 
 
     async function inviteMember() {
-
-        let user = await api.get(urls.user.fetchByUsername(inviteeUsername));
-        let userData = user.data;
-
-        let team = await api.get(urls.teams.fetchDetails(teamUsername));
-        let teamId = team.data.id;
-
-        userData.cliques.push(teamId);
-        await api.put(
-            urls.user.fetchByUsername(inviteeUsername),
-            userData
-        )
-        .then(
-            (response) => {
-                <Redirect to={`/teams/${teamUsername}`}/>
+        let userRequest = await api.get(urls.user.fetchAll());
+        let allUsers = userRequest.data;
+        let inviteeId;
+        for (let user of allUsers) {
+            if (user.username === inviteeUsername) {
+                inviteeId = user.id;
+                break;
             }
-        )
-
-
+        }
+        let newMembers = details.members.map((member) => {return member.id});
+        let managerIds = details.managers.map((manager) => {return manager.id});
+        let ownerIds = details.owners.map((owner) => {return owner.id});
+        newMembers.push(inviteeId);
+        let newTeamBody = {
+            ...details,
+            members: newMembers,
+            managers: managerIds,
+            owners: ownerIds,
+        }
+        let addUserRequest = await api.put(urls.teams.fetchById(teamId), newTeamBody);
+        let responseData = addUserRequest.data;
+        setDetails(responseData);
+        let allMembers = responseData.members.concat(responseData.managers.concat(responseData.owners));
+        setMembers(allMembers);
     }
 
-    async function removeMember(member) {
-        let user = await api.get(urls.user.fetchByUsername(member));
-        let userData = user.data;
-        let team = await api.get(urls.teams.fetchDetails(teamUsername));
-        let teamId = team.data.id;
-
-        // Remove the user locally
-        userData.cliques.splice(userData.cliques.indexOf(teamId));
-        
-        // Make a put request
-        await api.put(
-            urls.user.fetchByUsername(member),
-            userData
-        )
-        .then(
-            (response) => {
-                <Redirect to={`/teams/${teamUsername}`}/>
-            }
-        )
-
+    async function removeMember(toRemove) {
+        let teamRequest = await api.get(urls.teams.fetchById(teamId));
+        let team = teamRequest.data;
+        let levels = ['members', 'managers', 'owners'];
+        // Filter out the member that's being removed, then map the objects to IDs so that we can make a put request.
+        levels.forEach((level) => {
+            team[level] = team[level].filter((member) => {return member.id !== toRemove}).map((memberObj) =>{return memberObj.id});
+        })
+        let putResponse = await api.put(urls.teams.fetchById(teamId), team);
+        let newData = putResponse.data;
+        setDetails(newData);
+        let allMembers = newData.members.concat(newData.managers.concat(newData.owners));
+        setMembers(allMembers);
     }
 
     const handleSubmit = (evt) => {
@@ -150,7 +150,7 @@ const TeamView = (props) => {
             relatedCliques: [details.id]
         }
         setShowCreateModal(false);
-        let response = await api.post(urls.teams.fetchAll, body);
+        let response = await api.post(urls.teams.fetchAll(), body);
         body['id'] = response.data.id;
         let newGroups = groups
         newGroups.push(body);
@@ -272,7 +272,7 @@ const TeamView = (props) => {
                                                                         </Dropdown.Toggle>
                                                                         <Dropdown.Menu>
                                                                         <Dropdown.Item href="#">Permissions</Dropdown.Item>
-                                                                        <Dropdown.Item onClick={() => {removeMember(item.username)}}>Remove</Dropdown.Item>
+                                                                        <Dropdown.Item onClick={() => {removeMember(item.id)}}>Remove</Dropdown.Item>
                                                                     </Dropdown.Menu>
                                                                 </Dropdown>
                                                             </Col>
@@ -319,10 +319,10 @@ const TeamView = (props) => {
                     </Container>
                     <Row style={{'marginTop': '15px'}}>
                         <Col>
-                            <Widget appTitle='calendar' userInfo={props.userInfo} teamFilter={teamUsername}></Widget>
+                            <Widget appTitle='calendar' userInfo={props.userInfo} teamDetails={details} teamId={teamId}></Widget>
                         </Col>
                         <Col>
-                            <Widget appTitle='announcements' userInfo={props.userInfo} teamFilter={teamUsername}></Widget>
+                            <Widget appTitle='announcements' userInfo={props.userInfo} teamDetails={details} teamId={teamId}></Widget>
                         </Col>
                     </Row>
                 </Col>

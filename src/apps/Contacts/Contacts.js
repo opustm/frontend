@@ -1,12 +1,8 @@
 import React, { Component } from "react";
-import { Container, Jumbotron } from "react-bootstrap";
+import { Container, Jumbotron, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import * as Icon from "react-icons/fi";
-import {
-  Axios as api,
-  API_ENDPOINTS as urls,
-} from "../../services/api.service";
-import { getContacts } from "../../services/contacts.service";
+import { Axios as api, API_ENDPOINTS as urls } from "../../services/api.service";
 import BootstrapTable from "react-bootstrap-table-next";
 import "./Contacts.css";
 
@@ -25,69 +21,70 @@ export default class Contacts extends Component {
     super(props);
     document.title = "Opus | Contacts";
     this.state = {
-      allContacts: [],
       contactObjects: [],
-      teamDict: {},
+      teamIds: new Set(),
+      showSpinner: true
     };
   }
 
   componentDidMount() {
     if (this.props.userInfo.username) {
-      this.getUserContacts();
-      this.createTeamDict();
+      this.getUserTeams();
     }
+  }
+
+  async getUserTeams() {
+    let teamRequest = await api.get(urls.user.fetchTeams(this.props.userInfo.id));
+    let teams = teamRequest.data;
+    let teamIdSet = new Set();
+    teams.forEach((team) => {teamIdSet.add(team.id)});
+    this.setState({teamIds: teamIdSet}, () => {this.getUserContacts()});
   }
 
   async getUserContacts() {
-    let contacts = await getContacts(this.props.userInfo);
+    let contactRequest = await api.get(urls.user.fetchContacts(this.props.userInfo.id));
+    let contacts = contactRequest.data;
     let contactObjects = [];
-    contacts.forEach((contact) => {
-      if (contact.id !== this.props.userInfo.id) {
-        let object = {
-          meet: (
-            <span>
-              <Link to="/chat">
-                <Icon.FiMessageSquare />
-              </Link>
-              <Link to="/calendar">
-                <Icon.FiCalendar />
-              </Link>
-            </span>
-          ),
-          firstName: contact.first_name,
-          lastName: contact.last_name,
-          username: (
-            <Link to={`/user/${contact.username}`}>{contact.username}</Link>
-          ),
-          email: contact.email,
-          phoneNumber: contact.phone,
-          sharedTeams: this.checkSharedTeams(contact),
-        };
-        contactObjects.push(object);
-      }
-    });
-    this.setState({
-      allContacts: contacts,
-      contactObjects: contactObjects,
-    });
-  }
-
-  async createTeamDict() {
-    let dict = {};
-    let cliqueIds = this.props.userInfo.cliques;
-    for (let cliqueId of cliqueIds) {
-      let response = await api.get(urls.teams.fetchById(cliqueId));
-      let cliqueName = response.data.name;
-      dict[cliqueId] = cliqueName;
+    for (let contact of contacts) {
+      let object = {
+        meet: (
+          <span>
+            <Link to="/chat">
+              <Icon.FiMessageSquare />
+            </Link>
+            <Link to="/calendar">
+              <Icon.FiCalendar />
+            </Link>
+          </span>
+        ),
+        firstName: contact.first_name,
+        lastName: contact.last_name,
+        username: (
+          <Link to={{
+            pathname: `/user/${contact.username}`,
+            state: {userId: contact.id}
+          }}>{contact.username}</Link>
+        ),
+        email: contact.email,
+        phoneNumber: contact.phone,
+        sharedTeams: await this.checkSharedTeams(contact),
+      };
+      contactObjects.push(object);
     }
-    this.setState({ teamDict: dict });
+
+    this.setState({
+      contactObjects: contactObjects,
+      showSpinner: false
+    });
   }
 
-  checkSharedTeams(singleContact) {
+  async checkSharedTeams(singleContact) {
+    let contactTeamRequest = await api.get(urls.user.fetchTeams(singleContact.id));
+    let contactTeams = contactTeamRequest.data;
     let toReturn = "";
-    for (let id of singleContact.cliques) {
-      if (id in this.state.teamDict) {
-        toReturn += this.state.teamDict[id] + ", ";
+    for (let team of contactTeams) {
+      if (this.state.teamIds.has(team.id)) {
+        toReturn += team.name + ", ";
       }
     }
     toReturn = toReturn.slice(0, -2);
@@ -95,14 +92,18 @@ export default class Contacts extends Component {
   }
 
   render() {
-    return this.props.userInfo.username ? (
+    return (
       <Container fluid>
         <Jumbotron>
           <h1>Contacts</h1>
           <p>
-            You have <a href="https://google.com">3 messages</a>.
+            You have {this.state.contactObjects.length} contact{this.state.contactObjects.length === 1 ? '' : 's'}.
           </p>
         </Jumbotron>
+        { this.state.showSpinner ? 
+          <Spinner animation="border" role="status"/> :
+          <></>
+        }
         <BootstrapTable
           keyField="id"
           data={this.state.contactObjects}
@@ -110,8 +111,6 @@ export default class Contacts extends Component {
           className="contactsTable"
         />
       </Container>
-    ) : (
-      <h4>Log in to view your contacts</h4>
-    );
+    )
   }
 }

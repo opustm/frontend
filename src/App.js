@@ -71,13 +71,13 @@ export default function App() {
               <Route path="/" exact component={() => {return <Home userInfo={userData}/>}}/>
               <Route path="/calendar/:teamUsername?" exact component={(props) => {return <Calendar {...props} userInfo={userData}/>}}/>
               <Route path="/scheduler" exact component={Scheduler}/>
-              <Route path="/teams" exact component={Teams}/>
+              <Route path="/teams" exact component={(props) => {return <Teams userInfo={userData}/>}}/>
               <Route path="/chat" exact component={Chat}/>
               <Route path="/contacts" exact component={() => {return <Contacts userInfo={userData}/>}}/>
               <Route path="/announcements/:teamUsername?" exact component={(props) => {return <Announcements {...props} userInfo={userData}/>}}/>
               <Route path="/user/:username" component={(props) => {return <Profile {...props} userInfo={userData} />}}/>
               <Route path="/teams/:teamUsername/settings" exact component={TeamSettings}/>
-              <Route path="/teams/:teamUsername" exact component={() => {return <TeamView userInfo={userData}/>}}/>
+              <Route path="/teams/:teamUsername" exact component={(props) => {return <TeamView userInfo={userData}/>}}/>
             </div>
             : <Redirect to='/about' />
           }
