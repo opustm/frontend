@@ -44,7 +44,7 @@ export default class Calendar extends Component{
     
 
     componentDidMount() {
-        if (this.props.userInfo.username) {
+        if (this.props.userInfo) {
             this.fetchData();
         }
     }
@@ -60,6 +60,7 @@ export default class Calendar extends Component{
         teams.forEach((team) => {
             let teamMembers = team.members.concat(team.managers.concat(team.owners));
             membersDict[team.id] = teamMembers;
+            newIdDict[team.id] = team.name;
         })
 
         this.setState({
@@ -124,7 +125,7 @@ export default class Calendar extends Component{
             let tableEvent = {
                 x: <Icon.FiXCircle onClick={() => {this.deleteEvent(body)}} size={20}/>,
                 name: this.state.eventName,
-                team: team ? team : 'N/A',
+                team: team ? this.state.idToTeamDict[team] : 'N/A',
                 time: `${this.parseDate(start.toISOString())} -- ${this.parseDate(end.toISOString())}`,
                 details: this.state.eventDetails,
             }
@@ -300,7 +301,7 @@ export default class Calendar extends Component{
                             <Form.Control style={{'marginTop': '10px', 'marginBottom': '10px', 'marginLeft': '10px'}} as="select" onChange={(e) => {this.handleFilter(e.target.value)}}>
                                 <option>All</option>
                                 {this.state.userTeams.map((team) => {
-                                    return <option key={team.id} selected={team.id === this.state.eventFilter} value={team.name}>{team.name} Team</option>;
+                                    return <option key={team.id} selected={team.name === this.state.eventFilter} value={team.name}>{team.name} Team</option>;
                                 })}
                                 <option value='N/A'>Events without an associated team</option>
                             </Form.Control>

@@ -319,10 +319,10 @@ const TeamView = (props) => {
                     </Container>
                     <Row style={{'marginTop': '15px'}}>
                         <Col>
-                            <Widget appTitle='calendar' userInfo={props.userInfo} teamFilter={teamId}></Widget>
+                            <Widget appTitle='calendar' userInfo={props.userInfo} teamDetails={details} teamId={teamId}></Widget>
                         </Col>
                         <Col>
-                            <Widget appTitle='announcements' userInfo={props.userInfo} teamFilter={teamId}></Widget>
+                            <Widget appTitle='announcements' userInfo={props.userInfo} teamDetails={details} teamId={teamId}></Widget>
                         </Col>
                     </Row>
                 </Col>

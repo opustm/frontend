@@ -17,11 +17,11 @@ export default class Widget extends Component {
 
   componentDidMount() {
     let t = this;
-    async function getDetails(appTitle, userInfo, teamFilter) {
-      let newState = await widgetDetails(appTitle, userInfo, teamFilter);
+    async function getDetails(appTitle, userInfo, teamId) {
+      let newState = await widgetDetails(appTitle, userInfo, teamId);
       t.setState(newState);
     }
-    getDetails(this.props.appTitle, this.props.userInfo, this.props.teamFilter);
+    getDetails(this.props.appTitle, this.props.userInfo, this.props.teamId);
   }
 
   // A generic widget will have the following:
@@ -40,7 +40,10 @@ export default class Widget extends Component {
   render() {
     return (
       <Container>
-        <Link to={this.props.teamFilter ? `/${this.props.appTitle}/${this.props.teamFilter}` : `${this.props.appTitle}`} className='widgetLink'>
+        <Link to={{
+            pathname: this.props.teamDetails ? `/${this.props.appTitle}/${this.props.teamDetails.name}` : `${this.props.appTitle}`,
+            state: {teamId: this.props.teamId}
+          }} className='widgetLink'>
           <Card>
             <Card.Header>{this.state.icon} {this.state.title}</Card.Header>
             <Card.Body>

@@ -1,10 +1,10 @@
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 import * as Icon from 'react-icons/fi';
 
-export async function widgetDetails(widgetType, userInfo, teamFilter) {
+export async function widgetDetails(widgetType, userInfo, teamId) {
   switch(widgetType){
     case 'announcements':
-      let announcementData = await getData(userInfo, 'announcements', teamFilter);
+      let announcementData = await getData(userInfo, 'announcements', teamId);
       return ({
         title: 'Announcements',
         description: 'View your announcements',
@@ -13,7 +13,7 @@ export async function widgetDetails(widgetType, userInfo, teamFilter) {
       });
 
     case 'calendar':
-      let calendarData = await getData(userInfo, 'calendar', teamFilter);
+      let calendarData = await getData(userInfo, 'calendar', teamId);
       return ({
         title: 'Calendar',
         description: 'View your upcoming events',
@@ -22,7 +22,7 @@ export async function widgetDetails(widgetType, userInfo, teamFilter) {
       });
 
     case 'contacts':
-      let contactData = await getData(userInfo, 'contacts', teamFilter);
+      let contactData = await getData(userInfo, 'contacts', teamId);
       return ({
         title: 'Contacts',
         description: 'View your contacts',
@@ -31,7 +31,7 @@ export async function widgetDetails(widgetType, userInfo, teamFilter) {
       });
 
     case 'teams':
-      let teamData = await getData(userInfo, 'teams', teamFilter);
+      let teamData = await getData(userInfo, 'teams', teamId);
       return ({
         title: 'Teams',
         description: 'View your teams',
