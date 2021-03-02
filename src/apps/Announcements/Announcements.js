@@ -221,7 +221,7 @@ export default class Announcements extends Component {
                     <small style={{'paddingLeft': '10px', 'paddingTop': '10px'}}>* indicates required field</small>
                     <Modal.Body>
                         <Form onSubmit={(e) => {this.handleCreate(e)}}>
-                            <Form.Group>
+                            <Form.Group controlId="teamSelect">
                                 <Form.Label>Select Team *</Form.Label>
                                 <Form.Control as="select" onChange={(e) => {this.setState({announcementTeam: parseInt(e.target.value)})}}>
                                     <option selected disabled hidden>Choose a team</option>

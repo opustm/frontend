@@ -6,9 +6,6 @@ import {SidebarApps,SidebarTeams} from './navigation.data';
 import {Dropdown} from 'react-bootstrap';
 import {IconContext} from 'react-icons';
 import './navigation.css';
-import DropdownToggle from 'react-bootstrap/esm/DropdownToggle';
-import DropdownItem from 'react-bootstrap/esm/DropdownItem';
-import DropdownMenu from 'react-bootstrap/esm/DropdownMenu';
 
 function Navigation(props){
     const showSidebar = () => props.setSidebar(!sidebar)
@@ -54,17 +51,17 @@ function Navigation(props){
                     Opus Team
                 </Link>
                 <Dropdown>
-                    <DropdownToggle variant="outline-secondary">
+                    <Dropdown.Toggle variant="outline-secondary">
                         <Icon.FiUser id='profileMenuIcon' size={25} color='white'></Icon.FiUser>
-                    </DropdownToggle>
-                    <DropdownMenu>
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
                         <Link className='dropdown-item' to={{
                             pathname: props ? `/user/${props.userInfo.username}` : '',
                             state: {userId: props.userInfo.id}
                         }}>
                             <Icon.FiUser color='#7b8a8b' className='dropdownIcon'/>View Profile
                         </Link>
-                        <DropdownItem
+                        <Dropdown.Item
                             onClick={() => {
                                 localStorage.removeItem('token');
                                 props.onLoggedInChange(false);
@@ -73,8 +70,8 @@ function Navigation(props){
                         >
                             <Icon.FiLogOut color='#7b8a8b' className='dropdownIcon'/>
                             Logout
-                        </DropdownItem>
-                    </DropdownMenu>
+                        </Dropdown.Item>
+                    </Dropdown.Menu>
                 </Dropdown>
             </div>
             </IconContext.Provider>
