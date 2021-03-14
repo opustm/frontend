@@ -59,28 +59,19 @@ export default class Announcements extends Component {
     }
 
     async fetchData() {
-        let teams = [];
-        let events = [];
         let idToEvent = {};
         let idToTeam = {};
-
         const request = await api.get(urls.user.fetchTeams(this.props.userInfo.id));
-        teams = request.data;
+        let teams = request.data;
+        teams.forEach((team) => {idToTeam[team.id] = team.name});
 
-        for (let team of teams) {
-            idToTeam[team.id] = team.name;
-            const request2 = await api.get(urls.event.fetchByTeam(team.id));
-            let dataArray = request2.data;
-            for (let event of dataArray){
-                let eventId = event["id"];
-                events.push(event);
-                idToEvent[eventId]=event;
-            }
-        }
+        const eventRequest = await api.get(urls.event.fetchByUser(this.props.userInfo.id));
+        let teamEvents = eventRequest.data.filter((event) => {return event.team});
+        teamEvents.forEach((event) => {idToEvent[event.id] = event});
 
         this.setState({
             userTeams: teams,
-            teamEvents: events,
+            teamEvents: teamEvents,
             idToEventDict: idToEvent,
             idToTeamDict: idToTeam
         }, () => {this.fetchAnnouncements()});
@@ -92,7 +83,7 @@ export default class Announcements extends Component {
         let tableObjects = [];
         announcements.forEach((announcement) => {
             let object = {
-                x: <Icon.FiXCircle className='deleteButton' size={20} onClick={() => {this.deleteAnnouncement(announcement)}}/>,
+                x: <Icon.FiXCircle data-testid="deleteButton" className='deleteButton' size={20} onClick={() => {this.deleteAnnouncement(announcement)}}/>,
                 priority: this.state.priorityDict[announcement.priority][0],
                 team: announcement.team.name,
                 creator: `${announcement.creator.first_name} ${announcement.creator.last_name}`,
@@ -132,9 +123,9 @@ export default class Announcements extends Component {
             newAnnouncements.push(body);
 
             let tableObject = {
-                x: <Icon.FiXCircle className='deleteButton' size={20} onClick={() => {this.deleteAnnouncement(body)}}/>,
+                x: <Icon.FiXCircle data-testid="deleteButton" className='deleteButton' size={20} onClick={() => {this.deleteAnnouncement(body)}}/>,
                 priority: this.state.priorityDict[this.state.announcementPriority][0],
-                team: this.state.announcementTeam,
+                team: this.state.idToTeamDict[this.state.announcementTeam],
                 creator: `${this.props.userInfo.first_name} ${this.props.userInfo.last_name}`,
                 message: this.state.announcementBody,
                 event: this.state.announcementEvent ? this.state.idToEventDict[this.state.announcementEvent]['name'] : 'N/A',
@@ -149,6 +140,7 @@ export default class Announcements extends Component {
             this.setState({
                 userAnnouncements: newAnnouncements,
                 showCreatedToast: true,
+                showCreateModal: false,
                 announcementBody: '',
                 announcementObjects: tableObjects,
                 displayedAnnouncements: displayed
@@ -230,7 +222,7 @@ export default class Announcements extends Component {
                                     })}
                                 </Form.Control>
                             </Form.Group>
-                            <Form.Group>
+                            <Form.Group controlId="eventSelect">
                                 <Form.Label>Select Event</Form.Label>
                                 <Form.Control as="select" onChange={(e) => {this.setState({announcementEvent: parseInt(e.target.value)})}}>
                                     <option selected disabled hidden>Choose an event</option>
@@ -242,7 +234,7 @@ export default class Announcements extends Component {
                                 }
                                 </Form.Control>
                             </Form.Group>
-                            <Form.Group>
+                            <Form.Group controlId="prioritySelect">
                                 <Form.Label>Select Priority *</Form.Label>
                                 <Form.Control as="select" onChange={(e) => {this.setState({announcementPriority: parseInt(e.target.value)})}}>
                                     <option selected disabled hidden>Choose a priority</option>
@@ -251,11 +243,11 @@ export default class Announcements extends Component {
                                     <option value={3}>Low</option>
                                 </Form.Control>
                             </Form.Group>
-                            <Form.Group>
+                            <Form.Group controlId="durationInput">
                                 <Form.Label>Announcement Duration in Hours (Minimum: 1) *</Form.Label>
                                 <Form.Control type="number" onChange={(e) => {this.setState({announcementDuration: parseInt(e.target.value)})}} />
                             </Form.Group>
-                            <Form.Group>
+                            <Form.Group controlId="announcementInput">
                                 <Form.Label>Announcement *</Form.Label>
                                 <Form.Control 
                                     as="textarea"

@@ -28,9 +28,7 @@ export default class Contacts extends Component {
   }
 
   componentDidMount() {
-    if (this.props.userInfo.username) {
-      this.getUserTeams();
-    }
+    this.getUserTeams();
   }
 
   async getUserTeams() {
