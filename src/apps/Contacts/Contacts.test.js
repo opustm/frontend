@@ -2,74 +2,20 @@ import '@testing-library/jest-dom';
 import { Axios } from '../../services/api.service';
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
+import mockAPI from '../../services/test.service';
 import Contacts from './Contacts';
 
 jest.mock('../../services/api.service');
-const teamData = {data: [{id: 1, name: 'CS 150'}]};
-
-const userInfo = {
-  id: "12345",
-  username: "testUser",
-  first_name: 'Test',
-  last_name: 'User'
-}
-
-const userContacts = {
-  data: [
-    {
-      id: 100,
-      first_name: 'Jeff',
-      last_name: 'Goldblum',
-      username: 'jgoldblum',
-      email: 'goldblum@hotmail.com',
-      phone: '09876',
-    },
-    {
-      id: 101,
-      first_name: 'Rip',
-      last_name: 'Van Winkle',
-      username: 'vanwinkle',
-      email: 'rvw@yahoo.com',
-      phone: '54321',
-    }
-  ]
-}
-
-const goldblumTeams = {
-  data: [
-    {
-      id: 1,
-      name: 'CS 150'
-    },
-    {
-      id: 2,
-      name: 'Hollywood Stars'
-    }
-  ]
-}
-
-const vanWinkleTeams = {
-  data: [
-    {
-      id: 1,
-      name: 'CS 150'
-    },
-    {
-      id: 3,
-      name: 'Old People'
-    },
-  ]
-}
 
 beforeEach(() => {
   // Mock Axios to intercept the following requests:
   // 1. GET user teams
   // 2. GET user contacts
   // 3. n GET requests where n is the length of user contacts (in this case, twice)
-  Axios.get.mockResolvedValueOnce(teamData).mockResolvedValueOnce(userContacts).mockResolvedValueOnce(goldblumTeams).mockResolvedValueOnce(vanWinkleTeams);
+  Axios.get.mockResolvedValueOnce(mockAPI.teamData).mockResolvedValueOnce(mockAPI.userContacts).mockResolvedValueOnce(mockAPI.contactTeams.goldblum).mockResolvedValueOnce(mockAPI.contactTeams.vanWinkle);
   render(
     <Router>
-      <Contacts userInfo={userInfo} />
+      <Contacts userInfo={mockAPI.userInfo} />
     </Router>
   )
 })

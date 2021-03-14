@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom';
 import { Axios, API_ENDPOINTS } from '../../services/api.service';
 import { fireEvent, render, screen } from '@testing-library/react';
+import mockAPI from '../../services/test.service';
 import Announcements from './Announcements';
 
 jest.mock('../../services/api.service');
@@ -15,53 +16,16 @@ jest.mock('../../services/api.service');
 // Test filtering (both by priority and by team) -- priority covers 187-190, 311-317, 329
 //    Make sure certain records appear/disappear
 
-const userInfo = {
-  id: "12345",
-  username: "testUser",
-  first_name: 'Test',
-  last_name: 'User'
-}
 const matchData = {
   params: {}
 }
 
 beforeEach(() => {
-  // teamData, eventData, announcementData are all mock data that represent what the API would respond with.
-  const teamData = {data: [{id: 1, name: 'CS 150'}]};
-  const eventData = {
-    data: [
-      {
-        id: 1,
-        team: {
-          name: 'CS 150'
-        },
-        name: 'Introduction to CS'
-      }
-    ]
-  };
-  const announcementData = {
-    data: [
-      {
-        id: 1,
-        team: {
-          name: 'CS 150'
-        },
-        creator: {
-          first_name: 'Bob',
-          last_name: 'Ross'
-        },
-        priority: 1,
-        announcement: 'Hello World!',
-        event: null,
-        end: "2021-02-23T03:35:28.800000Z"
-      }
-    ]
-  }
   // Intercept the API calls (might be able to move this into a beforeEach() block along with the render)
-  Axios.get.mockResolvedValueOnce(teamData).mockResolvedValueOnce(eventData).mockResolvedValueOnce(announcementData);
+  Axios.get.mockResolvedValueOnce(mockAPI.teamData).mockResolvedValueOnce(mockAPI.eventData).mockResolvedValueOnce(mockAPI.announcementData);
 
   // Render the Announcements component
-  render(<Announcements userInfo={userInfo} match={matchData}/>);
+  render(<Announcements userInfo={mockAPI.userInfo} match={matchData}/>);
 })
 
 test('Renders Announcements component', () => {
@@ -185,7 +149,6 @@ test('Deletes announcement from table', () => {
       cancelable: false
     })   
   )
-  expect(screen.getByText('abcdefg')).toBeInTheDocument();
   // There should now be one less row in the table than there was before we clicked a delete button
   deleteButtons = screen.getAllByTestId('deleteButton');
   console.log(deleteButtons);
