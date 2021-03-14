@@ -44,9 +44,7 @@ export default class Calendar extends Component{
     
 
     componentDidMount() {
-        if (this.props.userInfo) {
-            this.fetchData();
-        }
+        this.fetchData();
     }
 
     async fetchData(){

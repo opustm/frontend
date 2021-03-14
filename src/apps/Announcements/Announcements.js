@@ -53,9 +53,7 @@ export default class Announcements extends Component {
     }
 
     componentDidMount() {
-        if (this.props.userInfo.id) {
-            this.fetchData();
-        }
+        this.fetchData();
     }
 
     async fetchData() {

@@ -22,7 +22,7 @@ const matchData = {
 
 beforeEach(() => {
   // Intercept the API calls (might be able to move this into a beforeEach() block along with the render)
-  Axios.get.mockResolvedValueOnce(mockAPI.teamData).mockResolvedValueOnce(mockAPI.eventData).mockResolvedValueOnce(mockAPI.announcementData);
+  Axios.get.mockResolvedValueOnce(mockAPI.userTeams).mockResolvedValueOnce(mockAPI.userEvents).mockResolvedValueOnce(mockAPI.userAnnouncements);
 
   // Render the Announcements component
   render(<Announcements userInfo={mockAPI.userInfo} match={matchData}/>);

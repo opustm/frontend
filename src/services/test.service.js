@@ -9,11 +9,14 @@ const mockAPI = {
     first_name: 'Test',
     last_name: 'User'
   },
-  teamData: {
+  userTeams: {
     data: [
       {
         id: 1,
-        name: 'CS 150'
+        name: 'CS 150',
+        members: [],
+        managers: [],
+        owners: []
       }
     ]
   },
@@ -37,18 +40,20 @@ const mockAPI = {
       }
     ]
   },
-  eventData: {
+  userEvents: {
     data: [
       {
         id: 1,
         team: {
           name: 'CS 150'
         },
-        name: 'Introduction to CS'
+        name: 'Introduction to CS',
+        details: 'Our first class meeting for CS 150',
+
       }
     ]
   },
-  announcementData: {
+  userAnnouncements: {
     data: [
       {
         id: 1,
