@@ -1,15 +1,40 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 // Add {useState} for login validation
 import * as Icon from 'react-icons/fi';
 import {Link} from 'react-router-dom';
-import {SidebarApps,SidebarTeams} from './navigation.data';
+import {SidebarApps} from './navigation.data';
 import {Dropdown} from 'react-bootstrap';
 import {IconContext} from 'react-icons';
+import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 import './navigation.css';
+
+// TO DO:
+// Renders teams correctly on load: DONE
+// Updates when a user deletes/leaves/adds team
+// Render the most recent teams only? i.e. the last six a user interacted with
 
 function Navigation(props){
     const showSidebar = () => props.setSidebar(!sidebar)
+    const [teams, setTeams] = useState([]);
     let sidebar = props.sidebar;
+    useEffect(() => {
+        async function fetchTeams() {
+            let teamRequest = await api.get(urls.user.fetchTeams(props.userInfo.id));
+            let newTeamIds = new Set(teamRequest.data.map((team) => {return team.id}));
+            let currentTeamIds = teams.map((team) => {return team.id});
+            // JS doesn't have an equality operator for sets or lists, so we're stuck with the code below
+            let equalSize = newTeamIds.size === currentTeamIds.length;
+            let equal;
+            if (equalSize) {
+                equal = currentTeamIds.every(e => newTeamIds.has(e));
+            }
+            if (!equal) {
+                setTeams(teamRequest.data);
+            }
+        }
+        fetchTeams();
+    })
+
     return (
         <>
             <IconContext.Provider value={{"color":"#000000"}}>
@@ -27,14 +52,17 @@ function Navigation(props){
                        );
                     })}
                     <li className="nav-section">My Teams</li>
-                    {SidebarTeams.map((item,index) => {
+                    {teams.map((team,index) => {
                         return (
-                            <li key={index} className={item.cName}>
-                                <Link to={item.path}>
-                                    <img src={item.photo} 
+                            <li key={index} className='nav-text team'>
+                                <Link to={{
+                                        pathname: `/teams/${team.name}/`,
+                                        state: {teamId: team.id}
+                                    }}>
+                                    <img src={`https://via.placeholder.com/50/18BC9C/000000?text=${team.name[0].toUpperCase()}`} 
                                         alt="Team's profile avatar"
                                         className="avatar nav-menu-photo"/>
-                                    <span>{item.title}</span>
+                                    <span>{team.name}</span>
                                 </Link>
                             </li>
                         );
