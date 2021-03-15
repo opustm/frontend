@@ -38,6 +38,7 @@ test('Renders Announcements component', () => {
 
   // Check that the dummy announcement is displayed
   expect(screen.getByText('Bob Ross')).toBeInTheDocument();
+  expect(screen.getByText('Hello World!')).toBeInTheDocument();
 });
 
 test('Modal remains open on bad data', () => {

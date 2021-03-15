@@ -23,7 +23,7 @@ beforeEach(() => {
 test('Contacts renders correctly', () => {
   // Verify that the user's contacts are in the table
   expect(screen.getByText('Jeff')).toBeInTheDocument();
-  expect(screen.getByText('Rip')).toBeInTheDocument();
+  expect(screen.getByText('Van Winkle')).toBeInTheDocument();
 
   // Verify that the shared teams are correct -- only CS 150 should appear since it's the only shared team
   // Note: getBy will return an error if not found, but queryBy will return an empty list

@@ -49,7 +49,18 @@ const mockAPI = {
         },
         name: 'Introduction to CS',
         details: 'Our first class meeting for CS 150',
-
+        start: "2021-02-18T16:45:54Z",
+        end: "2021-02-18T16:45:55Z"
+      },
+      {
+        id: 2,
+        team: {
+          name: 'CS 150'
+        },
+        name: 'Lesson 2',
+        details: 'Our second class meeting for CS 150',
+        start: "2021-03-18T16:45:54Z",
+        end: "2021-03-19T16:45:55Z"
       }
     ]
   },
