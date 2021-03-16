@@ -106,12 +106,6 @@ export default class Profile extends Component {
               <Container>
                 <Row>
                   <Col md={{span: 3}}>
-                    <Link to='/chat' >
-                      <Icon.FiMessageSquare size={30} strokeWidth={1.5}/>
-                      <p>Chat</p>
-                    </Link>
-                  </Col>
-                  <Col md={{span: 3}}>
                     <Link to='/calendar'>
                       <Icon.FiCalendar size={30} strokeWidth={1.5}/>
                       <p>Meet</p>

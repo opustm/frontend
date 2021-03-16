@@ -47,9 +47,6 @@ export default class Contacts extends Component {
       let object = {
         meet: (
           <span>
-            <Link to="/chat">
-              <Icon.FiMessageSquare />
-            </Link>
             <Link to="/calendar">
               <Icon.FiCalendar />
             </Link>

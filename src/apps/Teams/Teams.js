@@ -22,6 +22,7 @@ import "./teams.css";
 
 let createFormPlaceholderData = {
   name: "New Team Name",
+  description: "",
   teamType: "team",
   picture: "https://via.placeholder.com/40/5555555?text=T",
   members: [],
@@ -40,6 +41,11 @@ const Teams = (props) => {
     value: teamName,
     bind: bindTeamName,
     reset: resetTeamName,
+  } = useInput("");
+  const {
+    value: teamDescription,
+    bind: bindTeamDescription,
+    reset: resetTeamDescription
   } = useInput("");
   document.title = "Opus | Teams";
 
@@ -94,9 +100,11 @@ const Teams = (props) => {
   const handleSubmit = (evt) => {
     evt.preventDefault();
     createFormPlaceholderData.name = teamName;
+    createFormPlaceholderData.description = teamDescription;
     createFormPlaceholderData.owners = [props.userInfo.id];
     createTeam();
     resetTeamName();
+    resetTeamDescription();
   };
 
   async function handleLeave(teamToLeave) {
@@ -141,6 +149,10 @@ const Teams = (props) => {
               <Form.Group>
                 <Form.Label>Team Name</Form.Label>
                 <Form.Control type="text" {...bindTeamName} />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Description</Form.Label>
+                <Form.Control type="text" {...bindTeamDescription} />
               </Form.Group>
               <Button
                 type="submit"
@@ -210,7 +222,7 @@ const Teams = (props) => {
                   </div>
                 </Row>
                 <Row className="small">
-                  This is a description for the team {item.name}
+                  {item.description}
                 </Row>
               </Col>
               <Col md={1} lg={1} className="text-right">

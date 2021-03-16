@@ -219,7 +219,7 @@ const TeamView = (props) => {
                         <Col md={9} lg={10}>
                             <div className="team-view-title">
                                 <h1>{details? details.name: null} </h1>
-                                <p>This team is a team for so and so purposes </p>
+                                <p>{details ? details.description : ''}</p>
                             </div>
 
                             <Row>
@@ -263,14 +263,20 @@ const TeamView = (props) => {
                                                     <ListGroup.Item key={index} className="member-element">
                                                         <Row>
                                                             <Col className="text-center" sm={4} md={4}>
-                                                                <Link to={`/user/${item.username}`}>
+                                                                <Link to={{
+                                                                    pathname: `/user/${item.username}`,
+                                                                    state: {userId: item.id}
+                                                                    }}>
                                                                 <Image roundedCircle
                                                                     src={`https://via.placeholder.com/40/AF34BB/FFFFFF?text=${item.first_name[0].toUpperCase()}`}
                                                                     alt="user profile"/>
                                                                 </Link>
                                                             </Col>
                                                             <Col sm={6} md={6}>
-                                                                <Link to={`/user/${item.username}`}>
+                                                                <Link to={{
+                                                                    pathname: `/user/${item.username}`,
+                                                                    state: {userId: item.id}
+                                                                    }}>
                                                                     <p>{item.first_name} {item.last_name}</p>
                                                                 </Link>
                                                             </Col>
