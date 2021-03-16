@@ -9,8 +9,6 @@ import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service'
 import './navigation.css';
 
 // TO DO:
-// Renders teams correctly on load: DONE
-// Updates when a user deletes/leaves/adds team
 // Render the most recent teams only? i.e. the last six a user interacted with
 
 function Navigation(props){
