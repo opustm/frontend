@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 import { useInput } from '../../services/forms.service';
 import { Container, Modal, Card, ListGroup, Dropdown, Button, Row, Col, Jumbotron, Image, Form } from 'react-bootstrap';
-import { Link, Redirect, useParams, useLocation } from 'react-router-dom';
+import { Link, Redirect, useParams, useLocation, useHistory } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
 import Widget from '../../components/Widget/widget.component';
 import './teams.css';
@@ -17,6 +17,7 @@ const TeamView = (props) => {
     const [aboutToDelete, setAboutToDelete] = useState();
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [newGroupName, setNewGroupName] = useState();
+    let history = useHistory();
     let teamUsername = useParams().teamUsername;
     let teamId = useLocation().state.teamId;
     document.title = `Opus | Team - ${teamUsername}`;
@@ -94,6 +95,15 @@ const TeamView = (props) => {
         setDetails(newData);
         let allMembers = newData.members.concat(newData.managers.concat(newData.owners));
         setMembers(allMembers);
+        // Need to update the navbar if a user removes themselves
+        if (toRemove === props.userInfo.id) {
+            props.updateTeams(details.id);
+            // Delete the team if it's empty. Should give a warning like on the Teams page but I don't want to copy/paste right now.
+            if (details.members.length + details.managers.length + details.owners.length <= 1) {
+                await api.delete(urls.teams.fetchById(details.id));
+            }
+            history.push('/teams');
+        }
     }
 
     const handleSubmit = (evt) => {
@@ -158,7 +168,6 @@ const TeamView = (props) => {
         setNewGroupName('');
     }
     
-  
     return (
             <Container fluid>
                 <Modal show={showConfirmModal} onHide={() => {setShowConfirmModal(false)}}>
@@ -203,7 +212,7 @@ const TeamView = (props) => {
                         <Row>
                         <Col md={3} lg={2} className="text-center">
                             <Image roundedCircle
-                                src="https://via.placeholder.com/80/0ea055?text=T"
+                                src={`https://via.placeholder.com/80/18BC9C/FFFFFF?text=${details ? details.name[0].toUpperCase() : ''}`}
                                 alt="Team Profile"
                                 />
                         </Col>
@@ -227,7 +236,7 @@ const TeamView = (props) => {
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
                                     <Dropdown.Item><Link to={`${teamUsername}/settings`}>Settings</Link></Dropdown.Item>
-                                    <Dropdown.Item>Leave</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => {removeMember(props.userInfo.id)}}>Leave</Dropdown.Item>
                                     <Dropdown.Item>Delete</Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
@@ -256,7 +265,7 @@ const TeamView = (props) => {
                                                             <Col className="text-center" sm={4} md={4}>
                                                                 <Link to={`/user/${item.username}`}>
                                                                 <Image roundedCircle
-                                                                    src="https://via.placeholder.com/40/AF34BB?text=U"
+                                                                    src={`https://via.placeholder.com/40/AF34BB/FFFFFF?text=${item.first_name[0].toUpperCase()}`}
                                                                     alt="user profile"/>
                                                                 </Link>
                                                             </Col>

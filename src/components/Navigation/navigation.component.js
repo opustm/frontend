@@ -59,7 +59,7 @@ function Navigation(props){
                                         pathname: `/teams/${team.name}/`,
                                         state: {teamId: team.id}
                                     }}>
-                                    <img src={`https://via.placeholder.com/50/18BC9C/000000?text=${team.name[0].toUpperCase()}`} 
+                                    <img src={`https://via.placeholder.com/50/18BC9C/FFFFFF?text=${team.name[0].toUpperCase()}`} 
                                         alt="Team's profile avatar"
                                         className="avatar nav-menu-photo"/>
                                     <span>{team.name}</span>

@@ -55,6 +55,11 @@ export default function App() {
     setUserTeams(newTeams);
   }
 
+  let teamViewUpdate = (teamToRemove) => {
+    let newTeams = userTeams.filter((team) => {return team.id !== teamToRemove});
+    setUserTeams(newTeams);
+  }
+
     return (
       // React Dynamic Routing
       <Router>
@@ -83,7 +88,7 @@ export default function App() {
               <Route path="/announcements/:teamUsername?" exact component={(props) => {return <Announcements {...props} userInfo={userData}/>}}/>
               <Route path="/user/:username" component={(props) => {return <Profile {...props} userInfo={userData} />}}/>
               <Route path="/teams/:teamUsername/settings" exact component={TeamSettings}/>
-              <Route path="/teams/:teamUsername" exact component={(props) => {return <TeamView userInfo={userData}/>}}/>
+              <Route path="/teams/:teamUsername" exact component={(props) => {return <TeamView userInfo={userData} updateTeams={teamViewUpdate}/>}}/>
             </div>
             : <Redirect to='/about' />
           }
