@@ -290,7 +290,6 @@ const TeamView = (props) => {
                                                                         <Icon.FiSettings/>
                                                                         </Dropdown.Toggle>
                                                                         <Dropdown.Menu>
-                                                                        <Dropdown.Item href="#">Permissions</Dropdown.Item>
                                                                         <Dropdown.Item onClick={() => {removeMember(item.id)}}>Remove</Dropdown.Item>
                                                                     </Dropdown.Menu>
                                                                 </Dropdown>
