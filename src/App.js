@@ -33,6 +33,7 @@ export default function App() {
   let [loggedIn, setLoggedIn] = useState(false);
   let [sidebarToggled,setSidebar] = useState(true)
   let [userData, setUserData] = useState({noUser: 'notLoggedIn'});
+  let [userTeams, setUserTeams] = useState([]);
   
   let handleLoginChange = async (isLoggedIn) => {
     if (!isLoggedIn) {
@@ -50,6 +51,10 @@ export default function App() {
     }
   }
 
+  let updateTeams = (newTeams) => {
+    setUserTeams(newTeams);
+  }
+
     return (
       // React Dynamic Routing
       <Router>
@@ -58,6 +63,7 @@ export default function App() {
             sidebar={sidebarToggled}
             setSidebar={setSidebar}
             onLoggedInChange={handleLoginChange}
+            userTeams={userTeams}
             userInfo={userData}/> : <></>
           }
         <Switch>
@@ -71,7 +77,7 @@ export default function App() {
               <Route path="/" exact component={() => {return <Home userInfo={userData}/>}}/>
               <Route path="/calendar/:teamUsername?" exact component={(props) => {return <Calendar {...props} userInfo={userData}/>}}/>
               <Route path="/scheduler" exact component={Scheduler}/>
-              <Route path="/teams" exact component={(props) => {return <Teams userInfo={userData}/>}}/>
+              <Route path="/teams" exact component={(props) => {return <Teams userInfo={userData} updateTeams={updateTeams}/>}}/>
               <Route path="/chat" exact component={Chat}/>
               <Route path="/contacts" exact component={() => {return <Contacts userInfo={userData}/>}}/>
               <Route path="/announcements/:teamUsername?" exact component={(props) => {return <Announcements {...props} userInfo={userData}/>}}/>

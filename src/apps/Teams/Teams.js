@@ -31,7 +31,7 @@ let createFormPlaceholderData = {
 };
 
 const Teams = (props) => {
-  const [teams, setTeams] = useState([0]);
+  const [teams, setTeams] = useState([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const {
     value: teamName,
@@ -51,6 +51,12 @@ const Teams = (props) => {
           break;
         }
       }
+      for (let id of requestIds) {
+        if (!teamIds.includes(id)) {
+          setTeams(request.data);
+          break;
+        }
+      }
     }
     try {
       fetchTeams();
@@ -60,10 +66,10 @@ const Teams = (props) => {
   }, [props.userInfo.id, teams]);
 
   async function deleteTeam(teamID) {
-    await api.delete(urls.teams.fetchById(teamID)).then(function (response) {
-      <Redirect to="/teams" />;
-    });
-    setTeams(teams.filter((team) => {return team.id !== teamID}));
+    await api.delete(urls.teams.fetchById(teamID));
+    let newTeams = teams.filter((team) => {return team.id !== teamID});
+    props.updateTeams(newTeams);
+    setTeams(newTeams);
   }
 
   async function createTeam() {
@@ -72,6 +78,7 @@ const Teams = (props) => {
       createFormPlaceholderData
     );
     let newTeams = teams.concat(response.data);
+    props.updateTeams(newTeams);
     setTeams(newTeams);
   }
 
@@ -130,7 +137,7 @@ const Teams = (props) => {
                   <img
                     className="team-photo avatar"
                     alt="Team logo"
-                    src="https://via.placeholder.com/40/555555?text=T"
+                    src={`https://via.placeholder.com/40/555555/FFFFFF?text=${item.name[0].toUpperCase()}`}
                   />
                 </Link>
               </Col>

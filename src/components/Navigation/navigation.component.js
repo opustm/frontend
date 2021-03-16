@@ -15,7 +15,7 @@ import './navigation.css';
 
 function Navigation(props){
     const showSidebar = () => props.setSidebar(!sidebar)
-    const [teams, setTeams] = useState([]);
+    const [teams, setTeams] = useState(props.userTeams);
     let sidebar = props.sidebar;
     useEffect(() => {
         async function fetchTeams() {
