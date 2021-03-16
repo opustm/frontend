@@ -141,12 +141,19 @@ const TeamView = (props) => {
         setShowConfirmModal(true);
     }
 
-    const deleteSubgroup = async (groupIdToDelete) => {
+    const deleteTeam = async (groupIdToDelete) => {
         await api.delete(urls.teams.fetchById(groupIdToDelete));
-        setShowConfirmModal(false);
-        let newGroups = groups.filter((group) => {
-            return groupIdToDelete !== group.id});
-        setGroups(newGroups);
+        // If this is true, we're deleting the whole team
+        if (groupIdToDelete === details.id) {
+            props.updateTeams(details.id);
+            history.push('/teams');
+        }
+        else {
+            setShowConfirmModal(false);
+            let newGroups = groups.filter((group) => {
+                return groupIdToDelete !== group.id});
+            setGroups(newGroups);
+        }
     }
 
     const createSubgroup = async () => {
@@ -171,17 +178,15 @@ const TeamView = (props) => {
     return (
             <Container fluid>
                 <Modal show={showConfirmModal} onHide={() => {setShowConfirmModal(false)}}>
-                    <Modal.Header>Confirm Delete Subgroup</Modal.Header>
+                    <Modal.Header>Confirm Delete</Modal.Header>
                     <Modal.Body>
-                        <p>{`Are you sure you want to delete the subgroup "${aboutToDelete}"?`}</p>
+                        <p>{details ? aboutToDelete === details.id ? `Please confirm that you wish to delete team "${details.name}"` : 'Please confirm that you wish to delete this subgroup.' : '' }</p>
                         <small>(This action cannot be undone)</small>
                     </Modal.Body>
                     <Modal.Footer>
                         <Container>
-                            <Row>
-                                <Button variant="secondary" onClick={() => {setShowConfirmModal(false)}}>Cancel</Button>
-                                <Button variant="primary" onClick={() => {deleteSubgroup(aboutToDelete)}}>Confirm</Button>
-                            </Row>
+                            <Button variant="secondary" onClick={() => {setShowConfirmModal(false)}}>Cancel</Button>
+                            <Button variant="danger" onClick={() => {deleteTeam(aboutToDelete)}}>Delete</Button>
                         </Container>
                     </Modal.Footer>
                 </Modal>
@@ -230,14 +235,13 @@ const TeamView = (props) => {
                                 </Col>
                                 <Col className="text-right">
                                 <div className="d-inline-block mb-1">
-                                    <Dropdown>
+                                <Dropdown>
                                     <Dropdown.Toggle variant="small primary">
-                                    <Icon.FiSettings/>
+                                        <Icon.FiSettings/>
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
-                                    <Dropdown.Item><Link to={`${teamUsername}/settings`}>Settings</Link></Dropdown.Item>
-                                    <Dropdown.Item onClick={() => {removeMember(props.userInfo.id)}}>Leave</Dropdown.Item>
-                                    <Dropdown.Item>Delete</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => {removeMember(props.userInfo.id)}}>Leave</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => {confirmDelete(details.id)}}>Delete</Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
                                 </div>
