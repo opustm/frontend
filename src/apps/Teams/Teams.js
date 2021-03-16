@@ -33,6 +33,9 @@ let createFormPlaceholderData = {
 const Teams = (props) => {
   const [teams, setTeams] = useState([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
+  const [emptyTeam, setEmptyTeam] = useState(false);
+  const [toDelete, setToDelete] = useState();
   const {
     value: teamName,
     bind: bindTeamName,
@@ -65,6 +68,12 @@ const Teams = (props) => {
     }
   }, [props.userInfo.id, teams]);
 
+  function handleDelete(toDelete) {
+    setToDelete(toDelete);
+    setEmptyTeam(false);
+    setShowConfirmDeleteModal(true);
+  }
+
   async function deleteTeam(teamID) {
     await api.delete(urls.teams.fetchById(teamID));
     let newTeams = teams.filter((team) => {return team.id !== teamID});
@@ -89,6 +98,31 @@ const Teams = (props) => {
     createTeam();
     resetTeamName();
   };
+
+  async function handleLeave(teamToLeave) {
+    for (let type of ["members", "managers", "owners"]) {
+      let group = teamToLeave[type].map((user) => { return user.id});
+      if (group.includes(props.userInfo.id)) {
+          group = group.filter((id) => {return id !== props.userInfo.id});
+      }
+      teamToLeave[type] = group;
+    }
+    
+    if (!teamToLeave.members.length && !teamToLeave.managers.length && !teamToLeave.owners.length) {
+      // Team is empty, and will be deleted if the user leaves
+      setToDelete(teamToLeave);
+      setEmptyTeam(true);
+      setShowConfirmDeleteModal(true);
+    }
+
+    else {
+      // Team contains other members, so remove the team from the user's list and update the backend
+      await api.put(urls.teams.fetchById(teamToLeave.id), teamToLeave);
+      let newTeams = teams.filter((team) => {return team.id !== teamToLeave.id});
+      props.updateTeams(newTeams);
+      setTeams(newTeams);
+    }
+  }
 
   let createTeamModal = (
     <Modal
@@ -122,6 +156,29 @@ const Teams = (props) => {
       </Modal.Body>
     </Modal>
   );
+
+  let confirmDeleteModal = (
+    <Modal
+      show={showConfirmDeleteModal}
+      onHide={() => {setShowConfirmDeleteModal(false)}}
+    >
+      <Modal.Header closeButton>
+        <Modal.Title>Confirm Delete</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <h5>This will delete the team permanently! Do you want to proceed?</h5>
+        <small>{emptyTeam ? 'You are seeing this message because you are the only member in this team.' : ''}</small>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={() => {setShowConfirmDeleteModal(false); setEmptyTeam(false); setToDelete()}}>
+          Cancel
+        </Button>
+        <Button variant="danger" onClick={() => {deleteTeam(toDelete.id)}}>
+          Delete
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  )
 
   let teamsView = (
     <ul>
@@ -163,15 +220,8 @@ const Teams = (props) => {
                       <Icon.FiSettings />
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
-                      <Dropdown.Item href="#">Edit</Dropdown.Item>
-                      <Dropdown.Item href="#">Leave</Dropdown.Item>
-                      <Dropdown.Item
-                        onClick={() => {
-                          deleteTeam(`${item.id}`);
-                        }}
-                      >
-                        Delete
-                      </Dropdown.Item>
+                      <Dropdown.Item onClick={() => {handleLeave(item)}}>Leave</Dropdown.Item>
+                      <Dropdown.Item onClick={() => {handleDelete(item)}}>Delete</Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
@@ -206,6 +256,7 @@ const Teams = (props) => {
       </Jumbotron>
       <Col sm={12} md={{ span: 10, offset: 1 }}>
         {createTeamModal}
+        {confirmDeleteModal}
 
         <Container className="teams-container">
           {teams[0] ? (
