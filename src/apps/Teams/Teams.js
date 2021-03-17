@@ -28,6 +28,7 @@ const Teams = (props) => {
   const [emptyTeam, setEmptyTeam] = useState(false);
   const [toDelete, setToDelete] = useState();
   const [joinError, setJoinError] = useState(false);
+  const [duplicateJoin, setDuplicateJoin] = useState(false);
   const [showSpinner, setShowSpinner] = useState(true);
   const {
     value: teamName,
@@ -96,29 +97,38 @@ const Teams = (props) => {
   }
 
   async function handleJoin() {
-    let teamRequest = await api.get(urls.teams.fetchAll());
-    let toJoinObject;
-    for (let team of teamRequest.data) {
-      if (team.name === toJoin) {
-        toJoinObject = team;
-        break;
-      }
-    }
-    if (toJoinObject) {
-      let toPut = toJoinObject;
-      ['members', 'managers', 'owners'].forEach((level) => {
-        toPut[level] = toJoinObject[level].map((user) => {return user.id});
-      });
-      toPut.members.push(props.userInfo.id);
-      let putRequest = await api.put(urls.teams.fetchById(toJoinObject.id), toPut);
-      let newTeams = teams;
-      newTeams.push(putRequest.data);
-      setTeams(newTeams);
-      props.updateTeams(newTeams);
-      handleCloseJoin();
+    // Don't let a user join a team that they're already in
+    let teamNames = teams.map((team) => {return team.name});
+    if (teamNames.includes(toJoin)) {
+      setDuplicateJoin(true);
+      setJoinError(false);
     }
     else {
-      setJoinError(true);
+      setDuplicateJoin(false);
+      let teamRequest = await api.get(urls.teams.fetchAll());
+      let toJoinObject;
+      for (let team of teamRequest.data) {
+        if (team.name === toJoin) {
+          toJoinObject = team;
+          break;
+        }
+      }
+      if (toJoinObject) {
+        let toPut = toJoinObject;
+        ['members', 'managers', 'owners'].forEach((level) => {
+          toPut[level] = toJoinObject[level].map((user) => {return user.id});
+        });
+        toPut.members.push(props.userInfo.id);
+        let putRequest = await api.put(urls.teams.fetchById(toJoinObject.id), toPut);
+        let newTeams = teams;
+        newTeams.push(putRequest.data);
+        setTeams(newTeams);
+        props.updateTeams(newTeams);
+        handleCloseJoin();
+      }
+      else {
+        setJoinError(true);
+      }
     }
     
   }
@@ -127,6 +137,7 @@ const Teams = (props) => {
     setShowJoinModal(false);
     resetToJoin();
     setJoinError(false);
+    setDuplicateJoin(false);
   }
 
   const handleSubmit = (evt) => {
@@ -218,7 +229,8 @@ const Teams = (props) => {
             </Col>
           </Row>
         </Form>
-        <Alert hidden={!joinError} variant='danger'>{`Team "${toJoin}" does not exist. Please check your spelling and try again.`}</Alert>
+        <Alert hidden={!joinError} variant='danger'>{`No team exists with the name you specified. Please check your spelling and try again.`}</Alert>
+        <Alert hidden={!duplicateJoin} variant='danger'>{`You're already a member of this team!`}</Alert>
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={() => {handleJoin()}}>
