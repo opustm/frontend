@@ -178,7 +178,9 @@ const TeamView = (props) => {
     return (
             <Container fluid>
                 <Modal show={showConfirmModal} onHide={() => {setShowConfirmModal(false)}}>
-                    <Modal.Header>Confirm Delete</Modal.Header>
+                    <Modal.Header>
+                        <Modal.Title>Confirm Delete</Modal.Title>
+                    </Modal.Header>
                     <Modal.Body>
                         <p>{details ? aboutToDelete === details.id ? `Please confirm that you wish to delete team "${details.name}"` : 'Please confirm that you wish to delete this subgroup.' : '' }</p>
                         <small>(This action cannot be undone)</small>
