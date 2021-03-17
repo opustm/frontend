@@ -1,17 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useInput } from "./../../services/forms.service.js";
-import {
-  Container,
-  Spinner,
-  Dropdown,
-  Row,
-  Col,
-  Jumbotron,
-  Button,
-  ButtonGroup,
-  Modal,
-  Form,
-} from "react-bootstrap";
+import { Container, Spinner, Dropdown, Row, Col, Jumbotron, Button, Modal, Form, Alert } from "react-bootstrap";
 import {
   Axios as api,
   API_ENDPOINTS as urls,
@@ -35,8 +24,11 @@ const Teams = (props) => {
   const [teams, setTeams] = useState([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
+  const [showJoinModal, setShowJoinModal] = useState(false);
   const [emptyTeam, setEmptyTeam] = useState(false);
   const [toDelete, setToDelete] = useState();
+  const [joinError, setJoinError] = useState(false);
+  const [showSpinner, setShowSpinner] = useState(true);
   const {
     value: teamName,
     bind: bindTeamName,
@@ -46,6 +38,11 @@ const Teams = (props) => {
     value: teamDescription,
     bind: bindTeamDescription,
     reset: resetTeamDescription
+  } = useInput("");
+  const {
+    value: toJoin,
+    bind: bindToJoin,
+    reset: resetToJoin
   } = useInput("");
   document.title = "Opus | Teams";
 
@@ -66,6 +63,7 @@ const Teams = (props) => {
           break;
         }
       }
+      setShowSpinner(false);
     }
     try {
       fetchTeams();
@@ -95,6 +93,40 @@ const Teams = (props) => {
     let newTeams = teams.concat(response.data);
     props.updateTeams(newTeams);
     setTeams(newTeams);
+  }
+
+  async function handleJoin() {
+    let teamRequest = await api.get(urls.teams.fetchAll());
+    let toJoinObject;
+    for (let team of teamRequest.data) {
+      if (team.name === toJoin) {
+        toJoinObject = team;
+        break;
+      }
+    }
+    if (toJoinObject) {
+      let toPut = toJoinObject;
+      ['members', 'managers', 'owners'].forEach((level) => {
+        toPut[level] = toJoinObject[level].map((user) => {return user.id});
+      });
+      toPut.members.push(props.userInfo.id);
+      let putRequest = await api.put(urls.teams.fetchById(toJoinObject.id), toPut);
+      let newTeams = teams;
+      newTeams.push(putRequest.data);
+      setTeams(newTeams);
+      props.updateTeams(newTeams);
+      handleCloseJoin();
+    }
+    else {
+      setJoinError(true);
+    }
+    
+  }
+
+  function handleCloseJoin() {
+    setShowJoinModal(false);
+    resetToJoin();
+    setJoinError(false);
   }
 
   const handleSubmit = (evt) => {
@@ -168,6 +200,36 @@ const Teams = (props) => {
       </Modal.Body>
     </Modal>
   );
+
+  let joinTeamModal = (
+    <Modal show={showJoinModal} onHide={() => {handleCloseJoin()}}>
+      <Modal.Header closeButton>
+        <Modal.Title>Join a Team</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form>
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>Team Name</Form.Label>
+                <Form.Control type="text" {...bindToJoin} />
+              </Form.Group>
+              <small>(Try joining CS491)</small>
+            </Col>
+          </Row>
+        </Form>
+        <Alert hidden={!joinError} variant='danger'>{`Team "${toJoin}" does not exist. Please check your spelling and try again.`}</Alert>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button onClick={() => {handleJoin()}}>
+          Join Team
+        </Button>
+        <Button variant="secondary" onClick={() => {handleCloseJoin()}}>
+          Cancel
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  )
 
   let confirmDeleteModal = (
     <Modal
@@ -254,30 +316,30 @@ const Teams = (props) => {
           <Link to="/docs">Need more info? Read the docs.</Link>
         </p>
         <div>
-          <ButtonGroup className="mr-2">
-            <Button
-              variant="primary"
-              onClick={() => {
-                setShowCreateModal(true);
-              }}
-            >
-              <Icon.FiUsers /> Create Team
-            </Button>
-          </ButtonGroup>
+          <Button
+            variant="primary"
+            onClick={() => {
+              setShowCreateModal(true);
+            }}
+          >
+            <Icon.FiPlusCircle /> Create Team
+          </Button>
+          <Button style={{marginLeft: '5px'}} onClick={() => {setShowJoinModal(true)}}>
+            <Icon.FiUsers /> Join Team
+          </Button>
         </div>
       </Jumbotron>
       <Col sm={12} md={{ span: 10, offset: 1 }}>
         {createTeamModal}
         {confirmDeleteModal}
+        {joinTeamModal}
 
         <Container className="teams-container">
-          {teams[0] ? (
-            teamsView
-          ) : (
-            <div className="text-center">
+          {showSpinner ? <div className="text-center">
               <Spinner animation="border" role="status" />
-            </div>
-          )}
+            </div> : <></>}
+          {teams[0] ? (teamsView) : <></>}
+          {!showSpinner && !teams[0] ? <p className="text-center">You aren't in any teams right now. Create or join one!</p> : <></>}
         </Container>
       </Col>
     </Container>

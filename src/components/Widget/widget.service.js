@@ -48,46 +48,52 @@ async function getData(userInfo, type, teamFilter) {
   let teamRequest = await api.get(urls.user.fetchTeams(userInfo.id));
   let userTeams = teamRequest.data;
   let data = [];
-  switch(type) {
-    case 'announcements':
-      if (teamFilter) {
-        let announcementReq = await api.get(urls.announcement.fetchByTeam(teamFilter));
-        data = data.concat(announcementReq.data);
-      }
-      else {
-        let announcementReq = await api.get(urls.announcement.fetchByUser(userInfo.id));
-        data = announcementReq.data;
-      }
-      break;
-
-    case 'calendar':
-      if (teamFilter) {
-        let calendarRequest = await api.get(urls.event.fetchByTeam(teamFilter));
-        data = data.concat(calendarRequest.data);
-      }
-      else {
-          let eventRequest = await api.get(urls.event.fetchByUser(userInfo.id));
-          data = data.concat(eventRequest.data);
-      }
-      break;
-
-    case 'contacts':
-      if (teamFilter) {
-        let contactsRequest = await api.get(urls.teams.fetchMembers(teamFilter));
-        data = data.concat(contactsRequest.data);
-      }
-      else {
-          let contactsRequest = await api.get(urls.user.fetchContacts(userInfo.id));
+  try {
+    switch(type) {
+      case 'announcements':
+        if (teamFilter) {
+          let announcementReq = await api.get(urls.announcement.fetchByTeam(teamFilter));
+          data = data.concat(announcementReq.data);
+        }
+        else {
+          let announcementReq = await api.get(urls.announcement.fetchByUser(userInfo.id));
+          data = announcementReq.data;
+        }
+        break;
+  
+      case 'calendar':
+        if (teamFilter) {
+          let calendarRequest = await api.get(urls.event.fetchByTeam(teamFilter));
+          data = data.concat(calendarRequest.data);
+        }
+        else {
+            let eventRequest = await api.get(urls.event.fetchByUser(userInfo.id));
+            data = data.concat(eventRequest.data);
+        }
+        break;
+  
+      case 'contacts':
+        if (teamFilter) {
+          let contactsRequest = await api.get(urls.teams.fetchMembers(teamFilter));
           data = data.concat(contactsRequest.data);
-      }
-      break;
+        }
+        else {
+            let contactsRequest = await api.get(urls.user.fetchContacts(userInfo.id));
+            data = data.concat(contactsRequest.data);
+        }
+        break;
+  
+      case 'teams':
+        data = userTeams;
+        break;
+  
+      default:
+        break;
+    }
+  }
 
-    case 'teams':
-      data = userTeams;
-      break;
-
-    default:
-      break;
+  catch {
+    data = [];
   }
   
   let truncatedData = data.slice(0,3);
