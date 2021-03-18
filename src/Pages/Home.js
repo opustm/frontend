@@ -27,7 +27,7 @@ export default class Home extends Component {
             }
         }
         async function getTeams() {
-            let teamRequest = await api.get(urls.user.fetchTeams());
+            let teamRequest = await api.get(urls.user.fetchTeams(t.props.userInfo.id));
             if (!teamRequest.data.length) {
                 t.setState({showModal: true});
             }

@@ -274,7 +274,7 @@ const TeamView = (props) => {
                                                                     state: {userId: item.id}
                                                                     }}>
                                                                 <Image roundedCircle
-                                                                    src={`https://via.placeholder.com/40/AF34BB/FFFFFF?text=${item.first_name[0].toUpperCase()}`}
+                                                                    src={`https://via.placeholder.com/40/AF34BB/FFFFFF?text=${item.first_name ? item.first_name[0].toUpperCase() : ''}`}
                                                                     alt="user profile"/>
                                                                 </Link>
                                                             </Col>
