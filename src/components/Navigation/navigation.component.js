@@ -1,18 +1,38 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 // Add {useState} for login validation
 import * as Icon from 'react-icons/fi';
 import {Link} from 'react-router-dom';
-import {SidebarApps,SidebarTeams} from './navigation.data';
+import {SidebarApps} from './navigation.data';
 import {Dropdown} from 'react-bootstrap';
 import {IconContext} from 'react-icons';
+import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 import './navigation.css';
-import DropdownToggle from 'react-bootstrap/esm/DropdownToggle';
-import DropdownItem from 'react-bootstrap/esm/DropdownItem';
-import DropdownMenu from 'react-bootstrap/esm/DropdownMenu';
+
+// TO DO:
+// Render the most recent teams only? i.e. the last six a user interacted with
 
 function Navigation(props){
     const showSidebar = () => props.setSidebar(!sidebar)
+    const [teams, setTeams] = useState(props.userTeams);
     let sidebar = props.sidebar;
+    useEffect(() => {
+        async function fetchTeams() {
+            let teamRequest = await api.get(urls.user.fetchTeams(props.userInfo.id));
+            let newTeamIds = new Set(teamRequest.data.map((team) => {return team.id}));
+            let currentTeamIds = teams.map((team) => {return team.id});
+            // JS doesn't have an equality operator for sets or lists, so we're stuck with the code below
+            let equalSize = newTeamIds.size === currentTeamIds.length;
+            let equal;
+            if (equalSize) {
+                equal = currentTeamIds.every(e => newTeamIds.has(e));
+            }
+            if (!equal) {
+                setTeams(teamRequest.data);
+            }
+        }
+        fetchTeams();
+    })
+
     return (
         <>
             <IconContext.Provider value={{"color":"#000000"}}>
@@ -30,14 +50,17 @@ function Navigation(props){
                        );
                     })}
                     <li className="nav-section">My Teams</li>
-                    {SidebarTeams.map((item,index) => {
+                    {teams.map((team,index) => {
                         return (
-                            <li key={index} className={item.cName}>
-                                <Link to={item.path}>
-                                    <img src={item.photo} 
+                            <li key={index} className='nav-text team'>
+                                <Link to={{
+                                        pathname: `/teams/${team.name}/`,
+                                        state: {teamId: team.id}
+                                    }}>
+                                    <img src={`https://via.placeholder.com/50/18BC9C/FFFFFF?text=${team.name[0].toUpperCase()}`} 
                                         alt="Team's profile avatar"
                                         className="avatar nav-menu-photo"/>
-                                    <span>{item.title}</span>
+                                    <span>{team.name}</span>
                                 </Link>
                             </li>
                         );
@@ -54,17 +77,17 @@ function Navigation(props){
                     Opus Team
                 </Link>
                 <Dropdown>
-                    <DropdownToggle variant="outline-secondary">
+                    <Dropdown.Toggle variant="outline-secondary">
                         <Icon.FiUser id='profileMenuIcon' size={25} color='white'></Icon.FiUser>
-                    </DropdownToggle>
-                    <DropdownMenu>
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
                         <Link className='dropdown-item' to={{
                             pathname: props ? `/user/${props.userInfo.username}` : '',
                             state: {userId: props.userInfo.id}
                         }}>
                             <Icon.FiUser color='#7b8a8b' className='dropdownIcon'/>View Profile
                         </Link>
-                        <DropdownItem
+                        <Dropdown.Item
                             onClick={() => {
                                 localStorage.removeItem('token');
                                 props.onLoggedInChange(false);
@@ -73,8 +96,8 @@ function Navigation(props){
                         >
                             <Icon.FiLogOut color='#7b8a8b' className='dropdownIcon'/>
                             Logout
-                        </DropdownItem>
-                    </DropdownMenu>
+                        </Dropdown.Item>
+                    </Dropdown.Menu>
                 </Dropdown>
             </div>
             </IconContext.Provider>

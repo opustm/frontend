@@ -1,17 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useInput } from "./../../services/forms.service.js";
-import {
-  Container,
-  Spinner,
-  Dropdown,
-  Row,
-  Col,
-  Jumbotron,
-  Button,
-  ButtonGroup,
-  Modal,
-  Form,
-} from "react-bootstrap";
+import { Container, Spinner, Dropdown, Row, Col, Jumbotron, Button, Modal, Form, Alert } from "react-bootstrap";
 import {
   Axios as api,
   API_ENDPOINTS as urls,
@@ -22,6 +11,7 @@ import "./teams.css";
 
 let createFormPlaceholderData = {
   name: "New Team Name",
+  description: "",
   teamType: "team",
   picture: "https://via.placeholder.com/40/5555555?text=T",
   members: [],
@@ -31,12 +21,29 @@ let createFormPlaceholderData = {
 };
 
 const Teams = (props) => {
-  const [teams, setTeams] = useState([0]);
+  const [teams, setTeams] = useState([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
+  const [showJoinModal, setShowJoinModal] = useState(false);
+  const [emptyTeam, setEmptyTeam] = useState(false);
+  const [toDelete, setToDelete] = useState();
+  const [joinError, setJoinError] = useState(false);
+  const [duplicateJoin, setDuplicateJoin] = useState(false);
+  const [showSpinner, setShowSpinner] = useState(true);
   const {
     value: teamName,
     bind: bindTeamName,
     reset: resetTeamName,
+  } = useInput("");
+  const {
+    value: teamDescription,
+    bind: bindTeamDescription,
+    reset: resetTeamDescription
+  } = useInput("");
+  const {
+    value: toJoin,
+    bind: bindToJoin,
+    reset: resetToJoin
   } = useInput("");
   document.title = "Opus | Teams";
 
@@ -51,6 +58,13 @@ const Teams = (props) => {
           break;
         }
       }
+      for (let id of requestIds) {
+        if (!teamIds.includes(id)) {
+          setTeams(request.data);
+          break;
+        }
+      }
+      setShowSpinner(false);
     }
     try {
       fetchTeams();
@@ -59,11 +73,17 @@ const Teams = (props) => {
     }
   }, [props.userInfo.id, teams]);
 
+  function handleDelete(toDelete) {
+    setToDelete(toDelete);
+    setEmptyTeam(false);
+    setShowConfirmDeleteModal(true);
+  }
+
   async function deleteTeam(teamID) {
-    await api.delete(urls.teams.fetchById(teamID)).then(function (response) {
-      <Redirect to="/teams" />;
-    });
-    setTeams(teams.filter((team) => {return team.id !== teamID}));
+    await api.delete(urls.teams.fetchById(teamID));
+    let newTeams = teams.filter((team) => {return team.id !== teamID});
+    props.updateTeams(newTeams);
+    setTeams(newTeams);
   }
 
   async function createTeam() {
@@ -72,16 +92,88 @@ const Teams = (props) => {
       createFormPlaceholderData
     );
     let newTeams = teams.concat(response.data);
+    props.updateTeams(newTeams);
     setTeams(newTeams);
+  }
+
+  async function handleJoin() {
+    // Don't let a user join a team that they're already in
+    let teamNames = teams.map((team) => {return team.name});
+    if (teamNames.includes(toJoin)) {
+      setDuplicateJoin(true);
+      setJoinError(false);
+    }
+    else {
+      setDuplicateJoin(false);
+      let teamRequest = await api.get(urls.teams.fetchAll());
+      let toJoinObject;
+      for (let team of teamRequest.data) {
+        if (team.name === toJoin) {
+          toJoinObject = team;
+          break;
+        }
+      }
+      if (toJoinObject) {
+        let toPut = toJoinObject;
+        ['members', 'managers', 'owners'].forEach((level) => {
+          toPut[level] = toJoinObject[level].map((user) => {return user.id});
+        });
+        toPut.members.push(props.userInfo.id);
+        let putRequest = await api.put(urls.teams.fetchById(toJoinObject.id), toPut);
+        let newTeams = teams;
+        newTeams.push(putRequest.data);
+        setTeams(newTeams);
+        props.updateTeams(newTeams);
+        handleCloseJoin();
+      }
+      else {
+        setJoinError(true);
+      }
+    }
+    
+  }
+
+  function handleCloseJoin() {
+    setShowJoinModal(false);
+    resetToJoin();
+    setJoinError(false);
+    setDuplicateJoin(false);
   }
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
     createFormPlaceholderData.name = teamName;
+    createFormPlaceholderData.description = teamDescription;
     createFormPlaceholderData.owners = [props.userInfo.id];
     createTeam();
     resetTeamName();
+    resetTeamDescription();
   };
+
+  async function handleLeave(teamToLeave) {
+    for (let type of ["members", "managers", "owners"]) {
+      let group = teamToLeave[type].map((user) => { return user.id});
+      if (group.includes(props.userInfo.id)) {
+          group = group.filter((id) => {return id !== props.userInfo.id});
+      }
+      teamToLeave[type] = group;
+    }
+    
+    if (!teamToLeave.members.length && !teamToLeave.managers.length && !teamToLeave.owners.length) {
+      // Team is empty, and will be deleted if the user leaves
+      setToDelete(teamToLeave);
+      setEmptyTeam(true);
+      setShowConfirmDeleteModal(true);
+    }
+
+    else {
+      // Team contains other members, so remove the team from the user's list and update the backend
+      await api.put(urls.teams.fetchById(teamToLeave.id), teamToLeave);
+      let newTeams = teams.filter((team) => {return team.id !== teamToLeave.id});
+      props.updateTeams(newTeams);
+      setTeams(newTeams);
+    }
+  }
 
   let createTeamModal = (
     <Modal
@@ -101,6 +193,10 @@ const Teams = (props) => {
                 <Form.Label>Team Name</Form.Label>
                 <Form.Control type="text" {...bindTeamName} />
               </Form.Group>
+              <Form.Group>
+                <Form.Label>Description</Form.Label>
+                <Form.Control type="text" {...bindTeamDescription} />
+              </Form.Group>
               <Button
                 type="submit"
                 onClick={() => {
@@ -116,6 +212,60 @@ const Teams = (props) => {
     </Modal>
   );
 
+  let joinTeamModal = (
+    <Modal show={showJoinModal} onHide={() => {handleCloseJoin()}}>
+      <Modal.Header closeButton>
+        <Modal.Title>Join a Team</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form>
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>Team Name</Form.Label>
+                <Form.Control type="text" {...bindToJoin} />
+              </Form.Group>
+              <small>(Try joining CS491)</small>
+            </Col>
+          </Row>
+        </Form>
+        <Alert hidden={!joinError} variant='danger'>{`No team exists with the name you specified. Please check your spelling and try again.`}</Alert>
+        <Alert hidden={!duplicateJoin} variant='danger'>{`You're already a member of this team!`}</Alert>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button onClick={() => {handleJoin()}}>
+          Join Team
+        </Button>
+        <Button variant="secondary" onClick={() => {handleCloseJoin()}}>
+          Cancel
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  )
+
+  let confirmDeleteModal = (
+    <Modal
+      show={showConfirmDeleteModal}
+      onHide={() => {setShowConfirmDeleteModal(false)}}
+    >
+      <Modal.Header closeButton>
+        <Modal.Title>Confirm Delete</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <h5>This will delete the team permanently! Do you want to proceed?</h5>
+        <small>{emptyTeam ? 'You are seeing this message because you are the only member in this team.' : ''}</small>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={() => {setShowConfirmDeleteModal(false); setEmptyTeam(false); setToDelete()}}>
+          Cancel
+        </Button>
+        <Button variant="danger" onClick={() => {deleteTeam(toDelete.id)}}>
+          Delete
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  )
+
   let teamsView = (
     <ul>
       {teams.map((item, index) => {
@@ -130,7 +280,7 @@ const Teams = (props) => {
                   <img
                     className="team-photo avatar"
                     alt="Team logo"
-                    src="https://via.placeholder.com/40/555555?text=T"
+                    src={`https://via.placeholder.com/40/555555/FFFFFF?text=${item.name[0].toUpperCase()}`}
                   />
                 </Link>
               </Col>
@@ -146,7 +296,7 @@ const Teams = (props) => {
                   </div>
                 </Row>
                 <Row className="small">
-                  This is a description for the team {item.name}
+                  {item.description}
                 </Row>
               </Col>
               <Col md={1} lg={1} className="text-right">
@@ -156,15 +306,8 @@ const Teams = (props) => {
                       <Icon.FiSettings />
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
-                      <Dropdown.Item href="#">Edit</Dropdown.Item>
-                      <Dropdown.Item href="#">Leave</Dropdown.Item>
-                      <Dropdown.Item
-                        onClick={() => {
-                          deleteTeam(`${item.id}`);
-                        }}
-                      >
-                        Delete
-                      </Dropdown.Item>
+                      <Dropdown.Item onClick={() => {handleLeave(item)}}>Leave</Dropdown.Item>
+                      <Dropdown.Item onClick={() => {handleDelete(item)}}>Delete</Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
@@ -185,29 +328,30 @@ const Teams = (props) => {
           <Link to="/docs">Need more info? Read the docs.</Link>
         </p>
         <div>
-          <ButtonGroup className="mr-2">
-            <Button
-              variant="primary"
-              onClick={() => {
-                setShowCreateModal(true);
-              }}
-            >
-              <Icon.FiUsers /> Create Team
-            </Button>
-          </ButtonGroup>
+          <Button
+            variant="primary"
+            onClick={() => {
+              setShowCreateModal(true);
+            }}
+          >
+            <Icon.FiPlusCircle /> Create Team
+          </Button>
+          <Button style={{marginLeft: '5px'}} onClick={() => {setShowJoinModal(true)}}>
+            <Icon.FiUsers /> Join Team
+          </Button>
         </div>
       </Jumbotron>
       <Col sm={12} md={{ span: 10, offset: 1 }}>
         {createTeamModal}
+        {confirmDeleteModal}
+        {joinTeamModal}
 
         <Container className="teams-container">
-          {teams[0] ? (
-            teamsView
-          ) : (
-            <div className="text-center">
+          {showSpinner ? <div className="text-center">
               <Spinner animation="border" role="status" />
-            </div>
-          )}
+            </div> : <></>}
+          {teams[0] ? (teamsView) : <></>}
+          {!showSpinner && !teams[0] ? <p className="text-center">You aren't in any teams right now. Create or join one!</p> : <></>}
         </Container>
       </Col>
     </Container>

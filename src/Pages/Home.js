@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Container, Jumbotron, Row, Col } from 'react-bootstrap';
-import Widget from '../components/Widget/widget.component';
+import { Container, Jumbotron, Row, Col, Modal, Button } from 'react-bootstrap';
 import { Axios as api, API_ENDPOINTS as urls } from '../services/api.service';
+import { descriptions } from '../services/description.service';
+import Widget from '../components/Widget/widget.component';
 
 
 export default class Home extends Component {
@@ -9,34 +10,54 @@ export default class Home extends Component {
         super(props);
         document.title = "Opus | Dashboard"
         this.state = {
+            today: '',
+            showModal: false
         }
     }
 
     componentDidMount() {
         let t = this;
         async function checkExpired() {
-            // Redo this so that it uses the /announcements/<username>/ route
-            let request = await api.get(urls.user.fetchTeams(t.props.userInfo.username));
-            let teams = request.data;
-            for (let team of teams) {
-                let announcementRequest = await api.get(urls.announcement.fetchByTeam(team.name));
-                for (let announcement of announcementRequest.data) {
-                    let now = new Date(Date.now()).toISOString();
-                    if (now > announcement.end) {
-                        await api.delete(urls.announcement.fetchById(announcement.id));
-                    }
+            let announcementRequest = await api.get(urls.announcement.fetchByUser(t.props.userInfo.id));
+            for (let announcement of announcementRequest.data) {
+                let now = new Date(Date.now()).toISOString();
+                if (now > announcement.end) {
+                    await api.delete(urls.announcement.fetchById(announcement.id));
                 }
             }
         }
+        async function getTeams() {
+            let teamRequest = await api.get(urls.user.fetchTeams(t.props.userInfo.id));
+            if (!teamRequest.data.length) {
+                t.setState({showModal: true});
+            }
+        }
         checkExpired();
+        getTeams();
+        let now = new Date(Date.now());
+        this.setState({today: now.toString().slice(4,15)});
     }
 
     render() {
         return (
             <Container fluid>
+                <Modal show={this.state.showModal} onHide={() => {this.setState({showModal: false})}}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Join a Team!</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>{descriptions.pages.Home.joinMessage}</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => {this.setState({showModal: false})}}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
                 <Jumbotron>
                     <h1>Welcome, {this.props.userInfo.first_name}</h1>
-                    <p>You have no new events as of now. Your next event is on <strong>Feb 4, 2021.</strong></p>
+                    <p>It is currently <strong>{this.state.today}</strong>. Check your calendar for upcoming events.</p>
                 </Jumbotron>
                 <Row>
                     <Col>

@@ -44,9 +44,7 @@ export default class Calendar extends Component{
     
 
     componentDidMount() {
-        if (this.props.userInfo) {
-            this.fetchData();
-        }
+        this.fetchData();
     }
 
     async fetchData(){
@@ -78,7 +76,7 @@ export default class Calendar extends Component{
         let tableEvents = [];
         events.forEach((event) => {
             let tableObject = {
-                x: <Icon.FiXCircle className="deleteButton" onClick={() => {this.deleteEvent(event)}} size={20}/>,
+                x: <Icon.FiXCircle data-testid='deleteButton' className="deleteButton" onClick={() => {this.deleteEvent(event)}} size={20}/>,
                 name: event.name,
                 team: event.team ? event.team.name : 'N/A',
                 time: `${this.parseDate(event.start)} -- ${this.parseDate(event.end)}`,
@@ -123,7 +121,7 @@ export default class Calendar extends Component{
             let request = await api.post(urls.event.fetchAll(), body);
             body.id = request.data.id;
             let tableEvent = {
-                x: <Icon.FiXCircle onClick={() => {this.deleteEvent(body)}} size={20}/>,
+                x: <Icon.FiXCircle data-testid='deleteButton' className='deleteButton' onClick={() => {this.deleteEvent(body)}} size={20}/>,
                 name: this.state.eventName,
                 team: team ? this.state.idToTeamDict[team] : 'N/A',
                 time: `${this.parseDate(start.toISOString())} -- ${this.parseDate(end.toISOString())}`,
@@ -232,7 +230,7 @@ export default class Calendar extends Component{
                     <small style={{'paddingLeft': '10px', 'paddingTop': '10px'}}>* indicates required field</small>
                     <Modal.Body>
                         <Form onSubmit={(e) => {this.handleCreate(e)}}>
-                            <Form.Group>
+                            <Form.Group controlId="nameInput">
                                 <Form.Label>Name *</Form.Label>
                                 <Form.Control 
                                     type="text"
@@ -240,15 +238,15 @@ export default class Calendar extends Component{
                                     onChange={(e) => {this.setState({eventName: e.target.value})}}>
                                 </Form.Control>
                             </Form.Group>
-                            <Form.Group>
+                            <Form.Group controlId="eventStartInput">
                                 <Form.Label>Event Start *</Form.Label>
                                 <Form.Control type="datetime-local" onChange={(e) => {this.setState({eventStart: e.target.value})}} />
                             </Form.Group>
-                            <Form.Group>
+                            <Form.Group controlId="eventEndInput">
                                 <Form.Label>Event End *</Form.Label>
                                 <Form.Control type="datetime-local" onChange={(e) => {this.setState({eventEnd: e.target.value})}} />
                             </Form.Group>
-                            <Form.Group>
+                            <Form.Group controlId="teamInput">
                                 <Form.Label>Team</Form.Label>
                                 <Form.Control as="select" onChange={(e) => {this.handleChooseTeam(e)}}>
                                     <option selected disabled hidden>Choose a team for this event</option>
@@ -265,7 +263,7 @@ export default class Calendar extends Component{
                                 })}
                                 </Form.Control>
                             </Form.Group> 
-                            <Form.Group>
+                            <Form.Group controlId="detailInput">
                                 <Form.Label>Details *</Form.Label>
                                 <Form.Control 
                                     as="textarea"
