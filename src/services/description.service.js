@@ -53,6 +53,7 @@ export const descriptions = {
         Home: {
             title:"OpusTM",
             body:"",
+            joinMessage: "Hi there! We noticed you aren't a member of any teams yet. Head over to the Teams page to get started!"
         },
         Login: {
             iconMessages: [

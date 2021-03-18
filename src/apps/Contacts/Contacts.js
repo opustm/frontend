@@ -28,9 +28,7 @@ export default class Contacts extends Component {
   }
 
   componentDidMount() {
-    if (this.props.userInfo.username) {
-      this.getUserTeams();
-    }
+    this.getUserTeams();
   }
 
   async getUserTeams() {
@@ -49,9 +47,6 @@ export default class Contacts extends Component {
       let object = {
         meet: (
           <span>
-            <Link to="/chat">
-              <Icon.FiMessageSquare />
-            </Link>
             <Link to="/calendar">
               <Icon.FiCalendar />
             </Link>

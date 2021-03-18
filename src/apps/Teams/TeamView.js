@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Axios as api, API_ENDPOINTS as urls } from '../../services/api.service';
 import { useInput } from '../../services/forms.service';
 import { Container, Modal, Card, ListGroup, Dropdown, Button, Row, Col, Jumbotron, Image, Form } from 'react-bootstrap';
-import { Link, Redirect, useParams, useLocation } from 'react-router-dom';
+import { Link, Redirect, useParams, useLocation, useHistory } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
 import Widget from '../../components/Widget/widget.component';
 import './teams.css';
@@ -17,6 +17,7 @@ const TeamView = (props) => {
     const [aboutToDelete, setAboutToDelete] = useState();
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [newGroupName, setNewGroupName] = useState();
+    let history = useHistory();
     let teamUsername = useParams().teamUsername;
     let teamId = useLocation().state.teamId;
     document.title = `Opus | Team - ${teamUsername}`;
@@ -94,6 +95,15 @@ const TeamView = (props) => {
         setDetails(newData);
         let allMembers = newData.members.concat(newData.managers.concat(newData.owners));
         setMembers(allMembers);
+        // Need to update the navbar if a user removes themselves
+        if (toRemove === props.userInfo.id) {
+            props.updateTeams(details.id);
+            // Delete the team if it's empty. Should give a warning like on the Teams page but I don't want to copy/paste right now.
+            if (details.members.length + details.managers.length + details.owners.length <= 1) {
+                await api.delete(urls.teams.fetchById(details.id));
+            }
+            history.push('/teams');
+        }
     }
 
     const handleSubmit = (evt) => {
@@ -131,12 +141,19 @@ const TeamView = (props) => {
         setShowConfirmModal(true);
     }
 
-    const deleteSubgroup = async (groupIdToDelete) => {
+    const deleteTeam = async (groupIdToDelete) => {
         await api.delete(urls.teams.fetchById(groupIdToDelete));
-        setShowConfirmModal(false);
-        let newGroups = groups.filter((group) => {
-            return groupIdToDelete !== group.id});
-        setGroups(newGroups);
+        // If this is true, we're deleting the whole team
+        if (groupIdToDelete === details.id) {
+            props.updateTeams(details.id);
+            history.push('/teams');
+        }
+        else {
+            setShowConfirmModal(false);
+            let newGroups = groups.filter((group) => {
+                return groupIdToDelete !== group.id});
+            setGroups(newGroups);
+        }
     }
 
     const createSubgroup = async () => {
@@ -158,21 +175,20 @@ const TeamView = (props) => {
         setNewGroupName('');
     }
     
-  
     return (
             <Container fluid>
                 <Modal show={showConfirmModal} onHide={() => {setShowConfirmModal(false)}}>
-                    <Modal.Header>Confirm Delete Subgroup</Modal.Header>
+                    <Modal.Header>
+                        <Modal.Title>Confirm Delete</Modal.Title>
+                    </Modal.Header>
                     <Modal.Body>
-                        <p>{`Are you sure you want to delete the subgroup "${aboutToDelete}"?`}</p>
+                        <p>{details ? aboutToDelete === details.id ? `Please confirm that you wish to delete team "${details.name}"` : 'Please confirm that you wish to delete this subgroup.' : '' }</p>
                         <small>(This action cannot be undone)</small>
                     </Modal.Body>
                     <Modal.Footer>
                         <Container>
-                            <Row>
-                                <Button variant="secondary" onClick={() => {setShowConfirmModal(false)}}>Cancel</Button>
-                                <Button variant="primary" onClick={() => {deleteSubgroup(aboutToDelete)}}>Confirm</Button>
-                            </Row>
+                            <Button variant="secondary" onClick={() => {setShowConfirmModal(false)}}>Cancel</Button>
+                            <Button variant="danger" onClick={() => {deleteTeam(aboutToDelete)}}>Delete</Button>
                         </Container>
                     </Modal.Footer>
                 </Modal>
@@ -203,14 +219,14 @@ const TeamView = (props) => {
                         <Row>
                         <Col md={3} lg={2} className="text-center">
                             <Image roundedCircle
-                                src="https://via.placeholder.com/80/0ea055?text=T"
+                                src={`https://via.placeholder.com/80/18BC9C/FFFFFF?text=${details ? details.name[0].toUpperCase() : ''}`}
                                 alt="Team Profile"
                                 />
                         </Col>
                         <Col md={9} lg={10}>
                             <div className="team-view-title">
                                 <h1>{details? details.name: null} </h1>
-                                <p>This team is a team for so and so purposes </p>
+                                <p>{details ? details.description : ''}</p>
                             </div>
 
                             <Row>
@@ -221,14 +237,13 @@ const TeamView = (props) => {
                                 </Col>
                                 <Col className="text-right">
                                 <div className="d-inline-block mb-1">
-                                    <Dropdown>
+                                <Dropdown>
                                     <Dropdown.Toggle variant="small primary">
-                                    <Icon.FiSettings/>
+                                        <Icon.FiSettings/>
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
-                                    <Dropdown.Item><Link to={`${teamUsername}/settings`}>Settings</Link></Dropdown.Item>
-                                    <Dropdown.Item>Leave</Dropdown.Item>
-                                    <Dropdown.Item>Delete</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => {removeMember(props.userInfo.id)}}>Leave</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => {confirmDelete(details.id)}}>Delete</Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
                                 </div>
@@ -254,14 +269,20 @@ const TeamView = (props) => {
                                                     <ListGroup.Item key={index} className="member-element">
                                                         <Row>
                                                             <Col className="text-center" sm={4} md={4}>
-                                                                <Link to={`/user/${item.username}`}>
+                                                                <Link to={{
+                                                                    pathname: `/user/${item.username}`,
+                                                                    state: {userId: item.id}
+                                                                    }}>
                                                                 <Image roundedCircle
-                                                                    src="https://via.placeholder.com/40/AF34BB?text=U"
+                                                                    src={`https://via.placeholder.com/40/AF34BB/FFFFFF?text=${item.first_name ? item.first_name[0].toUpperCase() : ''}`}
                                                                     alt="user profile"/>
                                                                 </Link>
                                                             </Col>
                                                             <Col sm={6} md={6}>
-                                                                <Link to={`/user/${item.username}`}>
+                                                                <Link to={{
+                                                                    pathname: `/user/${item.username}`,
+                                                                    state: {userId: item.id}
+                                                                    }}>
                                                                     <p>{item.first_name} {item.last_name}</p>
                                                                 </Link>
                                                             </Col>
@@ -271,7 +292,6 @@ const TeamView = (props) => {
                                                                         <Icon.FiSettings/>
                                                                         </Dropdown.Toggle>
                                                                         <Dropdown.Menu>
-                                                                        <Dropdown.Item href="#">Permissions</Dropdown.Item>
                                                                         <Dropdown.Item onClick={() => {removeMember(item.id)}}>Remove</Dropdown.Item>
                                                                     </Dropdown.Menu>
                                                                 </Dropdown>
