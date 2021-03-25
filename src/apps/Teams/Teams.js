@@ -260,7 +260,7 @@ const Teams = (props) => {
           Cancel
         </Button>
         <Button variant="danger" onClick={() => {deleteTeam(toDelete.id)}}>
-          Delete
+          Delete Team
         </Button>
       </Modal.Footer>
     </Modal>
@@ -302,7 +302,7 @@ const Teams = (props) => {
               <Col md={1} lg={1} className="text-right">
                 <div className="d-inline-block mb-1">
                   <Dropdown>
-                    <Dropdown.Toggle variant="small primary">
+                    <Dropdown.Toggle variant="small primary" data-testid={`dropdown${item.id}`}>
                       <Icon.FiSettings />
                     </Dropdown.Toggle>
                     <Dropdown.Menu>

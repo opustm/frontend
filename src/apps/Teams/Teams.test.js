@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { Axios } from '../../services/api.service';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import mockAPI from '../../services/test.service';
 import Teams from './Teams';
@@ -85,60 +85,139 @@ describe('Tests with successful API data', () => {
 //   test('Team deletion is successful', () => {
 
 //   });
-
-  test('Team join is successful', async () => {
-    // Click the 'Join Team' button
-    let joinButton = screen.getByText('Join Team');
-    fireEvent(
-      joinButton,
-      new MouseEvent('click', {
-        bubbles: true,
-        cancelable: false
-      })
-    );
-
-    // Verify that the modal opened
-    expect(screen.getByText('Join a Team')).toBeInTheDocument();
-
-    // Change the input
-    let teamNameInput = screen.getByLabelText('Team Name');
-    fireEvent.change(
-      teamNameInput,
-      { target: { value: 'Hollywood Stars' } }
-    )
-
-    // Intercept the necessary requests
-    Axios.get.mockResolvedValueOnce(mockAPI.allTeams);
-    Axios.put.mockResolvedValueOnce({
-      data: {
-        id: 2,
-        name: 'Hollywood Stars'
-      }
-    })
-
-    // Get and click the submit button
-    let submitButton = screen.getByText('Submit');
-    fireEvent(
-      submitButton,
-      new MouseEvent('click', {
-        bubbles: true,
-        cancelable: false
-      })
-    );
-
-    // Check for the team in the user's team list
-    await waitFor(() => {expect(screen.getByText('Hollywood Stars')).toBeInTheDocument()});
-  });
   
-//   test('Leaving a team is successful', () => {
+  test('Leaving a team is successful: user is only member', async () => {
+    // Get and click the dropdown menu for the CS 150 team
+    let teamDropdown = screen.getByTestId('dropdown1');
+    fireEvent(
+      teamDropdown,
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: false
+      })
+    );
 
-//   });
+    // Get the option to leave and then click it
+    let leaveButton = screen.getByText('Leave');
+    fireEvent(
+      leaveButton,
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: false
+      })
+    );
+
+    // The user is the only one in this team, so the 'Confirm Delete' modal should be shown
+    expect(screen.getByText('Confirm Delete')).toBeInTheDocument();
+    
+    // Click the delete button
+    let deleteButton = screen.getByText('Delete Team');
+    fireEvent(
+      deleteButton,
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: false
+      })
+    );
+
+
+    // Check that the CS 150 team is no longer displayed on the list
+    await waitForElementToBeRemoved(() => screen.getByText('CS 150'));
+  });
+
+  // test('Leaving team is successful: user is not only member', () => {
+
+  // });
 
 //   test('Verify create modal errors', () => {
 
 //   });
 
-//   test('Verify join modal errors', () => {
+  describe('Team join tests', () => {
+    beforeEach(() => {
+      // Click the 'Join Team' button
+      let joinButton = screen.getByText('Join Team');
+      fireEvent(
+        joinButton,
+        new MouseEvent('click', {
+          bubbles: true,
+          cancelable: false
+        })
+      );
 
-//   });
+      // Verify that the modal opened
+      expect(screen.getByText('Join a Team')).toBeInTheDocument();
+    });
+
+    test('Team join is successful', async () => {
+      // Change the input
+      let teamNameInput = screen.getByLabelText('Team Name');
+      fireEvent.change(
+        teamNameInput,
+        { target: { value: 'Hollywood Stars' } }
+      )
+  
+      // Intercept the necessary requests
+      Axios.get.mockResolvedValueOnce(mockAPI.allTeams);
+      Axios.put.mockResolvedValueOnce({
+        data: {
+          id: 2,
+          name: 'Hollywood Stars'
+        }
+      })
+  
+      // Get and click the submit button
+      let submitButton = screen.getByText('Submit');
+      fireEvent(
+        submitButton,
+        new MouseEvent('click', {
+          bubbles: true,
+          cancelable: false
+        })
+      );
+  
+      // Check for the team in the user's team list
+      await waitFor(() => {expect(screen.getByText('Hollywood Stars')).toBeInTheDocument()});
+    });
+
+    test('Verify join modal errors', () => {
+      // Change the input to a team the user is already in
+      let teamNameInput = screen.getByLabelText('Team Name');
+      fireEvent.change(
+        teamNameInput,
+        { target: { value: 'CS 150' } }
+      )
+  
+      // Get and click the submit button
+      let submitButton = screen.getByText('Submit');
+      fireEvent(
+        submitButton,
+        new MouseEvent('click', {
+          bubbles: true,
+          cancelable: false
+        })
+      );
+  
+      // Check that the error message is shown
+      expect(screen.getByText("You're already a member of this team!")).toBeInTheDocument();
+  
+      // Set the value to a team that doesn't exist
+      fireEvent.change(
+        teamNameInput,
+        { target: { value: 'Nonexistent Team!' } }
+      )
+  
+      // Click the submit button again
+      fireEvent(
+        submitButton,
+        new MouseEvent('click', {
+          bubbles: true,
+          cancelable: false
+        })
+      );
+  
+      // Check that the new error message is shown
+      expect(screen.getByText("No team exists with the name you specified. Please check your spelling and try again.")).toBeInTheDocument();
+    });
+  });
 })
