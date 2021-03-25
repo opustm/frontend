@@ -189,11 +189,11 @@ const Teams = (props) => {
         <Form onSubmit={handleSubmit}>
           <Row>
             <Col>
-              <Form.Group>
+              <Form.Group controlId='teamName'>
                 <Form.Label>Team Name</Form.Label>
                 <Form.Control type="text" {...bindTeamName} />
               </Form.Group>
-              <Form.Group>
+              <Form.Group controlId='description'>
                 <Form.Label>Description</Form.Label>
                 <Form.Control type="text" {...bindTeamDescription} />
               </Form.Group>
@@ -203,7 +203,7 @@ const Teams = (props) => {
                   setShowCreateModal(false);
                 }}
               >
-                Create Team
+                Submit
               </Button>
             </Col>
           </Row>
@@ -221,7 +221,7 @@ const Teams = (props) => {
         <Form>
           <Row>
             <Col>
-              <Form.Group>
+              <Form.Group controlId='toJoin'>
                 <Form.Label>Team Name</Form.Label>
                 <Form.Control type="text" {...bindToJoin} />
               </Form.Group>
@@ -234,7 +234,7 @@ const Teams = (props) => {
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={() => {handleJoin()}}>
-          Join Team
+          Submit
         </Button>
         <Button variant="secondary" onClick={() => {handleCloseJoin()}}>
           Cancel
