@@ -10,7 +10,7 @@ import App from './App';
 describe('testing 123', () => {
   test('true is true', () => {
     expect(true).toBe(true);
-  })
-})
+  });
+});
 
 // test('')

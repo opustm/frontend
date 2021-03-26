@@ -22,7 +22,7 @@ beforeEach(() => {
   //     <Teams userInfo={mockAPI.userInfo} />
   //   </Router>
   // )
-})
+});
 
 test('Teams component correctly renders data', () => {
   // expect(screen.getByText('CS 150')).toBeInTheDocument();

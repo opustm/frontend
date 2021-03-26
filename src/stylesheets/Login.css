@@ -1,12 +1,14 @@
-html, body, #root, .container-fluid, .loginRow {
+html,
+body,
+#root,
+.container-fluid,
+.loginRow {
   height: 100%;
 }
 
 #leftLogin {
   color: #ffffff;
 }
-
-
 
 .colorful {
   width: 100%;
@@ -19,18 +21,18 @@ html, body, #root, .container-fluid, .loginRow {
 
 @keyframes gradient {
   0% {
-      background-position: 0% 50%;
+    background-position: 0% 50%;
   }
   50% {
-      background-position: 100% 50%;
+    background-position: 100% 50%;
   }
   100% {
-      background-position: 0% 50%;
+    background-position: 0% 50%;
   }
 }
 
 .vertShift {
-  margin-top: 20%
+  margin-top: 20%;
 }
 
 #loginSubmit {
@@ -38,8 +40,10 @@ html, body, #root, .container-fluid, .loginRow {
   margin-bottom: 8px;
 }
 
-.loginLink, .loginLink:hover, .loginLink:focus {
-  color: #00CFAA;
+.loginLink,
+.loginLink:hover,
+.loginLink:focus {
+  color: #00cfaa;
 }
 
 #copyright {
@@ -47,18 +51,18 @@ html, body, #root, .container-fluid, .loginRow {
   color: rgb(158, 157, 157);
 }
 
-
 #register {
-  color: #00CFAA;
-  background: none!important;
+  color: #00cfaa;
+  background: none !important;
   border: none;
-  padding: 0!important;
-  cursor: pointer; 
+  padding: 0 !important;
+  cursor: pointer;
 }
 
-#register:hover, #register:focus {
+#register:hover,
+#register:focus {
   text-decoration: underline;
-  color: #00CFAA;
+  color: #00cfaa;
 }
 
 #iconP {
