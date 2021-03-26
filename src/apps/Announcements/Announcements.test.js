@@ -18,15 +18,18 @@ jest.mock('../../services/api.service');
 
 const matchData = {
   params: {}
-}
+};
 
 beforeEach(() => {
   // Intercept the API calls (might be able to move this into a beforeEach() block along with the render)
-  Axios.get.mockResolvedValueOnce(mockAPI.userTeams).mockResolvedValueOnce(mockAPI.userEvents).mockResolvedValueOnce(mockAPI.userAnnouncements);
+  Axios.get
+    .mockResolvedValueOnce(mockAPI.userTeams)
+    .mockResolvedValueOnce(mockAPI.userEvents)
+    .mockResolvedValueOnce(mockAPI.userAnnouncements);
 
   // Render the Announcements component
-  render(<Announcements userInfo={mockAPI.userInfo} match={matchData}/>);
-})
+  render(<Announcements userInfo={mockAPI.userInfo} match={matchData} />);
+});
 
 test('Renders Announcements component', () => {
   // Check that the user.fetchTeams route was called
@@ -61,10 +64,14 @@ test('Modal remains open on bad data', () => {
       bubbles: true,
       cancelable: false
     })
-  )
+  );
 
   // Verify that the error alert is displayed and the modal is still open
-  expect(screen.getByText("Error: You've entered invalid data or forgotten to fill out one of the fields.")).toBeInTheDocument();
+  expect(
+    screen.getByText(
+      "Error: You've entered invalid data or forgotten to fill out one of the fields."
+    )
+  ).toBeInTheDocument();
   expect(screen.getByText('Create an announcement')).toBeInTheDocument();
 });
 
@@ -77,45 +84,37 @@ test('Announcement creation adds record to table', () => {
       cancelable: false
     })
   );
-  
+
   const createData = {
     id: 3,
     team: 1,
     priority: 3,
     duration: 2,
     announcement: 'Cookies in the breakroom!'
-  }
+  };
 
   // Set the teamInput value to be 1, since that's the ID value of the team we should select
   let teamInput = screen.getByLabelText('Select Team *');
-  fireEvent.change(
-    teamInput,
-    { target: { value: createData.team } }
-  )
+  fireEvent.change(teamInput, { target: { value: createData.team } });
 
   // Set the priority to 3 (low priority)
   let priorityInput = screen.getByLabelText('Select Priority *');
-  fireEvent.change(
-    priorityInput,
-    { target: { value: createData.priority} }
-  )
-  
+  fireEvent.change(priorityInput, { target: { value: createData.priority } });
+
   // Set the announcement duration
-  let durationInput = screen.getByLabelText('Announcement Duration in Hours (Minimum: 1) *')
-  fireEvent.change(
-    durationInput,
-    { target: { value: createData.duration} }
-  )
+  let durationInput = screen.getByLabelText(
+    'Announcement Duration in Hours (Minimum: 1) *'
+  );
+  fireEvent.change(durationInput, { target: { value: createData.duration } });
 
   // Set the announcement text
   let announcementInput = screen.getByLabelText('Announcement *');
-  fireEvent.change(
-    announcementInput,
-    { target: { value: createData.announcement} }
-  )
-  
+  fireEvent.change(announcementInput, {
+    target: { value: createData.announcement }
+  });
+
   // Mock the POST call that will get triggered on form submission
-  Axios.post.mockResolvedValueOnce({data: createData});
+  Axios.post.mockResolvedValueOnce({ data: createData });
 
   // Try submitting with valid data
   fireEvent(
@@ -124,10 +123,12 @@ test('Announcement creation adds record to table', () => {
       bubbles: true,
       cancelable: false
     })
-  )
+  );
 
   // Make sure the modal closed
-  expect(screen.getByText('* indicates required field')).not.toBeInTheDocument();
+  expect(
+    screen.getByText('* indicates required field')
+  ).not.toBeInTheDocument();
 
   // Check that the new record is in the table
   expect(screen.getByText('Cookies in the breakroom!')).toBeInTheDocument();
@@ -140,21 +141,21 @@ test('Deletes announcement from table', () => {
   console.log(numRows);
 
   // Intercept the delete request and return that the resource was successfully deleted
-  Axios.delete.mockResolvedValueOnce({status: 200})
-  
+  Axios.delete.mockResolvedValueOnce({ status: 200 });
+
   // Click on the first one
   fireEvent(
     deleteButtons[0],
     new MouseEvent('click', {
       bubbles: true,
       cancelable: false
-    })   
-  )
+    })
+  );
   // There should now be one less row in the table than there was before we clicked a delete button
   deleteButtons = screen.getAllByTestId('deleteButton');
   console.log(deleteButtons);
   expect(deleteButtons.length).toEqual(numRows - 1);
-})
+});
 
 // test('Priority and Team Filters work', () => {
 

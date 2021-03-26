@@ -12,13 +12,17 @@ beforeEach(() => {
   // 1. GET user teams
   // 2. GET user contacts
   // 3. n GET requests where n is the length of user contacts (in this case, twice)
-  Axios.get.mockResolvedValueOnce(mockAPI.userTeams).mockResolvedValueOnce(mockAPI.userContacts).mockResolvedValueOnce(mockAPI.contactTeams.goldblum).mockResolvedValueOnce(mockAPI.contactTeams.vanWinkle);
+  Axios.get
+    .mockResolvedValueOnce(mockAPI.userTeams)
+    .mockResolvedValueOnce(mockAPI.userContacts)
+    .mockResolvedValueOnce(mockAPI.contactTeams.goldblum)
+    .mockResolvedValueOnce(mockAPI.contactTeams.vanWinkle);
   render(
     <Router>
       <Contacts userInfo={mockAPI.userInfo} />
     </Router>
-  )
-})
+  );
+});
 
 test('Contacts renders correctly', () => {
   // Verify that the user's contacts are in the table
@@ -31,4 +35,4 @@ test('Contacts renders correctly', () => {
   expect(screen.getAllByText('CS 150').length).toEqual(2);
   expect(screen.queryByText('Hollywood Stars')).toBeNull();
   expect(screen.queryByText('Old People')).toBeNull();
-})
+});
