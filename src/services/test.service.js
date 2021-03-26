@@ -107,6 +107,31 @@ const mockAPI = {
         }
       ]
     }
+  },
+  allTeams: {
+    data: [
+      {
+        id: 1,
+        name: 'CS 150',
+        members: [],
+        managers: [],
+        owners: []
+      },
+      {
+        id: 2,
+        name: 'Hollywood Stars',
+        members: [],
+        managers: [],
+        owners: []
+      },
+      {
+        id: 3,
+        name: 'Old People',
+        members: [],
+        managers: [],
+        owners: []
+      }
+    ]
   }
 };
 

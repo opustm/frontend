@@ -40,6 +40,7 @@ const Teams = props => {
   const [toDelete, setToDelete] = useState();
   const [joinError, setJoinError] = useState(false);
   const [duplicateJoin, setDuplicateJoin] = useState(false);
+  const [createError, setCreateError] = useState(false);
   const [showSpinner, setShowSpinner] = useState(true);
   const {
     value: teamName,
@@ -102,13 +103,32 @@ const Teams = props => {
   }
 
   async function createTeam() {
-    let response = await api.post(
-      urls.teams.fetchAll(),
-      createFormPlaceholderData
-    );
-    let newTeams = teams.concat(response.data);
-    props.updateTeams(newTeams);
-    setTeams(newTeams);
+    setCreateError(false);
+    let teamsRequest = await api.get(urls.teams.fetchAll());
+    let allTeams = teamsRequest.data;
+    let duplicateCreate = false;
+    for (let team of allTeams) {
+      if (team.name === teamName) {
+        duplicateCreate = true;
+        break;
+      }
+    }
+    if (!duplicateCreate) {
+      setCreateError(false);
+      setShowCreateModal(false);
+      let response = await api.post(
+        urls.teams.fetchAll(),
+        createFormPlaceholderData
+      );
+      let newTeams = teams.concat(response.data);
+      props.updateTeams(newTeams);
+      setTeams(newTeams);
+      resetTeamName();
+      resetTeamDescription();
+    }
+    else {
+      setCreateError(true);
+    }
   }
 
   async function handleJoin() {
@@ -159,14 +179,11 @@ const Teams = props => {
     setDuplicateJoin(false);
   }
 
-  const handleSubmit = evt => {
-    evt.preventDefault();
+  const handleSubmit = () => {
     createFormPlaceholderData.name = teamName;
     createFormPlaceholderData.description = teamDescription;
     createFormPlaceholderData.owners = [props.userInfo.id];
     createTeam();
-    resetTeamName();
-    resetTeamDescription();
   };
 
   async function handleLeave(teamToLeave) {
@@ -206,6 +223,7 @@ const Teams = props => {
     <Modal
       show={showCreateModal}
       onHide={() => {
+        setCreateError(false);
         setShowCreateModal(false);
       }}
     >
@@ -213,24 +231,24 @@ const Teams = props => {
         <Modal.Title>Create a New Team</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={handleSubmit}>
+        <Form>
           <Row>
             <Col>
-              <Form.Group>
+              <Form.Group controlId='teamName'>
                 <Form.Label>Team Name</Form.Label>
                 <Form.Control type="text" {...bindTeamName} />
               </Form.Group>
-              <Form.Group>
+              <Form.Group controlId='description'>
                 <Form.Label>Description</Form.Label>
                 <Form.Control type="text" {...bindTeamDescription} />
               </Form.Group>
+              <Alert hidden={!createError} variant='danger'>{`A team with this name already exists. If you'd like, you may join it instead.`}</Alert>
               <Button
-                type="submit"
                 onClick={() => {
-                  setShowCreateModal(false);
+                  handleSubmit();
                 }}
               >
-                Create Team
+                Submit
               </Button>
             </Col>
           </Row>
@@ -253,7 +271,7 @@ const Teams = props => {
         <Form>
           <Row>
             <Col>
-              <Form.Group>
+              <Form.Group controlId='toJoin'>
                 <Form.Label>Team Name</Form.Label>
                 <Form.Control type="text" {...bindToJoin} />
               </Form.Group>
@@ -271,12 +289,8 @@ const Teams = props => {
         >{`You're already a member of this team!`}</Alert>
       </Modal.Body>
       <Modal.Footer>
-        <Button
-          onClick={() => {
-            handleJoin();
-          }}
-        >
-          Join Team
+        <Button onClick={() => {handleJoin()}}>
+          Submit
         </Button>
         <Button
           variant="secondary"
@@ -371,7 +385,7 @@ const Teams = props => {
               <Col md={1} lg={1} className="text-right">
                 <div className="d-inline-block mb-1">
                   <Dropdown>
-                    <Dropdown.Toggle variant="small primary">
+                    <Dropdown.Toggle variant="small primary" data-testid={`dropdown${item.id}`}>
                       <Icon.FiSettings />
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
