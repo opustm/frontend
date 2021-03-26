@@ -132,6 +132,84 @@ const mockAPI = {
         owners: []
       }
     ]
+  },
+  team1: {
+    data: {
+      id: 1,
+      name: 'CS 150',
+      members: [
+        {
+          id: '101',
+          username: 'compsciStudent',
+          first_name: 'Joe',
+          last_name: 'Bob'
+        }
+      ],
+      managers: [],
+      owners: [
+        {
+          id: '12345',
+          username: 'testUser',
+          first_name: 'Test',
+          last_name: 'User'
+        }
+      ],
+      description: 'This is a test team'
+    }
+  },
+  otherUser: {
+    data: {
+      id: 102,
+      first_name: 'Ron',
+      last_name: 'Weasley',
+      username: 'ronweasley'
+    }
+  },
+  allUsers: {
+    data: [
+      {
+        id: '12345',
+        username: 'testUser',
+        first_name: 'Test',
+        last_name: 'User'
+      },
+      {
+        id: 102,
+        first_name: 'Ron',
+        last_name: 'Weasley',
+        username: 'ronweasley'
+      }
+    ]
+  },
+  newTeam: {
+    data: {
+      id: 1,
+      name: 'CS 150',
+      members: [
+        {
+          id: '101',
+          username: 'compsciStudent',
+          first_name: 'Joe',
+          last_name: 'Bob'
+        },
+        {
+          id: 102,
+          first_name: 'Ron',
+          last_name: 'Weasley',
+          username: 'ronweasley'
+        }
+      ],
+      managers: [],
+      owners: [
+        {
+          id: '12345',
+          username: 'testUser',
+          first_name: 'Test',
+          last_name: 'User'
+        }
+      ],
+      description: 'This is a test team'
+    }
   }
 };
 
