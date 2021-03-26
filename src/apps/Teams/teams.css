@@ -1,29 +1,28 @@
 .team-element {
-    height: 70px;
-    justify-content: center;
-    border-color: black;
-    border: 2px;
+  height: 70px;
+  justify-content: center;
+  border-color: black;
+  border: 2px;
 }
 
 .team-photo {
-    float: left;
-
-
+  float: left;
 }
 
 .team-text {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 8px 0px 8px 16px;
-    /* list-style: */
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 8px 0px 8px 16px;
+  /* list-style: */
 }
 
 .deleteIcon {
-    margin-right: 10%;
-    margin-top: 3px;
+  margin-right: 10%;
+  margin-top: 3px;
 }
 
-.deleteIcon:hover, .addIcon:hover {
-    cursor: pointer;
+.deleteIcon:hover,
+.addIcon:hover {
+  cursor: pointer;
 }

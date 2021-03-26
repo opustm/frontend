@@ -3,9 +3,9 @@
 // This allows the components to handle it the same way they would if they received data from an API
 
 const mockAPI = {
-  userInfo : {
-    id: "12345",
-    username: "testUser",
+  userInfo: {
+    id: '12345',
+    username: 'testUser',
     first_name: 'Test',
     last_name: 'User'
   },
@@ -28,7 +28,7 @@ const mockAPI = {
         last_name: 'Goldblum',
         username: 'jgoldblum',
         email: 'goldblum@hotmail.com',
-        phone: '09876',
+        phone: '09876'
       },
       {
         id: 101,
@@ -36,7 +36,7 @@ const mockAPI = {
         last_name: 'Van Winkle',
         username: 'vanwinkle',
         email: 'rvw@yahoo.com',
-        phone: '54321',
+        phone: '54321'
       }
     ]
   },
@@ -49,8 +49,8 @@ const mockAPI = {
         },
         name: 'Introduction to CS',
         details: 'Our first class meeting for CS 150',
-        start: "2021-02-18T16:45:54Z",
-        end: "2021-02-18T16:45:55Z"
+        start: '2021-02-18T16:45:54Z',
+        end: '2021-02-18T16:45:55Z'
       },
       {
         id: 2,
@@ -59,8 +59,8 @@ const mockAPI = {
         },
         name: 'Lesson 2',
         details: 'Our second class meeting for CS 150',
-        start: "2021-03-18T16:45:54Z",
-        end: "2021-03-19T16:45:55Z"
+        start: '2021-03-18T16:45:54Z',
+        end: '2021-03-19T16:45:55Z'
       }
     ]
   },
@@ -78,7 +78,7 @@ const mockAPI = {
         priority: 1,
         announcement: 'Hello World!',
         event: null,
-        end: "2021-02-23T03:35:28.800000Z"
+        end: '2021-02-23T03:35:28.800000Z'
       }
     ]
   },
@@ -104,7 +104,7 @@ const mockAPI = {
         {
           id: 3,
           name: 'Old People'
-        },
+        }
       ]
     }
   },
@@ -133,6 +133,6 @@ const mockAPI = {
       }
     ]
   }
-}
+};
 
 export default mockAPI;

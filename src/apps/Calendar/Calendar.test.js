@@ -1,6 +1,12 @@
 import '@testing-library/jest-dom';
 import { Axios } from '../../services/api.service';
-import { fireEvent, render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  waitForElementToBeRemoved
+} from '@testing-library/react';
 import mockAPI from '../../services/test.service';
 import Calendar from './Calendar';
 
@@ -20,18 +26,23 @@ jest.mock('../../services/api.service');
 
 const matchData = {
   params: {}
-}
+};
 
 beforeEach(() => {
-  Axios.get.mockResolvedValueOnce(mockAPI.userTeams).mockResolvedValueOnce(mockAPI.userContacts).mockResolvedValueOnce(mockAPI.userEvents);
-  render(<Calendar userInfo={mockAPI.userInfo} match={matchData} />)
-})
+  Axios.get
+    .mockResolvedValueOnce(mockAPI.userTeams)
+    .mockResolvedValueOnce(mockAPI.userContacts)
+    .mockResolvedValueOnce(mockAPI.userEvents);
+  render(<Calendar userInfo={mockAPI.userInfo} match={matchData} />);
+});
 
 test('Calendar loads events correctly', () => {
   // Verify that the component loads the mock data correctly
   expect(screen.getByText('Introduction to CS')).toBeInTheDocument();
-  expect(screen.getByText('Our first class meeting for CS 150')).toBeInTheDocument();
-})
+  expect(
+    screen.getByText('Our first class meeting for CS 150')
+  ).toBeInTheDocument();
+});
 
 test('Create a new event', () => {
   // Open up the create modal
@@ -65,7 +76,7 @@ test('Delete an event', async () => {
   let initialNumRows = deleteButtons.length;
 
   // Prepare Axios to intercept the delete request
-  Axios.delete.mockResolvedValueOnce({status: 200});
+  Axios.delete.mockResolvedValueOnce({ status: 200 });
 
   // Click the first delete button to trigger a delete event.
   fireEvent(
@@ -74,7 +85,7 @@ test('Delete an event', async () => {
       bubbles: true,
       cancelable: false
     })
-  )
+  );
 
   // Check that there is one less row in the table than there was on render
   await waitForElementToBeRemoved(() => deleteButtons[0]);
