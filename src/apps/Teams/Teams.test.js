@@ -64,7 +64,8 @@ describe('Tests with successful API data', () => {
       { target: { value: createData.description } }
     )
 
-    // Mock the post request that will occur when we submit
+    // Mock the get and post request that will occur when we submit
+    Axios.get.mockResolvedValueOnce(mockAPI.allTeams);
     Axios.post.mockResolvedValueOnce({data: createData});
 
     // Get the submit button and click it
