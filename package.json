@@ -29,7 +29,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom --coverage",
+    "test": "react-scripts test --env=jsdom --coverage --watchAll",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,css,less,scss,vue,json,gql,md}\"",
     "clean-install": "rm -rf node_modules && rm package-lock.json && npm i",
     "eject": "react-scripts eject"
@@ -56,5 +56,10 @@
     "eslint-plugin-react": "^7.23.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "prettier": "^2.2.1"
+  },
+  "jest": {
+    "watchPathIgnorePatterns": [
+      "src/static/scripts"
+    ]
   }
 }
