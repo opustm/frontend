@@ -8,11 +8,11 @@ export default class Widget extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title:  '',
+      title: '',
       description: '',
       icon: '',
       data: []
-    }
+    };
   }
 
   componentDidMount() {
@@ -40,34 +40,47 @@ export default class Widget extends Component {
   render() {
     return (
       <Container>
-        <Link to={{
-            pathname: this.props.teamDetails ? `/${this.props.appTitle}/${this.props.teamDetails.name}` : `${this.props.appTitle}`,
-            state: {teamId: this.props.teamId}
-          }} className='widgetLink'>
+        <Link
+          to={{
+            pathname: this.props.teamDetails
+              ? `/${this.props.appTitle}/${this.props.teamDetails.name}`
+              : `${this.props.appTitle}`,
+            state: { teamId: this.props.teamId }
+          }}
+          className="widgetLink"
+        >
           <Card>
-            <Card.Header>{this.state.icon} {this.state.title}</Card.Header>
+            <Card.Header>
+              {this.state.icon} {this.state.title}
+            </Card.Header>
             <Card.Body>
               {this.state.description}
               <ListGroup>
-                {this.state.data.length !== 0 ? this.state.data.map((item, idx) => {
-                  if (this.props.appTitle === 'teams') {
-                    return (<Link to={{
-                      pathname: `/teams/${item[0]}`,
-                      state: {teamId: item[1]}
-                      }}>
-                      <ListGroup.Item key={idx}>{item[0]}</ListGroup.Item>
-                    </Link>
-                    );
-                  }
-                  else{
-                    return (<ListGroup.Item key={idx}>{item}</ListGroup.Item>);
-                  }
-                }): <ListGroup.Item>No data to display</ListGroup.Item>}
+                {this.state.data.length !== 0 ? (
+                  this.state.data.map((item, idx) => {
+                    if (this.props.appTitle === 'teams') {
+                      return (
+                        <Link
+                          to={{
+                            pathname: `/teams/${item[0]}`,
+                            state: { teamId: item[1] }
+                          }}
+                        >
+                          <ListGroup.Item key={idx}>{item[0]}</ListGroup.Item>
+                        </Link>
+                      );
+                    } else {
+                      return <ListGroup.Item key={idx}>{item}</ListGroup.Item>;
+                    }
+                  })
+                ) : (
+                  <ListGroup.Item>No data to display</ListGroup.Item>
+                )}
               </ListGroup>
             </Card.Body>
           </Card>
         </Link>
       </Container>
-    )
+    );
   }
 }
