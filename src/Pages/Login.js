@@ -281,6 +281,7 @@ export default class Login extends Component {
                       </Container>
                     </Form.Label>
                     <Form.Control
+                      data-testid="phoneInput"
                       type="number"
                       name="phone"
                       value={this.state.phone}
@@ -310,6 +311,7 @@ export default class Login extends Component {
               <Form.Group>
                 <Form.Label>Username</Form.Label>
                 <Form.Control
+                  data-testid="usernameInput"
                   type="text"
                   name="username"
                   value={this.state.username}
@@ -337,8 +339,8 @@ export default class Login extends Component {
                 hidden={!this.state.signupError}
               >
                 {this.state.signupError
-                  ? this.state.signupErrorMessages.map(error => {
-                      return <li>{error}</li>;
+                  ? this.state.signupErrorMessages.map((error, idx) => {
+                      return <li key={idx}>{error}</li>;
                     })
                   : ''}
               </Alert>

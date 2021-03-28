@@ -69,7 +69,7 @@ export default class Home extends Component {
         </Modal>
 
         <Jumbotron>
-          <h1>Welcome, {this.props.userInfo.first_name}</h1>
+          <h1>{`Welcome, ${this.props.userInfo.first_name}`}</h1>
           <p>
             It is currently <strong>{this.state.today}</strong>. Check your
             calendar for upcoming events.
