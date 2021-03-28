@@ -149,7 +149,7 @@ export default class Profile extends Component {
             <Col>
               {this.state.editingInfo ? (
                 <Form>
-                  <Form.Group>
+                  <Form.Group controlId="firstNameInput">
                     <Form.Label>First Name: </Form.Label>
                     <Form.Control
                       value={this.state.first_name}
@@ -158,7 +158,7 @@ export default class Profile extends Component {
                       }}
                     ></Form.Control>
                   </Form.Group>
-                  <Form.Group>
+                  <Form.Group controlId="lastNameInput">
                     <Form.Label>Last Name: </Form.Label>
                     <Form.Control
                       value={this.state.last_name}
@@ -167,7 +167,7 @@ export default class Profile extends Component {
                       }}
                     ></Form.Control>
                   </Form.Group>
-                  <Form.Group>
+                  <Form.Group controlId="usernameInput">
                     <Form.Label>Username: </Form.Label>
                     <Form.Control
                       value={this.state.username}
@@ -176,7 +176,7 @@ export default class Profile extends Component {
                       }}
                     ></Form.Control>
                   </Form.Group>
-                  <Form.Group>
+                  <Form.Group controlId="phoneInput">
                     <Form.Label>Phone: </Form.Label>
                     <Form.Control
                       value={this.state.phone}
@@ -185,7 +185,7 @@ export default class Profile extends Component {
                       }}
                     ></Form.Control>
                   </Form.Group>
-                  <Form.Group>
+                  <Form.Group controlId="emailInput">
                     <Form.Label>Email: </Form.Label>
                     <Form.Control
                       value={this.state.email}
@@ -194,7 +194,7 @@ export default class Profile extends Component {
                       }}
                     ></Form.Control>
                   </Form.Group>
-                  <Form.Group>
+                  <Form.Group controlId="bioInput">
                     <Form.Label>Bio: </Form.Label>
                     <Form.Control
                       value={this.state.bio}

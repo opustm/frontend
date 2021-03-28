@@ -7,7 +7,23 @@ const mockAPI = {
     id: '12345',
     username: 'testUser',
     first_name: 'Test',
-    last_name: 'User'
+    last_name: 'User',
+    email: 'testy@gmail.com',
+    picture: '#0EDD12',
+    phone: '1110002020',
+    bio: 'I am a test user designed for test purposes!'
+  },
+  userInfoData: {
+    data: {
+      id: '12345',
+      username: 'testUser',
+      first_name: 'Test',
+      last_name: 'User',
+      email: 'testy@gmail.com',
+      picture: '#0EDD12',
+      phone: '1110002020',
+      bio: 'I am a test user designed for test purposes!'
+    }
   },
   userTeams: {
     data: [
