@@ -51,24 +51,16 @@ const TeamView = props => {
     async function fetchDetails() {
       const request = await api.get(urls.teams.fetchById(teamId));
       setDetails(request.data);
-      return request;
-    }
-    async function fetchMembers() {
-      const request = await api.get(urls.teams.fetchMembers(teamId));
       let allMembers = request.data.members.concat(
         request.data.managers.concat(request.data.owners)
       );
       setMembers(allMembers);
-    }
-    async function fetchGroups() {
-      const request = await api.get(urls.teams.fetchRelatedTeams(teamId));
-      if (request.data) setGroups(request.data);
+      return request;
     }
 
     try {
       fetchDetails();
       fetchMembers();
-      // fetchGroups();
     } catch (err) {
       <Redirect to="/404" />;
     }
@@ -170,7 +162,7 @@ const TeamView = props => {
         <Form onSubmit={handleSubmit}>
           <Row>
             <Col>
-              <Form.Group>
+              <Form.Group controlId="usernameInput">
                 <Form.Label>Enter username</Form.Label>
                 <Form.Control type="text" {...bindInviteeUsername} />
               </Form.Group>
@@ -266,7 +258,7 @@ const TeamView = props => {
                 deleteTeam(aboutToDelete);
               }}
             >
-              Delete
+              Delete Team
             </Button>
           </Container>
         </Modal.Footer>
@@ -346,7 +338,7 @@ const TeamView = props => {
                 <Col className="text-right">
                   <div className="d-inline-block mb-1">
                     <Dropdown>
-                      <Dropdown.Toggle variant="small primary">
+                      <Dropdown.Toggle variant="small primary" data-testid="teamSettings">
                         <Icon.FiSettings />
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
@@ -415,7 +407,7 @@ const TeamView = props => {
                                     }}
                                   >
                                     <p>
-                                      {item.first_name} {item.last_name}
+                                      {`${item.first_name} ${item.last_name}`}
                                     </p>
                                   </Link>
                                 </Col>
