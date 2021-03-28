@@ -111,5 +111,4 @@ test('Successfully delete team', async () => {
 
   // Check that the team members are no longer in the document
   expect(screen.getByText('Joe Bob')).not.toBeInTheDocument();
-
 });
