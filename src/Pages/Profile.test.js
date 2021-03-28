@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { Axios } from '../services/api.service';
-import { fireEvent, render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import mockAPI from '../services/test.service';
 import Profile from './Profile';
