@@ -11,8 +11,6 @@ import {
 } from '../../services/api.service';
 import './navigation.css';
 
-// TO DO:
-// Render the most recent teams only? i.e. the last six a user interacted with
 
 function Navigation(props) {
   const showSidebar = () => props.setSidebar(!sidebar);
