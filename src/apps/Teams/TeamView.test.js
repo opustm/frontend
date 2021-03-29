@@ -79,7 +79,6 @@ test('Successfully add member to team', async () => {
 
 test('Successfully delete team', async () => {
   // Get and click the settings gear
-  console.log(screen.getByTestId('teamSettings'));
   fireEvent(
     screen.getByTestId('teamSettings'),
     new MouseEvent('click', {

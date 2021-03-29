@@ -23,21 +23,13 @@ export const API_ENDPOINTS = {
   teams: {
     fetchAll: () => `/teams/`,
     fetchById: teamID => `/teams/${teamID}/`,
-    fetchMembers: teamID => `/teams/${teamID}/members/`,
-    fetchRelatedTeams: teamName => `/relatedCliques/${teamName}/`
+    fetchMembers: teamID => `/teams/${teamID}/members/`
   },
   user: {
     fetchAll: () => `/users/`,
     fetchById: userID => `users/${userID}/`,
     fetchTeams: userID => `/users/${userID}/teams/`,
-    fetchContacts: userID => `/users/${userID}/contacts/`,
-    fetchSchedule: userID => `/users/${userID}/schedule/`
-  },
-  request: {
-    fetchAll: () => `/requests/`,
-    fetchById: requestID => `/requests/${requestID}/`,
-    fetchByTeam: teamID => `/requests/team/${teamID}/`,
-    fetchByUser: userID => `/requests/team/${userID}/`
+    fetchContacts: userID => `/users/${userID}/contacts/`
   },
   event: {
     fetchAll: () => `/events/`,
@@ -50,19 +42,5 @@ export const API_ENDPOINTS = {
     fetchById: announcementID => `/announcements/${announcementID}/`,
     fetchByTeam: teamID => `/announcements/team/${teamID}/`,
     fetchByUser: userID => `/announcements/user/${userID}`
-  },
-  invitation: {
-    fetchAll: () => `/invitations/`
-  },
-  schedule: {},
-  message: {},
-  todo: {}
+  }
 };
-
-// Legacy: Do not use. Instead, use API_CONFIG.baseURL
-export default function APIHost() {
-  console.warn(
-    'Function APIHost is depreciated due to inconsistency. Use API_CONFIG.baseURL instead'
-  );
-  return API_CONFIG.baseURL();
-}

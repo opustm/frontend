@@ -10,5 +10,5 @@ test('404 Page renders correctly', () => {
     </Router>
   )
 
-  expect(screen.getByText("Looks like you're lost")).toBeInTheDocument();
+  expect(screen.getByText("Looks like you're lost.")).toBeInTheDocument();
 })
