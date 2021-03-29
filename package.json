@@ -59,7 +59,10 @@
   },
   "jest": {
     "watchPathIgnorePatterns": [
-      "src/static/scripts"
+      "src/static/scripts",
+      "src/App.js",
+      "src/index.js",
+      "src/services/data.service.js"
     ]
   }
 }
