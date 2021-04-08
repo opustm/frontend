@@ -186,7 +186,7 @@ export default class Login extends Component {
               <h1 className="vertShift">Opus Team Management</h1>
               <br />
               <Form>
-                <Form.Group>
+                <Form.Group controlId="loginUsername">
                   <Form.Label>Username</Form.Label>
                   <Form.Control
                     type="text"
@@ -195,7 +195,7 @@ export default class Login extends Component {
                     value={this.state.username}
                   />
                 </Form.Group>
-                <Form.Group>
+                <Form.Group controlId="loginPassword">
                   <Form.Label>Password</Form.Label>
                   <Form.Control
                     type="password"
@@ -247,7 +247,7 @@ export default class Login extends Component {
             <Form>
               <Row>
                 <Col>
-                  <Form.Group>
+                  <Form.Group controlId="registerFirstName">
                     <Form.Label>First Name</Form.Label>
                     <Form.Control
                       type="text"
@@ -258,7 +258,7 @@ export default class Login extends Component {
                   </Form.Group>
                 </Col>
                 <Col>
-                  <Form.Group>
+                  <Form.Group controlId="registerLastName">
                     <Form.Label>Last Name</Form.Label>
                     <Form.Control
                       type="text"
@@ -271,7 +271,7 @@ export default class Login extends Component {
               </Row>
               <Row>
                 <Col>
-                  <Form.Group>
+                  <Form.Group controlId="registerPhone">
                     <Form.Label>
                       Phone Number
                       <Container>
@@ -290,7 +290,7 @@ export default class Login extends Component {
                   </Form.Group>
                 </Col>
                 <Col>
-                  <Form.Group>
+                  <Form.Group controlId="registerEmail">
                     <Form.Label>
                       Email
                       <Container>
@@ -300,6 +300,7 @@ export default class Login extends Component {
                       </Container>
                     </Form.Label>
                     <Form.Control
+                      data-testid="emailInput"
                       type="email"
                       name="email"
                       value={this.state.email}
@@ -311,7 +312,7 @@ export default class Login extends Component {
               <Form.Group>
                 <Form.Label>Username</Form.Label>
                 <Form.Control
-                  data-testid="usernameInput"
+                  data-testid="registerUsername"
                   type="text"
                   name="username"
                   value={this.state.username}
@@ -321,6 +322,7 @@ export default class Login extends Component {
               <Form.Group>
                 <Form.Label>Password</Form.Label>
                 <Form.Control
+                  data-testid="registerPassword"
                   type="password"
                   name="password"
                   value={this.state.password}
