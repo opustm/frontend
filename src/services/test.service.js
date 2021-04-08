@@ -226,6 +226,14 @@ const mockAPI = {
       ],
       description: 'This is a test team'
     }
+  },
+  newEvent: {
+    id: 19,
+    name: 'Event 3',
+    start: '2023-04-07T11:22',
+    end: '2024-04-07T11:22',
+    team: '12',
+    details: 'This event will be added to the table!'
   }
 };
 
