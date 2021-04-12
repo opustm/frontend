@@ -33,6 +33,13 @@ const mockAPI = {
         members: [],
         managers: [],
         owners: []
+      },
+      {
+        id: 2,
+        name: 'CS 360',
+        members: ['Bob'],
+        managers: [],
+        owners: []
       }
     ]
   },
@@ -170,7 +177,11 @@ const mockAPI = {
           last_name: 'User'
         }
       ],
-      description: 'This is a test team'
+      description: 'This is a test team',
+      creator: {
+        first_name: 'LeBron',
+        last_name: 'James'
+      }
     }
   },
   otherUser: {
@@ -226,6 +237,14 @@ const mockAPI = {
       ],
       description: 'This is a test team'
     }
+  },
+  newEvent: {
+    id: 19,
+    name: 'Event 3',
+    start: '2023-04-07T11:22',
+    end: '2024-04-07T11:22',
+    team: '12',
+    details: 'This event will be added to the table!'
   }
 };
 

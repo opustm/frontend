@@ -189,19 +189,6 @@ export default class Calendar extends Component {
       }
       this.setState({ eventObjects: tableObjects });
 
-      // Need to decide if we want to do anything with this.
-      // if (this.state.createAnnouncement){
-      //     let body2 = {
-      //         announcement: `Generated announcement for event: ${this.state.eventName}`,
-      //         clique: this.state.eventTeam,
-      //         event: body.id,
-      //         priority: 3,
-      //         creator: this.props.userInfo.id,
-      //         end: end.toISOString(),
-      //         acknowledged: [this.props.userInfo.id]
-      //     };
-      //     await api.post(urls.announcement.fetchAll(), body2);
-      // }
       this.setState({
         eventDetails: '',
         eventPicture: '',
@@ -355,13 +342,13 @@ export default class Calendar extends Component {
                       this.setState({ eventInvited: e.target.value });
                     }}
                   >
-                    {this.state.selectedTeamMembers.map((member, idx) => {
+                    {this.state.selectedTeamMembers ? this.state.selectedTeamMembers.map((member, idx) => {
                       return member.id !== this.props.userInfo.id ? (
                         <option key={idx}>{member.username}</option>
                       ) : (
                         <></>
                       );
-                    })}
+                    }): ''}
                   </Form.Control>
                 </Form.Group>
                 <Form.Group controlId="detailInput">

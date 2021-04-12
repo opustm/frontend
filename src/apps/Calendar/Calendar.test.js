@@ -12,18 +12,6 @@ import Calendar from './Calendar';
 
 jest.mock('../../services/api.service');
 
-// TODO
-// Intercept the following on render:
-//    1. GET user teams
-//    2. GET user contacts
-//    3. GET user events
-// Test create
-//    Trigger the errors described in createDataIsInvalid (line 165)
-//    Successfully create, intercept the corresponding POST, check table for record
-// Test delete
-//    Intercept the delete request and remove the row from the table
-// Test filtering by team
-
 const matchData = {
   params: {}
 };
@@ -44,7 +32,7 @@ test('Calendar loads events correctly', () => {
   ).toBeInTheDocument();
 });
 
-test('Create a new event', () => {
+test('Create a new event', async () => {
   // Open up the create modal
   fireEvent(
     screen.getByText('Create Event'),
@@ -55,19 +43,48 @@ test('Create a new event', () => {
   );
 
   // Get the input fields and set the new values
-  let nameInput = screen.getByLabelText('Name *');
+  fireEvent.change(
+    screen.getByLabelText('Name *'),
+    {target: {value: mockAPI.newEvent.name}}
+  )
+  
+  fireEvent.change(
+    screen.getByLabelText('Event Start *'),
+    {target: {value: mockAPI.newEvent.start}}
+  )
 
-  let startInput = screen.getByLabelText('Event Start *');
+  fireEvent.change(
+    screen.getByLabelText('Event End *'),
+    {target: {value: mockAPI.newEvent.end}}
+  )
 
-  let endInput = screen.getByLabelText('Event End *');
+  fireEvent.change(
+    screen.getByLabelText('Team'),
+    {target: {value: mockAPI.newEvent.team}}
+  )
 
-  let teamInput = screen.getByLabelText('Team');
+  fireEvent.change(
+    screen.getByLabelText('Invite Participants'),
+    {target: {value: ''}}
+  )
 
-  let participantInput = screen.getByLabelText('Invite Participants');
+  fireEvent.change(
+    screen.getByLabelText('Details *'),
+    {target: {value: mockAPI.newEvent.details}}
+  )
 
-  let detailInput = screen.getByLabelText('Details *');
+  // Intercept the post request and submit the data
+  Axios.post.mockResolvedValueOnce({data: {id: mockAPI.newEvent.id}});
+  fireEvent.click(
+    screen.getByText('Submit'),
+    {
+      bubbles: true,
+      cancelable: false
+    }
+  )
 
-  expect(true).toBeTruthy();
+  // Check that the new event is in the table
+  await waitFor(() => {expect(screen.getByText('Event 3')).toBeInTheDocument()})
 });
 
 test('Delete an event', async () => {
@@ -79,18 +96,62 @@ test('Delete an event', async () => {
   Axios.delete.mockResolvedValueOnce({ status: 200 });
 
   // Click the first delete button to trigger a delete event.
-  fireEvent(
+  fireEvent.click(
     deleteButtons[0],
-    new MouseEvent('click', {
+    {
       bubbles: true,
       cancelable: false
-    })
+    }
+  );
+});
+
+test('Test modal errors', () => {
+  // Open up the create modal
+  fireEvent.click(
+    screen.getByText('Create Event'),
+    {
+      bubbles: true,
+      cancelable: false
+    }
   );
 
-  // Check that there is one less row in the table than there was on render
-  await waitForElementToBeRemoved(() => deleteButtons[0]);
+  // Click the submit button without entering anything
+  fireEvent.click(
+    screen.getByText('Submit'),
+    {
+      bubbles: true,
+      cancelable: false
+    }
+  )
 
-  // console.log(deleteButtons);
-  // expect(deleteButtons.length).toEqual(initialNumRows - 1);
-  expect(screen.getByText('haaaaaaaaaaaa')).toBeInTheDocument();
-});
+  // Check that the errors are shown
+  expect(screen.getByText('Event Name is a required field.')).toBeInTheDocument();
+  expect(screen.getByText('Event Details is a required field.')).toBeInTheDocument();
+  expect(screen.getByText('Event Start is a required field.')).toBeInTheDocument();
+  expect(screen.getByText('Event End is a required field.')).toBeInTheDocument();
+
+  // Set the start to be in the past
+  fireEvent.change(
+    screen.getByLabelText('Event Start *'),
+    {target: {value: '2021-04-07T11:22'}}
+  )
+
+  // Set the end to be before the start
+  fireEvent.change(
+    screen.getByLabelText('Event End *'),
+    {target: {value: '2021-04-02T11:22'}}
+  )
+
+  // Try submitting again
+  fireEvent.click(
+    screen.getByText('Submit'),
+    {
+      bubbles: true,
+      cancelable: false
+    }
+  )
+
+  // Check for the other errors
+  expect(screen.getByText('Event cannot start in the past.')).toBeInTheDocument();
+  expect(screen.getByText('Event End must be after Event Start.')).toBeInTheDocument();
+})

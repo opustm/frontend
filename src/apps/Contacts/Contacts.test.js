@@ -32,7 +32,7 @@ test('Contacts renders correctly', () => {
   // Verify that the shared teams are correct -- only CS 150 should appear since it's the only shared team
   // Note: getBy will return an error if not found, but queryBy will return an empty list
   // Because of this, it's useful to use queryBy when you're expecting something to NOT be in the document
-  expect(screen.getAllByText('CS 150').length).toEqual(2);
-  expect(screen.queryByText('Hollywood Stars')).toBeNull();
+  expect(screen.getByText('CS 150')).toBeInTheDocument();
+  expect(screen.getByText('CS 150, Hollywood Stars')).toBeInTheDocument();
   expect(screen.queryByText('Old People')).toBeNull();
 });
