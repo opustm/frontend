@@ -47,7 +47,7 @@ export async function widgetDetails(widgetType, userInfo, teamId) {
   }
 }
 
-async function getData(userInfo, type, teamFilter) {
+export async function getData(userInfo, type, teamFilter) {
   let teamRequest = await api.get(urls.user.fetchTeams(userInfo.id));
   let userTeams = teamRequest.data;
   let data = [];

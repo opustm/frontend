@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
 
 import { Axios as api, API_ENDPOINTS as urls } from '../services/api.service';
-import AuthService from '../services/auth.service';
 import '../stylesheets/Profile.css';
 
 export default class Profile extends Component {
@@ -14,7 +13,6 @@ export default class Profile extends Component {
     this.state = {
       showSpinner: true,
       profileExists: false,
-      authService: new AuthService(),
       editingInfo: false,
       updateError: false,
       userId: ''

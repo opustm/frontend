@@ -480,6 +480,7 @@ export default class Announcements extends Component {
               </Row>
               <Row style={{ marginRight: '10px' }}>
                 <FormControl
+                  data-testid="priorityInput"
                   as="select"
                   onChange={e => {
                     this.handlePriorityFilter(e.target.value);

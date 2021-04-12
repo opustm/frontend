@@ -200,8 +200,6 @@ export default class Calendar extends Component {
   }
 
   createDataIsInvalid() {
-    console.log(this.state.eventStart);
-    console.log(this.state.eventEnd);
     let now = new Date(Date.now());
     let start = new Date(this.state.eventStart);
     let end = new Date(this.state.eventEnd);

@@ -62,7 +62,11 @@
       "src/static/scripts",
       "src/App.js",
       "src/index.js",
-      "src/services/data.service.js"
+      "src/services/data.service.js",
+      "src/Pages/About.js",
+      "src/Pages/Home.js",
+      "src/Pages/Login.js",
+      "src/services/auth.service.js"
     ]
   }
 }

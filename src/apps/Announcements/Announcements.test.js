@@ -157,6 +157,14 @@ test('Deletes announcement from table', () => {
   expect(deleteButtons.length).toEqual(numRows - 1);
 });
 
-// test('Priority and Team Filters work', () => {
+test('Priority Filters work', () => {
+  // Use the priority filter
+  fireEvent.change(
+    screen.getByTestId('priorityInput'),
+    {target: {value: 2}}
+  );
 
-// })
+  // Ensure that no low or high priority elements are shown
+  expect(screen.queryAllByText('High').length).toEqual(2);
+  expect(screen.queryAllByText('Low').length).toEqual(2);
+})

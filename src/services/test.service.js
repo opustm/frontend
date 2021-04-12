@@ -33,6 +33,13 @@ const mockAPI = {
         members: [],
         managers: [],
         owners: []
+      },
+      {
+        id: 2,
+        name: 'CS 360',
+        members: ['Bob'],
+        managers: [],
+        owners: []
       }
     ]
   },
@@ -170,7 +177,11 @@ const mockAPI = {
           last_name: 'User'
         }
       ],
-      description: 'This is a test team'
+      description: 'This is a test team',
+      creator: {
+        first_name: 'LeBron',
+        last_name: 'James'
+      }
     }
   },
   otherUser: {

@@ -15,7 +15,8 @@ import {
   Col,
   Jumbotron,
   Image,
-  Form
+  Form,
+  Alert
 } from 'react-bootstrap';
 import {
   Link,
@@ -31,7 +32,6 @@ import './teams.css';
 const TeamView = props => {
   const [details, setDetails] = useState();
   const [members, setMembers] = useState();
-  const [groups, setGroups] = useState();
   const [showMemberInviteModal, setShowMemberInviteModal] = useState(false);
   const {
     value: inviteeUsername,
@@ -40,8 +40,7 @@ const TeamView = props => {
   } = useInput('');
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [aboutToDelete, setAboutToDelete] = useState();
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [newGroupName, setNewGroupName] = useState();
+  const [duplicateInvite, setDuplicateInvite] = useState();
   let history = useHistory();
   let teamUsername = useParams().teamUsername;
   let teamId = useLocation().state.teamId;
@@ -67,41 +66,51 @@ const TeamView = props => {
   }, [teamId]);
 
   async function inviteMember() {
-    let userRequest = await api.get(urls.user.fetchAll());
-    let allUsers = userRequest.data;
-    let inviteeId;
-    for (let user of allUsers) {
-      if (user.username === inviteeUsername) {
-        inviteeId = user.id;
-        break;
+    let error = false;
+    for (let member of members) {
+      if (member.username === inviteeUsername) {
+        setDuplicateInvite(true);
+        error = true;
       }
     }
-    let newMembers = details.members.map(member => {
-      return member.id;
-    });
-    let managerIds = details.managers.map(manager => {
-      return manager.id;
-    });
-    let ownerIds = details.owners.map(owner => {
-      return owner.id;
-    });
-    newMembers.push(inviteeId);
-    let newTeamBody = {
-      ...details,
-      members: newMembers,
-      managers: managerIds,
-      owners: ownerIds
-    };
-    let addUserRequest = await api.put(
-      urls.teams.fetchById(teamId),
-      newTeamBody
-    );
-    let responseData = addUserRequest.data;
-    setDetails(responseData);
-    let allMembers = responseData.members.concat(
-      responseData.managers.concat(responseData.owners)
-    );
-    setMembers(allMembers);
+    if (!error) {
+      let userRequest = await api.get(urls.user.fetchAll());
+      let allUsers = userRequest.data;
+      let inviteeId;
+      for (let user of allUsers) {
+        if (user.username === inviteeUsername) {
+          inviteeId = user.id;
+          break;
+        }
+      }
+      let newMembers = details.members.map(member => {
+        return member.id;
+      });
+      let managerIds = details.managers.map(manager => {
+        return manager.id;
+      });
+      let ownerIds = details.owners.map(owner => {
+        return owner.id;
+      });
+      newMembers.push(inviteeId);
+      let newTeamBody = {
+        ...details,
+        members: newMembers,
+        managers: managerIds,
+        owners: ownerIds
+      };
+      let addUserRequest = await api.put(
+        urls.teams.fetchById(teamId),
+        newTeamBody
+      );
+      let responseData = addUserRequest.data;
+      setDetails(responseData);
+      let allMembers = responseData.members.concat(
+        responseData.managers.concat(responseData.owners)
+      );
+      setMembers(allMembers);
+      setShowMemberInviteModal(false);
+    }
   }
 
   async function removeMember(toRemove) {
@@ -142,8 +151,6 @@ const TeamView = props => {
   }
 
   const handleSubmit = evt => {
-    evt.preventDefault();
-    // inviteMemberModalPlaceholder.username = inviteeUsername;
     inviteMember();
     resetInviteeUsername();
   };
@@ -159,7 +166,7 @@ const TeamView = props => {
         <Modal.Title>Add a Member</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={handleSubmit}>
+        <Form>
           <Row>
             <Col>
               <Form.Group controlId="usernameInput">
@@ -167,11 +174,8 @@ const TeamView = props => {
                 <Form.Control type="text" {...bindInviteeUsername} />
               </Form.Group>
               <Button
-                type="submit"
                 variant="success"
-                onClick={() => {
-                  setShowMemberInviteModal(false);
-                }}
+                onClick={() => {handleSubmit()}}
               >
                 Invite Member
               </Button>
@@ -179,6 +183,9 @@ const TeamView = props => {
           </Row>
         </Form>
       </Modal.Body>
+      <Modal.Footer style={{'justify-content': 'left'}}>
+        <Alert variant="danger" hidden={!duplicateInvite}>This user is already a member of this team</Alert>
+      </Modal.Footer>
     </Modal>
   );
 
@@ -193,41 +200,14 @@ const TeamView = props => {
     if (groupIdToDelete === details.id) {
       props.updateTeams(details.id);
       history.push('/teams');
-    } else {
-      setShowConfirmModal(false);
-      let newGroups = groups.filter(group => {
-        return groupIdToDelete !== group.id;
-      });
-      setGroups(newGroups);
     }
-  };
-
-  const createSubgroup = async () => {
-    let body = {
-      name: newGroupName,
-      workspace: 'irrelevant',
-      cliqueType: 'sub',
-      picture: 'null.jpeg',
-      displayName: newGroupName,
-      permissions: [],
-      relatedCliques: [details.id]
-    };
-    setShowCreateModal(false);
-    let response = await api.post(urls.teams.fetchAll(), body);
-    body['id'] = response.data.id;
-    let newGroups = groups;
-    newGroups.push(body);
-    setGroups(newGroups);
-    setNewGroupName('');
   };
 
   return (
     <Container fluid>
       <Modal
         show={showConfirmModal}
-        onHide={() => {
-          setShowConfirmModal(false);
-        }}
+        onHide={() => setShowConfirmModal(false)}
       >
         <Modal.Header>
           <Modal.Title>Confirm Delete</Modal.Title>
@@ -243,64 +223,21 @@ const TeamView = props => {
           <small>(This action cannot be undone)</small>
         </Modal.Body>
         <Modal.Footer>
-          <Container>
-            <Button
-              variant="secondary"
-              onClick={() => {
-                setShowConfirmModal(false);
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="danger"
-              onClick={() => {
-                deleteTeam(aboutToDelete);
-              }}
-            >
-              Delete Team
-            </Button>
-          </Container>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal
-        show={showCreateModal}
-        onHide={() => {
-          setShowCreateModal(false);
-        }}
-      >
-        <Modal.Header>Create New Subgroup</Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group>
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                value={newGroupName}
-                onChange={e => {
-                  setNewGroupName(e.target.value);
-                }}
-              ></Form.Control>
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
           <Button
             variant="secondary"
             onClick={() => {
-              setShowCreateModal(false);
+              setShowConfirmModal(false);
             }}
           >
             Cancel
           </Button>
           <Button
-            variant="primary"
+            variant="danger"
             onClick={() => {
-              createSubgroup();
+              deleteTeam(aboutToDelete);
             }}
           >
-            Confirm
+            Delete Team
           </Button>
         </Modal.Footer>
       </Modal>
@@ -330,6 +267,7 @@ const TeamView = props => {
                     variant="success"
                     onClick={() => {
                       setShowMemberInviteModal(true);
+                      setDuplicateInvite(false);
                     }}
                   >
                     <Icon.FiUserPlus /> Add Member
@@ -414,7 +352,7 @@ const TeamView = props => {
                                 <Col sm={2} md={2}>
                                   <Dropdown>
                                     <Dropdown.Toggle variant="small">
-                                      <Icon.FiSettings />
+                                      <Icon.FiSettings data-testid={`dropdown${item.id}`}/>
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
                                       <Dropdown.Item
@@ -443,41 +381,9 @@ const TeamView = props => {
               <Card>
                 <Card.Header>
                   Groups
-                  <Icon.FiPlus
-                    className="addIcon"
-                    onClick={() => {
-                      setShowCreateModal(true);
-                    }}
-                  />
                 </Card.Header>
                 <Card.Body className="text-center">
-                  {groups ? (
-                    <ListGroup>
-                      {groups.map(group => {
-                        return (
-                          <ListGroup.Item className="d-flex justify-content-start">
-                            <p>{group.name}</p>
-                            <Dropdown>
-                              <Dropdown.Toggle variant="small">
-                                <Icon.FiSettings />
-                              </Dropdown.Toggle>
-                              <Dropdown.Menu>
-                                <Dropdown.Item
-                                  onClick={() => {
-                                    confirmDelete(group.id);
-                                  }}
-                                >
-                                  Remove
-                                </Dropdown.Item>
-                              </Dropdown.Menu>
-                            </Dropdown>
-                          </ListGroup.Item>
-                        );
-                      })}
-                    </ListGroup>
-                  ) : (
                     <p>The team does not have any groups yet</p>
-                  )}
                 </Card.Body>
               </Card>
             </Col>

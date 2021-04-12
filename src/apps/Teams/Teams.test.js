@@ -83,9 +83,41 @@ describe('Tests with successful API data', () => {
   });
 
 
-//   test('Team deletion is successful', () => {
+  test('Team deletion is successful', async () => {
+    // Get and click the dropdown menu for the CS 150 team
+    let teamDropdown = screen.getByTestId('dropdown1');
+    fireEvent(
+      teamDropdown,
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: false
+      })
+    );
 
-//   });
+    // Get the option to delete and then click it
+    fireEvent.click(
+      screen.getByText('Delete'),
+      {
+        bubbles: true,
+        cancelable: false
+      }
+    );
+
+    // Check that the modal is showing
+    expect(screen.getByText('Confirm Delete')).toBeInTheDocument();
+
+    // Intercept the delete request
+    Axios.delete.mockResolvedValueOnce({});
+    
+    // Click the delete button
+    fireEvent.click(
+      screen.getAllByText('Delete')[1],
+      {bubbles: true, cancelable: false}
+    )
+
+    // Check that the team is removed from their list
+    await waitForElementToBeRemoved(() => screen.getByText('CS 150'));
+  });
   
   test('Leaving a team is successful: user is only member', async () => {
     // Get and click the dropdown menu for the CS 150 team
@@ -112,7 +144,7 @@ describe('Tests with successful API data', () => {
     expect(screen.getByText('Confirm Delete')).toBeInTheDocument();
     
     // Click the delete button
-    let deleteButton = screen.getByText('Delete Team');
+    let deleteButton = screen.getAllByText('Delete')[1];
     fireEvent(
       deleteButton,
       new MouseEvent('click', {
@@ -126,13 +158,68 @@ describe('Tests with successful API data', () => {
     await waitForElementToBeRemoved(() => screen.getByText('CS 150'));
   });
 
-  // test('Leaving team is successful: user is not only member', () => {
+  test('Leaving team is successful: user is not only member', async () => {
+    // Get and click the dropdown menu for the CS 360 team
+    let teamDropdown = screen.getByTestId('dropdown2');
+    fireEvent(
+      teamDropdown,
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: false
+      })
+    );
 
-  // });
+    // Get the option to leave and then click it
+    let leaveButton = screen.getByText('Leave');
+    fireEvent(
+      leaveButton,
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: false
+      })
+    );
 
-//   test('Verify create modal errors', () => {
+    // Check that the CS 360 team is no longer displayed on the list
+    await waitForElementToBeRemoved(() => screen.getByText('CS 360'));
+  });
 
-//   });
+  test('Verify create modal errors', () => {
+    // Click the 'Create Team' button
+    fireEvent(
+      screen.getByText('Create Team'),
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: false
+      })
+    );
+    
+    // Change the name input to a team that already exists
+    fireEvent.change(
+      screen.getByLabelText('Team Name'),
+      {target: {value: 'Hollywood Stars'}}
+    );
+
+    fireEvent.change(
+      screen.getByLabelText('Description'),
+      {target: {value: 'Hello World!'}}
+    );
+
+    // Intercept the request for all of the teams in the database
+    Axios.get.mockResolvedValueOnce(mockAPI.allTeams);
+
+    // Click the submit button
+    fireEvent.click(
+      screen.getByText('Submit'),
+      {
+        bubbles: true,
+        cancelable: false
+      }
+    );
+
+    // Expect the duplicate create error to be shown
+    expect(screen.getByText("A team with this name already exists. If you'd like, you may join it instead.")).toBeInTheDocument();
+
+  });
 
   describe('Team join tests', () => {
     beforeEach(() => {

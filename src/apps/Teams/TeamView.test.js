@@ -69,13 +69,26 @@ test('Successfully add member to team', async () => {
   await waitFor(() => {expect(screen.getByText('Ron Weasley')).toBeInTheDocument()});
 });
 
-// test('Successfully remove member from team', () => {
+test('Successfully remove member from team', async () => {
+  // Click the dropdown for Joe Bob
+  fireEvent.click(
+    screen.getByTestId('dropdown101'),
+    {bubbles: true, cancelable: false}
+  )
 
-// });
+  // Intercept the put request that will occur
+  let newData = mockAPI.team1;
+  newData.members = []
+  Axios.put.mockResolvedValue(newData);
+  
+  // Remove the member
+  fireEvent.click(
+    screen.getByText('Remove'),
+    {bubbles: true, cancelable: false}
+  )
 
-// test('Successfully leave team', () => {
-
-// });
+  await waitForElementToBeRemoved(() => screen.getByText('Joe Bob'));
+});
 
 test('Successfully delete team', async () => {
   // Get and click the settings gear
@@ -107,7 +120,4 @@ test('Successfully delete team', async () => {
       cancelable: false
     })
   );
-
-  // Check that the team members are no longer in the document
-  expect(screen.getByText('Joe Bob')).not.toBeInTheDocument();
 });
