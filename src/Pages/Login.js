@@ -31,7 +31,6 @@ export default class Login extends Component {
       bio: "This user hasn't created a bio yet.",
       picture: '#000000',
       theme: 'light',
-      signupError: false,
       signupErrorMessages: [],
       allUsernames: new Set(),
       loginError: false,
@@ -130,7 +129,6 @@ export default class Login extends Component {
       errors.push('Username already taken. Please choose another one.');
     }
     this.setState({
-      signupError: errors.length ? true : false,
       signupErrorMessages: errors
     });
     return errors.length ? false : true;
@@ -151,7 +149,8 @@ export default class Login extends Component {
       last_name: '',
       phone: '',
       password: '',
-      picture: '#000000'
+      picture: '#000000',
+      signupErrorMessages: []
     });
   handleShow = () => this.setState({ showModal: true });
 
@@ -338,9 +337,9 @@ export default class Login extends Component {
               <Alert
                 style={{ marginTop: '10px' }}
                 variant="danger"
-                hidden={!this.state.signupError}
+                hidden={!this.state.signupErrorMessages.length}
               >
-                {this.state.signupError
+                {this.state.signupErrorMessages.length
                   ? this.state.signupErrorMessages.map((error, idx) => {
                       return <li key={idx}>{error}</li>;
                     })
