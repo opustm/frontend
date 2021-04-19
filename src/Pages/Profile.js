@@ -116,13 +116,13 @@ export default class Profile extends Component {
               </h3>
               <Container>
                 <Row>
-                  <Col md={{ span: 3 }}>
+                  <Col md={{ span: 5 }}>
                     <Link to="/calendar">
                       <Icon.FiCalendar size={30} strokeWidth={1.5} />
-                      <p>Meet</p>
+                      Meet
                     </Link>
                   </Col>
-                  <Col md={{ span: 4 }}>
+                  <Col md={{ span: 6 }}>
                     {this.props.userInfo.username === this.state.username ? (
                       <div
                         id="editProfile"
@@ -135,7 +135,7 @@ export default class Profile extends Component {
                           size={30}
                           strokeWidth={1.5}
                         />
-                        <p>Edit your profile</p>
+                        Edit your profile
                       </div>
                     ) : (
                       ''

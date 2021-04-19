@@ -10,7 +10,9 @@ import {
   FormControl,
   Toast,
   Alert,
-  Spinner
+  Spinner,
+  Tooltip,
+  OverlayTrigger
 } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import {
@@ -414,7 +416,17 @@ export default class Announcements extends Component {
         <Jumbotron>
           <Row>
             <Col>
-              <h1>Announcements</h1>
+              <h1>
+                Announcements
+                <OverlayTrigger
+                  overlay={<Tooltip>Announcements are messages that are visible to entire teams.
+                    To get started, click 'Create Announcement'.
+                  </Tooltip>}
+                  placement={'right'}
+                >
+                  <Icon.FiHelpCircle size={20} style={{'marginLeft': '5px'}} />
+                </OverlayTrigger>
+              </h1>
               <p>
                 View or modify your announcements. Make announcements to your
                 team or groups.
