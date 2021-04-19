@@ -10,7 +10,9 @@ import {
   Button,
   Modal,
   Form,
-  Alert
+  Alert,
+  Tooltip,
+  OverlayTrigger
 } from 'react-bootstrap';
 import {
   Axios as api,
@@ -417,7 +419,17 @@ const Teams = props => {
   return (
     <Container fluid>
       <Jumbotron>
-        <h1>Teams</h1>
+        <h1>
+          Teams
+          <OverlayTrigger
+            overlay={<Tooltip>Teams enable collaboration between members.
+              Upon joining or creating a team, you will be able to see that team's announcements, events, and members.
+            </Tooltip>}
+            placement={'right'}
+          >
+            <Icon.FiHelpCircle size={20} style={{'marginLeft': '5px'}} />
+          </OverlayTrigger>
+        </h1>
         <p>
           View or modify your current teams. Create or join a new team.{' '}
           <Link to="/docs">Need more info? Read the docs.</Link>

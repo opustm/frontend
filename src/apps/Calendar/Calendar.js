@@ -8,7 +8,9 @@ import {
   Modal,
   Form,
   Alert,
-  Spinner
+  Spinner,
+  OverlayTrigger,
+  Tooltip
 } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import {
@@ -376,7 +378,17 @@ export default class Calendar extends Component {
 
           <Row>
             <Col>
-              <h1>Calendar</h1>
+              <h1>
+                Calendar
+                <OverlayTrigger
+                  overlay={<Tooltip>You can create events for any of your teams, or just between you and another user.
+                    To get started, click 'Create Event'.
+                  </Tooltip>}
+                  placement={'right'}
+                >
+                  <Icon.FiHelpCircle size={20} style={{'marginLeft': '5px'}} />
+                </OverlayTrigger>
+              </h1>
               <p>
                 You have {this.state.eventObjects.length} event
                 {this.state.eventObjects.length === 1 ? '' : 's'} on your

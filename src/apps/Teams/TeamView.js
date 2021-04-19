@@ -16,7 +16,9 @@ import {
   Jumbotron,
   Image,
   Form,
-  Alert
+  Alert,
+  Tooltip,
+  OverlayTrigger
 } from 'react-bootstrap';
 import {
   Link,
@@ -257,7 +259,17 @@ const TeamView = props => {
             </Col>
             <Col md={9} lg={10}>
               <div className="team-view-title">
-                <h1>{details ? details.name : null} </h1>
+                <h1>
+                  {details ? details.name : null}
+                  <OverlayTrigger
+                    overlay={<Tooltip>This is the homepage for your team.
+                      You can add or remove members, view announcements and events, leave, or delete the team from here.
+                    </Tooltip>}
+                    placement={'right'}
+                  >
+                    <Icon.FiHelpCircle size={20} style={{'marginLeft': '5px'}} />
+                  </OverlayTrigger>
+                </h1>
                 <p>{details ? details.description : ''}</p>
               </div>
 
@@ -381,6 +393,14 @@ const TeamView = props => {
               <Card>
                 <Card.Header>
                   Groups
+                  <OverlayTrigger
+                    overlay={<Tooltip>This feature is under development and is not currently functional.
+                      In the future, you'll be able to create subgroups within a team!
+                    </Tooltip>}
+                    placement={'right'}
+                  >
+                    <Icon.FiHelpCircle size={15} strokeWidth={2} style={{'marginLeft': '5px'}} />
+                  </OverlayTrigger>
                 </Card.Header>
                 <Card.Body className="text-center">
                     <p>The team does not have any groups yet</p>
