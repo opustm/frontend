@@ -26,7 +26,9 @@ Refer to `package.json` for further documentation about dependencies.
 
 * Clone the repository 
 
-```git clone git@github.com:opustm/backend.git```
+```
+git clone git@github.com:opustm/backend.git
+```
 
 * Install [npm](https://nodejs.org/en/)
 * Install all node dependencies `npm i`
