@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { Container, Jumbotron, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap';
+import {
+  Container,
+  Jumbotron,
+  Spinner,
+  Tooltip,
+  OverlayTrigger
+} from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import * as Icon from 'react-icons/fi';
 import {
@@ -110,12 +116,15 @@ export default class Contacts extends Component {
           <h1>
             Contacts
             <OverlayTrigger
-              overlay={<Tooltip>Anyone that you share a team with is in your contacts.
-                You may visit their profile page by clicking on their username.
-              </Tooltip>}
+              overlay={
+                <Tooltip>
+                  Anyone that you share a team with is in your contacts. You may
+                  visit their profile page by clicking on their username.
+                </Tooltip>
+              }
               placement={'right'}
             >
-              <Icon.FiHelpCircle size={20} style={{'marginLeft': '5px'}} />
+              <Icon.FiHelpCircle size={20} style={{ marginLeft: '5px' }} />
             </OverlayTrigger>
           </h1>
           <p>

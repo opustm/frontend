@@ -11,7 +11,6 @@ import {
 } from '../../services/api.service';
 import './navigation.css';
 
-
 function Navigation(props) {
   const showSidebar = () => props.setSidebar(!sidebar);
   const [teams, setTeams] = useState(props.userTeams);

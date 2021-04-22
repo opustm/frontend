@@ -127,8 +127,7 @@ const Teams = props => {
       setTeams(newTeams);
       resetTeamName();
       resetTeamDescription();
-    }
-    else {
+    } else {
       setCreateError(true);
     }
   }
@@ -236,15 +235,18 @@ const Teams = props => {
         <Form>
           <Row>
             <Col>
-              <Form.Group controlId='teamName'>
+              <Form.Group controlId="teamName">
                 <Form.Label>Team Name</Form.Label>
                 <Form.Control type="text" {...bindTeamName} />
               </Form.Group>
-              <Form.Group controlId='description'>
+              <Form.Group controlId="description">
                 <Form.Label>Description</Form.Label>
                 <Form.Control type="text" {...bindTeamDescription} />
               </Form.Group>
-              <Alert hidden={!createError} variant='danger'>{`A team with this name already exists. If you'd like, you may join it instead.`}</Alert>
+              <Alert
+                hidden={!createError}
+                variant="danger"
+              >{`A team with this name already exists. If you'd like, you may join it instead.`}</Alert>
               <Button
                 onClick={() => {
                   handleSubmit();
@@ -273,7 +275,7 @@ const Teams = props => {
         <Form>
           <Row>
             <Col>
-              <Form.Group controlId='toJoin'>
+              <Form.Group controlId="toJoin">
                 <Form.Label>Team Name</Form.Label>
                 <Form.Control type="text" {...bindToJoin} />
               </Form.Group>
@@ -291,7 +293,11 @@ const Teams = props => {
         >{`You're already a member of this team!`}</Alert>
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={() => {handleJoin()}}>
+        <Button
+          onClick={() => {
+            handleJoin();
+          }}
+        >
           Submit
         </Button>
         <Button
@@ -387,7 +393,10 @@ const Teams = props => {
               <Col md={1} lg={1} className="text-right">
                 <div className="d-inline-block mb-1">
                   <Dropdown>
-                    <Dropdown.Toggle variant="small primary" data-testid={`dropdown${item.id}`}>
+                    <Dropdown.Toggle
+                      variant="small primary"
+                      data-testid={`dropdown${item.id}`}
+                    >
                       <Icon.FiSettings />
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
@@ -422,12 +431,16 @@ const Teams = props => {
         <h1>
           Teams
           <OverlayTrigger
-            overlay={<Tooltip>Teams enable collaboration between members.
-              Upon joining or creating a team, you will be able to see that team's announcements, events, and members.
-            </Tooltip>}
+            overlay={
+              <Tooltip>
+                Teams enable collaboration between members. Upon joining or
+                creating a team, you will be able to see that team's
+                announcements, events, and members.
+              </Tooltip>
+            }
             placement={'right'}
           >
-            <Icon.FiHelpCircle size={20} style={{'marginLeft': '5px'}} />
+            <Icon.FiHelpCircle size={20} style={{ marginLeft: '5px' }} />
           </OverlayTrigger>
         </h1>
         <p>

@@ -344,13 +344,15 @@ export default class Calendar extends Component {
                       this.setState({ eventInvited: e.target.value });
                     }}
                   >
-                    {this.state.selectedTeamMembers ? this.state.selectedTeamMembers.map((member, idx) => {
-                      return member.id !== this.props.userInfo.id ? (
-                        <option key={idx}>{member.username}</option>
-                      ) : (
-                        <></>
-                      );
-                    }): ''}
+                    {this.state.selectedTeamMembers
+                      ? this.state.selectedTeamMembers.map((member, idx) => {
+                          return member.id !== this.props.userInfo.id ? (
+                            <option key={idx}>{member.username}</option>
+                          ) : (
+                            <></>
+                          );
+                        })
+                      : ''}
                   </Form.Control>
                 </Form.Group>
                 <Form.Group controlId="detailInput">
@@ -381,12 +383,16 @@ export default class Calendar extends Component {
               <h1>
                 Calendar
                 <OverlayTrigger
-                  overlay={<Tooltip>You can create events for any of your teams, or just between you and another user.
-                    To get started, click 'Create Event'.
-                  </Tooltip>}
+                  overlay={
+                    <Tooltip>
+                      You can create events for any of your teams, or just
+                      between you and another user. To get started, click
+                      'Create Event'.
+                    </Tooltip>
+                  }
                   placement={'right'}
                 >
-                  <Icon.FiHelpCircle size={20} style={{'marginLeft': '5px'}} />
+                  <Icon.FiHelpCircle size={20} style={{ marginLeft: '5px' }} />
                 </OverlayTrigger>
               </h1>
               <p>

@@ -1,16 +1,22 @@
 import '@testing-library/jest-dom';
 import { Axios } from '../../services/api.service';
-import { fireEvent, render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  waitForElementToBeRemoved
+} from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import mockAPI from '../../services/test.service';
 import TeamView from './TeamView';
 
 jest.mock('../../services/api.service');
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useLocation: () => ({
-    pathname: "localhost:3000/teams/CS 150",
-    state: {teamId: 1}
+    pathname: 'localhost:3000/teams/CS 150',
+    state: { teamId: 1 }
   })
 }));
 
@@ -21,9 +27,9 @@ beforeEach(() => {
   Axios.get.mockResolvedValue(mockAPI.team1);
   render(
     <Router>
-      <TeamView userInfo={mockAPI.userInfo} updateTeams={() => {}}/>
+      <TeamView userInfo={mockAPI.userInfo} updateTeams={() => {}} />
     </Router>
-  )
+  );
 });
 
 test('Ensure team data is rendered correctly', () => {
@@ -47,10 +53,7 @@ test('Successfully add member to team', async () => {
 
   // Get and change the input value to be a username
   let usernameInput = screen.getByLabelText('Enter username');
-  fireEvent.change(
-    usernameInput,
-    { target: { value: 'ronweasley' } }
-  );
+  fireEvent.change(usernameInput, { target: { value: 'ronweasley' } });
 
   // Intercept the API requests that will be fired upon submission
   Axios.get.mockResolvedValueOnce(mockAPI.allUsers);
@@ -66,26 +69,28 @@ test('Successfully add member to team', async () => {
   );
 
   // Check that the new member is now displayed in the members list
-  await waitFor(() => {expect(screen.getByText('Ron Weasley')).toBeInTheDocument()});
+  await waitFor(() => {
+    expect(screen.getByText('Ron Weasley')).toBeInTheDocument();
+  });
 });
 
 test('Successfully remove member from team', async () => {
   // Click the dropdown for Joe Bob
-  fireEvent.click(
-    screen.getByTestId('dropdown101'),
-    {bubbles: true, cancelable: false}
-  )
+  fireEvent.click(screen.getByTestId('dropdown101'), {
+    bubbles: true,
+    cancelable: false
+  });
 
   // Intercept the put request that will occur
   let newData = mockAPI.team1;
-  newData.members = []
+  newData.members = [];
   Axios.put.mockResolvedValue(newData);
-  
+
   // Remove the member
-  fireEvent.click(
-    screen.getByText('Remove'),
-    {bubbles: true, cancelable: false}
-  )
+  fireEvent.click(screen.getByText('Remove'), {
+    bubbles: true,
+    cancelable: false
+  });
 
   await waitForElementToBeRemoved(() => screen.getByText('Joe Bob'));
 });
@@ -108,7 +113,7 @@ test('Successfully delete team', async () => {
       cancelable: false
     })
   );
-  
+
   // Check that the confirm delete modal is shown
   expect(screen.getByText('Confirm Delete')).toBeInTheDocument();
 

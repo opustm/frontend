@@ -177,7 +177,9 @@ const TeamView = props => {
               </Form.Group>
               <Button
                 variant="success"
-                onClick={() => {handleSubmit()}}
+                onClick={() => {
+                  handleSubmit();
+                }}
               >
                 Invite Member
               </Button>
@@ -185,8 +187,10 @@ const TeamView = props => {
           </Row>
         </Form>
       </Modal.Body>
-      <Modal.Footer style={{'justify-content': 'left'}}>
-        <Alert variant="danger" hidden={!duplicateInvite}>This user is already a member of this team</Alert>
+      <Modal.Footer style={{ 'justify-content': 'left' }}>
+        <Alert variant="danger" hidden={!duplicateInvite}>
+          This user is already a member of this team
+        </Alert>
       </Modal.Footer>
     </Modal>
   );
@@ -207,10 +211,7 @@ const TeamView = props => {
 
   return (
     <Container fluid>
-      <Modal
-        show={showConfirmModal}
-        onHide={() => setShowConfirmModal(false)}
-      >
+      <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)}>
         <Modal.Header>
           <Modal.Title>Confirm Delete</Modal.Title>
         </Modal.Header>
@@ -262,12 +263,19 @@ const TeamView = props => {
                 <h1>
                   {details ? details.name : null}
                   <OverlayTrigger
-                    overlay={<Tooltip>This is the homepage for your team.
-                      You can add or remove members, view announcements and events, leave, or delete the team from here.
-                    </Tooltip>}
+                    overlay={
+                      <Tooltip>
+                        This is the homepage for your team. You can add or
+                        remove members, view announcements and events, leave, or
+                        delete the team from here.
+                      </Tooltip>
+                    }
                     placement={'right'}
                   >
-                    <Icon.FiHelpCircle size={20} style={{'marginLeft': '5px'}} />
+                    <Icon.FiHelpCircle
+                      size={20}
+                      style={{ marginLeft: '5px' }}
+                    />
                   </OverlayTrigger>
                 </h1>
                 <p>{details ? details.description : ''}</p>
@@ -288,7 +296,10 @@ const TeamView = props => {
                 <Col className="text-right">
                   <div className="d-inline-block mb-1">
                     <Dropdown>
-                      <Dropdown.Toggle variant="small primary" data-testid="teamSettings">
+                      <Dropdown.Toggle
+                        variant="small primary"
+                        data-testid="teamSettings"
+                      >
                         <Icon.FiSettings />
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
@@ -364,7 +375,9 @@ const TeamView = props => {
                                 <Col sm={2} md={2}>
                                   <Dropdown>
                                     <Dropdown.Toggle variant="small">
-                                      <Icon.FiSettings data-testid={`dropdown${item.id}`}/>
+                                      <Icon.FiSettings
+                                        data-testid={`dropdown${item.id}`}
+                                      />
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
                                       <Dropdown.Item
@@ -394,16 +407,24 @@ const TeamView = props => {
                 <Card.Header>
                   Groups
                   <OverlayTrigger
-                    overlay={<Tooltip>This feature is under development and is not currently functional.
-                      In the future, you'll be able to create subgroups within a team!
-                    </Tooltip>}
+                    overlay={
+                      <Tooltip>
+                        This feature is under development and is not currently
+                        functional. In the future, you'll be able to create
+                        subgroups within a team!
+                      </Tooltip>
+                    }
                     placement={'right'}
                   >
-                    <Icon.FiHelpCircle size={15} strokeWidth={2} style={{'marginLeft': '5px'}} />
+                    <Icon.FiHelpCircle
+                      size={15}
+                      strokeWidth={2}
+                      style={{ marginLeft: '5px' }}
+                    />
                   </OverlayTrigger>
                 </Card.Header>
                 <Card.Body className="text-center">
-                    <p>The team does not have any groups yet</p>
+                  <p>The team does not have any groups yet</p>
                 </Card.Body>
               </Card>
             </Col>

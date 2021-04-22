@@ -18,10 +18,13 @@ beforeEach(() => {
   Axios.get.mockResolvedValueOnce(mockAPI.userInfoData);
   render(
     <Router>
-      <Profile userInfo={mockAPI.userInfo} location={{state: {userId: 1}}}/>
+      <Profile
+        userInfo={mockAPI.userInfo}
+        location={{ state: { userId: 1 } }}
+      />
     </Router>
   );
-})
+});
 
 test('Profile renders correctly', () => {
   expect(screen.getByText('Test User')).toBeInTheDocument();
@@ -37,7 +40,7 @@ test('Editing is successful', async () => {
       bio: 'Un baguette',
       email: 'pierre@france.gov'
     }
-  }
+  };
   // Click the edit button
   fireEvent(
     screen.getByText('Edit your profile'),
@@ -51,40 +54,34 @@ test('Editing is successful', async () => {
   expect(screen.getByText('Edit Profile Color:')).toBeInTheDocument();
 
   // Change the value of the first name field
-  fireEvent.change(
-    screen.getByLabelText('First Name:'),
-    { target: {value: newUserInfo.data.first_name}}
-  );
+  fireEvent.change(screen.getByLabelText('First Name:'), {
+    target: { value: newUserInfo.data.first_name }
+  });
 
   // Change the value of the last name field
-  fireEvent.change(
-    screen.getByLabelText('Last Name:'),
-    { target: {value: newUserInfo.data.last_name}}
-  );
+  fireEvent.change(screen.getByLabelText('Last Name:'), {
+    target: { value: newUserInfo.data.last_name }
+  });
 
   // Change the value of the username field
-  fireEvent.change(
-    screen.getByLabelText('Username:'),
-    { target: {value: newUserInfo.data.username}}
-  );
+  fireEvent.change(screen.getByLabelText('Username:'), {
+    target: { value: newUserInfo.data.username }
+  });
 
   // Change the value of the phone field
-  fireEvent.change(
-    screen.getByLabelText('Phone:'),
-    { target: {value: newUserInfo.data.phone}}
-  );
+  fireEvent.change(screen.getByLabelText('Phone:'), {
+    target: { value: newUserInfo.data.phone }
+  });
 
   // Change the value of the email field
-  fireEvent.change(
-    screen.getByLabelText('Email:'),
-    { target: {value: newUserInfo.data.email}}
-  );
+  fireEvent.change(screen.getByLabelText('Email:'), {
+    target: { value: newUserInfo.data.email }
+  });
 
   // Change the value of the bio field
-  fireEvent.change(
-    screen.getByLabelText('Bio:'),
-    { target: {value: newUserInfo.data.bio}}
-  );
+  fireEvent.change(screen.getByLabelText('Bio:'), {
+    target: { value: newUserInfo.data.bio }
+  });
 
   // Intercept the put request
   Axios.put.mockResolvedValueOnce(newUserInfo);
@@ -100,9 +97,11 @@ test('Editing is successful', async () => {
 
   // Check that the user's first name has been updated
   expect(screen.getByText('Pierre Jean Claude')).toBeInTheDocument();
-  await waitFor(() => expect(screen.getByText('Email: pierre@france.gov')).toBeInTheDocument());
+  await waitFor(() =>
+    expect(screen.getByText('Email: pierre@france.gov')).toBeInTheDocument()
+  );
   expect(screen.queryByText('Test User')).toBeNull();
-})
+});
 
 test('Cancel edit is successful', () => {
   // Click the edit button
@@ -118,10 +117,9 @@ test('Cancel edit is successful', () => {
   expect(screen.getByText('Edit Profile Color:')).toBeInTheDocument();
 
   // Change the value of the first name field
-  fireEvent.change(
-    screen.getByLabelText('First Name:'),
-    { target: {value: 'This is gibberish!'}}
-  );
+  fireEvent.change(screen.getByLabelText('First Name:'), {
+    target: { value: 'This is gibberish!' }
+  });
 
   // Click the cancel button
   fireEvent(

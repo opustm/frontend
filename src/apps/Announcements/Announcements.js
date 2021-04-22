@@ -419,12 +419,15 @@ export default class Announcements extends Component {
               <h1>
                 Announcements
                 <OverlayTrigger
-                  overlay={<Tooltip>Announcements are messages that are visible to entire teams.
-                    To get started, click 'Create Announcement'.
-                  </Tooltip>}
+                  overlay={
+                    <Tooltip>
+                      Announcements are messages that are visible to entire
+                      teams. To get started, click 'Create Announcement'.
+                    </Tooltip>
+                  }
                   placement={'right'}
                 >
-                  <Icon.FiHelpCircle size={20} style={{'marginLeft': '5px'}} />
+                  <Icon.FiHelpCircle size={20} style={{ marginLeft: '5px' }} />
                 </OverlayTrigger>
               </h1>
               <p>
