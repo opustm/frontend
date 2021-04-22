@@ -24,11 +24,20 @@ Refer to `package.json` for further documentation about dependencies.
 
 ### Setup
 
-Clone the repository 
+* Clone the repository 
 
-`git clone git@github.com:opustm/backend.git`
+```git clone git@github.com:opustm/backend.git```
 
-Install [npm](https://nodejs.org/en/)
+* Install [npm](https://nodejs.org/en/)
+* Install all node dependencies `npm i`
+
+## Installing Additional Packages
+
+* Install additional dependcies with npm
+
+```
+npm i <package-name>
+```
 
 ## License
 
