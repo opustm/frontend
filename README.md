@@ -33,7 +33,7 @@ git clone git@github.com:opustm/backend.git
 * Install [npm](https://nodejs.org/en/)
 * Install all node dependencies `npm i`
 
-## Installing Additional Packages
+### Installing Additional Packages
 
 * Install additional dependcies with npm
 
