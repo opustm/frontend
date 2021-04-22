@@ -32,5 +32,4 @@ Install [npm](https://nodejs.org/en/)
 
 ## License
 
----
 MIT.
