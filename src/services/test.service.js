@@ -3,11 +3,27 @@
 // This allows the components to handle it the same way they would if they received data from an API
 
 const mockAPI = {
-  userInfo : {
-    id: "12345",
-    username: "testUser",
+  userInfo: {
+    id: '12345',
+    username: 'testUser',
     first_name: 'Test',
-    last_name: 'User'
+    last_name: 'User',
+    email: 'testy@gmail.com',
+    picture: '#0EDD12',
+    phone: '1110002020',
+    bio: 'I am a test user designed for test purposes!'
+  },
+  userInfoData: {
+    data: {
+      id: '12345',
+      username: 'testUser',
+      first_name: 'Test',
+      last_name: 'User',
+      email: 'testy@gmail.com',
+      picture: '#0EDD12',
+      phone: '1110002020',
+      bio: 'I am a test user designed for test purposes!'
+    }
   },
   userTeams: {
     data: [
@@ -15,6 +31,13 @@ const mockAPI = {
         id: 1,
         name: 'CS 150',
         members: [],
+        managers: [],
+        owners: []
+      },
+      {
+        id: 2,
+        name: 'CS 360',
+        members: ['Bob'],
         managers: [],
         owners: []
       }
@@ -28,7 +51,7 @@ const mockAPI = {
         last_name: 'Goldblum',
         username: 'jgoldblum',
         email: 'goldblum@hotmail.com',
-        phone: '09876',
+        phone: '09876'
       },
       {
         id: 101,
@@ -36,7 +59,7 @@ const mockAPI = {
         last_name: 'Van Winkle',
         username: 'vanwinkle',
         email: 'rvw@yahoo.com',
-        phone: '54321',
+        phone: '54321'
       }
     ]
   },
@@ -49,8 +72,8 @@ const mockAPI = {
         },
         name: 'Introduction to CS',
         details: 'Our first class meeting for CS 150',
-        start: "2021-02-18T16:45:54Z",
-        end: "2021-02-18T16:45:55Z"
+        start: '2021-02-18T16:45:54Z',
+        end: '2021-02-18T16:45:55Z'
       },
       {
         id: 2,
@@ -59,8 +82,8 @@ const mockAPI = {
         },
         name: 'Lesson 2',
         details: 'Our second class meeting for CS 150',
-        start: "2021-03-18T16:45:54Z",
-        end: "2021-03-19T16:45:55Z"
+        start: '2021-03-18T16:45:54Z',
+        end: '2021-03-19T16:45:55Z'
       }
     ]
   },
@@ -78,7 +101,7 @@ const mockAPI = {
         priority: 1,
         announcement: 'Hello World!',
         event: null,
-        end: "2021-02-23T03:35:28.800000Z"
+        end: '2021-02-23T03:35:28.800000Z'
       }
     ]
   },
@@ -104,10 +127,125 @@ const mockAPI = {
         {
           id: 3,
           name: 'Old People'
-        },
+        }
       ]
     }
+  },
+  allTeams: {
+    data: [
+      {
+        id: 1,
+        name: 'CS 150',
+        members: [],
+        managers: [],
+        owners: []
+      },
+      {
+        id: 2,
+        name: 'Hollywood Stars',
+        members: [],
+        managers: [],
+        owners: []
+      },
+      {
+        id: 3,
+        name: 'Old People',
+        members: [],
+        managers: [],
+        owners: []
+      }
+    ]
+  },
+  team1: {
+    data: {
+      id: 1,
+      name: 'CS 150',
+      members: [
+        {
+          id: '101',
+          username: 'compsciStudent',
+          first_name: 'Joe',
+          last_name: 'Bob'
+        }
+      ],
+      managers: [],
+      owners: [
+        {
+          id: '12345',
+          username: 'testUser',
+          first_name: 'Test',
+          last_name: 'User'
+        }
+      ],
+      description: 'This is a test team',
+      creator: {
+        first_name: 'LeBron',
+        last_name: 'James'
+      }
+    }
+  },
+  otherUser: {
+    data: {
+      id: 102,
+      first_name: 'Ron',
+      last_name: 'Weasley',
+      username: 'ronweasley'
+    }
+  },
+  allUsers: {
+    data: [
+      {
+        id: '12345',
+        username: 'testUser',
+        first_name: 'Test',
+        last_name: 'User'
+      },
+      {
+        id: 102,
+        first_name: 'Ron',
+        last_name: 'Weasley',
+        username: 'ronweasley'
+      }
+    ]
+  },
+  newTeam: {
+    data: {
+      id: 1,
+      name: 'CS 150',
+      members: [
+        {
+          id: '101',
+          username: 'compsciStudent',
+          first_name: 'Joe',
+          last_name: 'Bob'
+        },
+        {
+          id: 102,
+          first_name: 'Ron',
+          last_name: 'Weasley',
+          username: 'ronweasley'
+        }
+      ],
+      managers: [],
+      owners: [
+        {
+          id: '12345',
+          username: 'testUser',
+          first_name: 'Test',
+          last_name: 'User'
+        }
+      ],
+      description: 'This is a test team'
+    }
+  },
+  newEvent: {
+    id: 19,
+    name: 'Event 3',
+    start: '2023-04-07T11:22',
+    end: '2024-04-07T11:22',
+    team: '12',
+    details: 'This event will be added to the table!'
   }
-}
+};
 
 export default mockAPI;

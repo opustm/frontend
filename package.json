@@ -22,7 +22,7 @@
     "react-input-color": "^3.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.0",
-    "three": "^0.124.0",
+    "three": "^0.125.0",
     "vanta": "^0.5.21",
     "web-vitals": "^0.2.4"
   },
@@ -30,13 +30,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom --coverage --watchAll",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,css,less,scss,vue,json,gql,md}\"",
+    "clean-install": "rm -rf node_modules && rm package-lock.json && npm i",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [
@@ -48,6 +44,29 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "eslint": "^7.22.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-react": "^7.23.1",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "prettier": "^2.2.1"
+  },
+  "jest": {
+    "watchPathIgnorePatterns": [
+      "src/static/scripts",
+      "src/App.js",
+      "src/index.js",
+      "src/services/data.service.js",
+      "src/Pages/About.js",
+      "src/Pages/Home.js",
+      "src/Pages/Login.js",
+      "src/services/auth.service.js"
     ]
   }
 }
